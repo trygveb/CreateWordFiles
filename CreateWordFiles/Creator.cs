@@ -31,10 +31,31 @@ namespace CreateWordFiles
                 String fileNameLogo = @"D:\Mina dokument\Sqd\Motiv8s\Badge\M8-logo1.gif";
                 addImage("Anchor", wordDocument, fileNameLogo, 0.1667, 1.0, 1.6);
 
-                String fileNameCaller = @"D:\Mina dokument\Sqd\Motiv8s\Dokument\Flyers\jesper.gif";
+                String fileNameCaller = @"D:\Mina dokument\Sqd\Motiv8s\Dokument\Flyers\jesper_cr.jpg";
                 addImage("Inline", wordDocument, fileNameCaller, 0.8, 6.0, 10.0);
 
                 body.AppendChild(GenerateParagraph2());
+
+                // Append the table to the document.
+                Wp.Paragraph paragraph = new Wp.Paragraph();
+                Wp.ParagraphProperties paragraphProperties = new Wp.ParagraphProperties();
+                Wp.Justification justification = new Wp.Justification() { Val = Wp.JustificationValues.Center };
+                paragraphProperties.Append(justification);
+                Wp.Run run = new Wp.Run();
+                Wp.RunProperties runProperties = new Wp.RunProperties();
+                Wp.RunFonts runFonts = new Wp.RunFonts { Ascii = "Comic Sans MS" };
+                String fontSizeTxt = (14 * 2).ToString();
+                Wp.FontSize fontSize = new Wp.FontSize { Val = new OXML.StringValue(fontSizeTxt) };  // Size in half points
+                runProperties.Append(runFonts);
+                runProperties.Append(fontSize);
+                run.Append(runProperties);
+                //run.Append(new Wp.Break());
+                run.Append(CreateTable());
+                //run.Append(new Wp.Break());
+                paragraph.Append(paragraphProperties);
+                paragraph.Append(run);
+                body.AppendChild(paragraph);
+
                 body.AppendChild(GenerateParagraph4());
                 body.AppendChild(GenerateParagraph5());
                 body.AppendChild(GenerateParagraph6());
@@ -56,6 +77,9 @@ namespace CreateWordFiles
             int[] fontSizes = { 32 };
             return GenerateParagraph(lines, fontSizes);
         }
+
+
+
         public static Wp.Paragraph GenerateParagraph4()
         {
             String[] lines = {
@@ -114,6 +138,94 @@ namespace CreateWordFiles
             return paragraph;
         }
 
+        // Insert a table into a word processing document.
+        public static Wp.Table CreateTable()
+        {
+            // Use the file name and path passed in as an argument 
+            // to open an existing Word 2007 document.
+
+                // Create an empty table.
+                Wp.Table table = new Wp.Table();
+
+                // Create a TableProperties object and specify its border information.
+                Wp.TableProperties tblProp = new Wp.TableProperties(createTableBorders(Wp.BorderValues.Dashed, 12));
+
+                // Append the TableProperties object to the empty table.
+                table.AppendChild<Wp.TableProperties>(tblProp);
+
+                // Create a row.
+                Wp.TableRow tr1 = new Wp.TableRow();
+
+            // Create a cell.
+                Wp.TableCell tc1 = createACell("Some text", 2400);
+
+                // Append the table cell to the table row.
+                tr1.Append(tc1);
+
+                // Create a second table cell by copying the OuterXml value of the first table cell.
+                Wp.TableCell tc2 = createACell("Some other text", 2400);
+
+                // Append the table cell to the table row.
+                tr1.Append(tc2);
+
+                // Append the table row to the table.
+                table.Append(tr1);
+
+                return table;
+            
+        }
+
+        private static Wp.TableCell createACell(String text, int width)
+        {
+            String widthStr = width.ToString();
+            Wp.TableCell tc1 = new Wp.TableCell();
+
+            // Specify the width property of the table cell.
+            tc1.Append(new Wp.TableCellProperties(
+                new Wp.TableCellWidth() { Type = Wp.TableWidthUnitValues.Dxa, Width = widthStr }));
+
+            // Specify the table cell content.
+            tc1.Append(new Wp.Paragraph(new Wp.Run(new Wp.Text(text))));
+
+            return tc1;
+
+        }
+        public static Wp.TableBorders createTableBorders(Wp.BorderValues type, OXML.UInt32Value size)
+        {
+            Wp.TableBorders tableBorders = new Wp.TableBorders(
+                new Wp.TopBorder()
+                {
+                    Val = new OXML.EnumValue<Wp.BorderValues>(type),
+                    Size = size
+                },
+                new Wp.BottomBorder()
+                {
+                    Val = new OXML.EnumValue<Wp.BorderValues>(type),
+                    Size = size
+                },
+                new Wp.LeftBorder()
+                {
+                    Val = new OXML.EnumValue<Wp.BorderValues>(type),
+                    Size = size
+                },
+                new Wp.RightBorder()
+                {
+                    Val = new OXML.EnumValue<Wp.BorderValues>(type),
+                    Size = size
+                },
+                new Wp.InsideHorizontalBorder()
+                {
+                    Val = new OXML.EnumValue<Wp.BorderValues>(type),
+                    Size = size
+                },
+                new Wp.InsideVerticalBorder()
+                {
+                    Val = new OXML.EnumValue<Wp.BorderValues>(type),
+                    Size = size
+                }
+            );
+            return tableBorders;
+        }
         public static void addImage(String type, WordprocessingDocument wordprocessingDocument, String fileName, double scale, double x0_cm, double y0_cm)
         {
             MainDocumentPart mainPart = wordprocessingDocument.MainDocumentPart;
