@@ -21,6 +21,7 @@ namespace CreateWordFiles
         {
             String file = @"d:\Development\Visual Studio\Projects\CreateWordFiles\CreateWordFiles\Documents\Test.docx";
             Creator.CreateWordprocessingDocument(file, this.textBoxDanceName.Text, this.textBoxDates.Text);
+            System.Diagnostics.Process.Start(file);
             this.Close();
         }
 

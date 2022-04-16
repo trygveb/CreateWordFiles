@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
 
-using OXML= DocumentFormat.OpenXml;
+using OXML = DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
-using Wp= DocumentFormat.OpenXml.Wordprocessing;
+using Wp = DocumentFormat.OpenXml.Wordprocessing;
 using A = DocumentFormat.OpenXml.Drawing;
 using DW = DocumentFormat.OpenXml.Drawing.Wordprocessing;
 using PIC = DocumentFormat.OpenXml.Drawing.Pictures;
@@ -36,26 +36,9 @@ namespace CreateWordFiles
 
                 body.AppendChild(GenerateParagraph2());
 
-                // Append the table to the document.
-                Wp.Paragraph paragraph = new Wp.Paragraph();
-                Wp.ParagraphProperties paragraphProperties = new Wp.ParagraphProperties();
-                Wp.Justification justification = new Wp.Justification() { Val = Wp.JustificationValues.Center };
-                paragraphProperties.Append(justification);
-                Wp.Run run = new Wp.Run();
-                Wp.RunProperties runProperties = new Wp.RunProperties();
-                Wp.RunFonts runFonts = new Wp.RunFonts { Ascii = "Comic Sans MS" };
-                String fontSizeTxt = (14 * 2).ToString();
-                Wp.FontSize fontSize = new Wp.FontSize { Val = new OXML.StringValue(fontSizeTxt) };  // Size in half points
-                runProperties.Append(runFonts);
-                runProperties.Append(fontSize);
-                run.Append(runProperties);
-                //run.Append(new Wp.Break());
-                run.Append(CreateTable());
-                //run.Append(new Wp.Break());
-                paragraph.Append(paragraphProperties);
-                paragraph.Append(run);
-                body.AppendChild(paragraph);
-
+                Wp.Table table = CreateTable();
+                body.AppendChild(table);
+                body.AppendChild(new Wp.Break());
                 body.AppendChild(GenerateParagraph4());
                 body.AppendChild(GenerateParagraph5());
                 body.AppendChild(GenerateParagraph6());
@@ -67,7 +50,7 @@ namespace CreateWordFiles
             Wp.Paragraph paragraph1 = new Wp.Paragraph();
 
 
-            String[] lines= { "VÄLKOMNA", "till", danceName, danceDates };
+            String[] lines = { "VÄLKOMNA", "till", danceName, danceDates };
             int[] fontSizes = { 20, 12, 32, 20 };
             return GenerateParagraph(lines, fontSizes);
         }
@@ -114,7 +97,7 @@ namespace CreateWordFiles
             Wp.Paragraph paragraph = new Wp.Paragraph();
             for (int i = 0; i < lines.Length; i++)
             {
-                String fontSizeTxt= (fontSizes[i]*2).ToString();
+                String fontSizeTxt = (fontSizes[i] * 2).ToString();
                 String line = lines[i];
                 Wp.FontSize fontSize = new Wp.FontSize { Val = new OXML.StringValue(fontSizeTxt) };  // Size in half points
                 Wp.ParagraphProperties paragraphProperties = new Wp.ParagraphProperties();
@@ -144,50 +127,122 @@ namespace CreateWordFiles
             // Use the file name and path passed in as an argument 
             // to open an existing Word 2007 document.
 
-                // Create an empty table.
-                Wp.Table table = new Wp.Table();
+            // Create an empty table.
+            Wp.Table table = new Wp.Table();
 
-                // Create a TableProperties object and specify its border information.
-                Wp.TableProperties tblProp = new Wp.TableProperties(createTableBorders(Wp.BorderValues.Dashed, 12));
+            // Create a TableProperties object and specify its border information.
+            //Wp.TableProperties tblProp = new Wp.TableProperties(createTableBorders(Wp.BorderValues.Dashed, 12));
 
-                // Append the TableProperties object to the empty table.
-                table.AppendChild<Wp.TableProperties>(tblProp);
+            // Append the TableProperties object to the empty table.
+            //table.AppendChild<Wp.TableProperties>(tblProp);
+            int[] colWidth = { 3000, 1000, 3000, 1000 };
+            String[] content1 = { "Lördag", "", "Söndag", "" };
+            Wp.TableRow tr1 = createRow1(content1, colWidth);
+            table.Append(tr1);
 
-                // Create a row.
-                Wp.TableRow tr1 = new Wp.TableRow();
+            String[] content2 = { "Kl. 11.00 - 14.00", "C1", "Kl. 10.00 - 13.00", "C3A" };
+            Wp.TableRow tr2 = createRow(content2, colWidth);
+            table.Append(tr2);
 
-            // Create a cell.
-                Wp.TableCell tc1 = createACell("Some text", 2400);
-
-                // Append the table cell to the table row.
-                tr1.Append(tc1);
-
-                // Create a second table cell by copying the OuterXml value of the first table cell.
-                Wp.TableCell tc2 = createACell("Some other text", 2400);
-
-                // Append the table cell to the table row.
-                tr1.Append(tc2);
-
-                // Append the table row to the table.
-                table.Append(tr1);
-
-                return table;
+            String[] content3 = { "Kl. 15.00 - 18.00", "C2", "Kl. 14.00 - 17.00", "C3B" };
+            Wp.TableRow tr3 = createRow(content3, colWidth);
+            table.Append(tr3);
             
+            return table;
+
         }
 
+        private static Wp.TableRow createRow1(String[] content, int[] colWidth)
+        {
+            Wp.TableRow row = new Wp.TableRow();
+            var rowProps = new Wp.TableRowProperties();
+
+
+            rowProps.Append(new Wp.TableJustification { Val = Wp.TableRowAlignmentValues.Center });
+//            rowProps.Append(new Wp.TableRowHeight { Val = (OXML.UInt32Value) 15 });
+            //rowProps.Append(new Wp.TableRowHeight { HeightType = Wp.HeightRuleValues.Auto });
+
+            row.Append(rowProps);
+            Wp.TableCell[] tableCell= new Wp.TableCell[4];
+            for (int i = 0; i < content.Length; i++)
+            {
+               tableCell[i] = createACell(content[i], colWidth[i]);
+                row.Append(tableCell[i]);
+            }
+
+
+            MergeCells(tableCell[0], tableCell[1]);
+            MergeCells(tableCell[2], tableCell[3]);
+
+            return row;
+
+        }
+        private static void MergeCells(Wp.TableCell tc1, Wp.TableCell tc2)
+        {
+            Wp.TableCellProperties cellOneProperties = new Wp.TableCellProperties();
+            cellOneProperties.Append(new Wp.HorizontalMerge()
+            {
+                Val = Wp.MergedCellValues.Restart
+            });
+
+            Wp.TableCellProperties cellTwoProperties = new Wp.TableCellProperties();
+            cellTwoProperties.Append(new Wp.HorizontalMerge()
+            {
+                Val = Wp.MergedCellValues.Continue
+            });
+
+            tc1.Append(cellOneProperties);
+            tc2.Append(cellTwoProperties);
+
+        }
+        private static Wp.TableRow createRow(String[] content, int[] colWidth)
+        {
+            
+            Wp.TableRow row = new Wp.TableRow();
+            var rowProps = new Wp.TableRowProperties();
+            rowProps.Append(new Wp.TableJustification { Val = Wp.TableRowAlignmentValues.Center });
+//            rowProps.Append(new Wp.TableRowHeight { Val = (OXML.UInt32Value)15 });
+            //rowProps.Append(new Wp.TableRowHeight { HeightType = Wp.HeightRuleValues.Auto });
+
+            row.Append(rowProps);
+            for (int i = 0; i < content.Length; i++)
+            {
+                Wp.TableCell tableCell = createACell(content[i], colWidth[i]);
+                row.Append(tableCell);
+            }
+
+
+            return row;
+
+        }
         private static Wp.TableCell createACell(String text, int width)
         {
             String widthStr = width.ToString();
-            Wp.TableCell tc1 = new Wp.TableCell();
+            Wp.TableCell tableCell = new Wp.TableCell();
+            Wp.FontSize fontSize = new Wp.FontSize { Val = "28" };  // Size in half points
+            Wp.RunFonts runFonts = new Wp.RunFonts { Ascii = "Comic Sans MS" };
+            var paragraph = new Wp.Paragraph();
+            var run = new Wp.Run();
+            var txt = new Wp.Text(text);
+
+            Wp.RunProperties runProperties = new Wp.RunProperties();
+            runProperties.Append(fontSize);
+            runProperties.Append(runFonts);
+
+            run.Append(runProperties);
+            run.Append(txt);
+
+            paragraph.Append(run);
+            tableCell.Append(paragraph);
 
             // Specify the width property of the table cell.
-            tc1.Append(new Wp.TableCellProperties(
+            tableCell.Append(new Wp.TableCellProperties(
                 new Wp.TableCellWidth() { Type = Wp.TableWidthUnitValues.Dxa, Width = widthStr }));
 
             // Specify the table cell content.
-            tc1.Append(new Wp.Paragraph(new Wp.Run(new Wp.Text(text))));
+            //tc1.Append(new Wp.Paragraph(new Wp.Run(new Wp.Text(text))));
 
-            return tc1;
+            return tableCell;
 
         }
         public static Wp.TableBorders createTableBorders(Wp.BorderValues type, OXML.UInt32Value size)
@@ -245,14 +300,15 @@ namespace CreateWordFiles
             if (type == "Anchor")
             {
                 AddAnchorImageToBody(wordprocessingDocument, mainPart.GetIdOfPart(imagePart), (int)(scale * iWidth), (int)(scale * iHeight), x0_cm, y0_cm);
-            } else
+            }
+            else
             {
                 AddInlineImageToBody(wordprocessingDocument, mainPart.GetIdOfPart(imagePart), (int)(scale * iWidth), (int)(scale * iHeight));
             }
         }
         public static void AddAnchorImageToBody(WordprocessingDocument wordprocessingDocument, String relationshipId, int iWidth, int iHeight, double x0_cm, double y0_cm)
         {
-             // Define the reference of the image.
+            // Define the reference of the image.
             var x = new DW.Anchor();
             var element = GetAnchorPicture(relationshipId, x0_cm, y0_cm, iWidth, iHeight);
             // Append the reference to the body. The element should be in 
@@ -384,7 +440,7 @@ namespace CreateWordFiles
             DW.SimplePosition _spos = new DW.SimplePosition()
             {
                 X = x0_emu,
-                Y = y0_emu  
+                Y = y0_emu
             };
 
             DW.HorizontalPosition _hp = new DW.HorizontalPosition()
