@@ -19,7 +19,7 @@ namespace CreateWordFiles
 
         private void buttonOk_Click(object sender, EventArgs e)
         {
-            String file = @"d:\Development\CreateWordFiles\CreateWordFiles\Documents\Test.docx";
+            String file = @"d:\Development\Visual Studio\Projects\CreateWordFiles\CreateWordFiles\Documents\Test.docx";
             Creator.CreateWordprocessingDocument(file, this.textBoxDanceName.Text, this.textBoxDates.Text);
             this.Close();
         }

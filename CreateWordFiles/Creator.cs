@@ -27,13 +27,17 @@ namespace CreateWordFiles
 
                 Wp.Paragraph paragraph1 = GenerateParagraph1(danceName.ToUpper(), danceDates);
                 body.AppendChild(paragraph1);
+
                 String fileNameLogo = @"D:\Mina dokument\Sqd\Motiv8s\Badge\M8-logo1.gif";
                 addImage("Anchor", wordDocument, fileNameLogo, 0.1667, 1.0, 1.6);
+
                 String fileNameCaller = @"D:\Mina dokument\Sqd\Motiv8s\Dokument\Flyers\jesper.gif";
                 addImage("Inline", wordDocument, fileNameCaller, 0.8, 6.0, 10.0);
-                Wp.Paragraph paragraph2 = GenerateParagraph2();
-                body.AppendChild(paragraph2);
 
+                body.AppendChild(GenerateParagraph2());
+                body.AppendChild(GenerateParagraph4());
+                body.AppendChild(GenerateParagraph5());
+                body.AppendChild(GenerateParagraph6());
             }
         }
         public static Wp.Paragraph GenerateParagraph1(String danceName, String danceDates)
@@ -43,42 +47,52 @@ namespace CreateWordFiles
 
 
             String[] lines= { "VÄLKOMNA", "till", danceName, danceDates };
-            String[] fontSizes = { "40", "24", "64", "40" };
-            for (int i = 0; i < lines.Length; i++) { 
-                String line = lines[i];
-                Wp.FontSize fontSize = new Wp.FontSize { Val = new OXML.StringValue(fontSizes[i]) };  // Size in half points
-                Wp.ParagraphProperties paragraphProperties = new Wp.ParagraphProperties();
-                Wp.Justification justification = new Wp.Justification() { Val = Wp.JustificationValues.Center };
-                paragraphProperties.Append(justification);
-
-                Wp.Run run = new Wp.Run();
-                Wp.RunProperties runProperties = new Wp.RunProperties();
-                Wp.RunFonts runFonts = new Wp.RunFonts { Ascii = "Comic Sans MS" };
-                runProperties.Append(runFonts);
-                runProperties.Append(fontSize);
-                Wp.Text text1 = new Wp.Text();
-                text1.Text = line;
-                run.Append(runProperties);
-                run.Append(text1);
-                run.Append(new Wp.Break());
-                paragraph1.Append(paragraphProperties);
-                paragraph1.Append(run);
-
-            }
-            return paragraph1;
+            int[] fontSizes = { 20, 12, 32, 20 };
+            return GenerateParagraph(lines, fontSizes);
         }
         public static Wp.Paragraph GenerateParagraph2()
         {
-            //Paragraph paragraph1 = new Paragraph() { RsidParagraphAddition = "004F7104", RsidParagraphProperties = "008F2986", RsidRunAdditionDefault = "004F7104" };
-            Wp.Paragraph paragraph = new Wp.Paragraph();
-
-
             String[] lines = { "Jesper Wilhelmsson" };
-            String[] fontSizes = { "64" };
+            int[] fontSizes = { 32 };
+            return GenerateParagraph(lines, fontSizes);
+        }
+        public static Wp.Paragraph GenerateParagraph4()
+        {
+            String[] lines = {
+                "Medlem: 100 kr/pass, samtliga pass 350 kr",
+                "Ej medlem: 120 kr/pass, samtliga pass 400 kr",
+                "Betala gärna i förväg på PlusGiro 85 56 69-8 (MOTIV8'S)",
+                "Swish till 070-422 82 27 (Arne G) eller kontanter ”i dörren” går också bra",
+            };
+            int[] fontSizes = { 12, 12, 12, 12 };
+            return GenerateParagraph(lines, fontSizes);
+        }
+        public static Wp.Paragraph GenerateParagraph5()
+        {
+            String[] lines = {
+                "Plats: Segersjö Folkets Hus, Scheelevägen 41 i Tumba"
+            };
+            int[] fontSizes = { 14 };
+            return GenerateParagraph(lines, fontSizes);
+        }
+        public static Wp.Paragraph GenerateParagraph6()
+        {
+            String[] lines = {
+                "Vi använder rotationsprogram på samtliga nivåer!",
+                "Ta med eget fika! - Vi ordnar hämtning av Pizza och sallad till pausen!"
+            };
+            int[] fontSizes = { 14, 14 };
+            return GenerateParagraph(lines, fontSizes);
+        }
+
+        private static Wp.Paragraph GenerateParagraph(string[] lines, int[] fontSizes)
+        {
+            Wp.Paragraph paragraph = new Wp.Paragraph();
             for (int i = 0; i < lines.Length; i++)
             {
+                String fontSizeTxt= (fontSizes[i]*2).ToString();
                 String line = lines[i];
-                Wp.FontSize fontSize = new Wp.FontSize { Val = new OXML.StringValue(fontSizes[i]) };  // Size in half points
+                Wp.FontSize fontSize = new Wp.FontSize { Val = new OXML.StringValue(fontSizeTxt) };  // Size in half points
                 Wp.ParagraphProperties paragraphProperties = new Wp.ParagraphProperties();
                 Wp.Justification justification = new Wp.Justification() { Val = Wp.JustificationValues.Center };
                 paragraphProperties.Append(justification);
