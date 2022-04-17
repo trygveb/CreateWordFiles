@@ -12,6 +12,8 @@ namespace CreateWordFiles
 {
     internal class Creator
     {
+        private static Wp.Color wpColorBlackx = new Wp.Color() { Val = "000000" };
+        private static Wp.Color wpColorRedx = new Wp.Color() { Val = "FF0000" };
         public static void CreateWordprocessingDocument(string filepath, String danceName, String danceDates)
         {
             // Create a document by supplying the filepath. 
@@ -81,14 +83,17 @@ namespace CreateWordFiles
 
 
             String[] lines = { "VÄLKOMNA", "till", danceName, danceDates };
+            
+            String[] colors = { "Black", "Black", "Black", "Black" };
             int[] fontSizes = { 20, 12, 32, 20 };
-            return GenerateParagraph(lines, fontSizes);
+            return GenerateParagraph(lines, fontSizes, colors);
         }
         public static Wp.Paragraph GenerateParagraph2()
         {
             String[] lines = { "Jesper Wilhelmsson" };
+            String[] colors = { "Black"};
             int[] fontSizes = { 32 };
-            return GenerateParagraph(lines, fontSizes);
+            return GenerateParagraph(lines, fontSizes, colors);
         }
 
 
@@ -102,7 +107,8 @@ namespace CreateWordFiles
                 "Swish till 070-422 82 27 (Arne G) eller kontanter ”i dörren” går också bra",
             };
             int[] fontSizes = { 12, 12, 12, 12 };
-            return GenerateParagraph(lines, fontSizes);
+            String[] colors = { "Black", "Black", "Black", "Black" };
+            return GenerateParagraph(lines, fontSizes, colors);
         }
         public static Wp.Paragraph GenerateParagraph5()
         {
@@ -110,7 +116,8 @@ namespace CreateWordFiles
                 "Plats: Segersjö Folkets Hus, Scheelevägen 41 i Tumba"
             };
             int[] fontSizes = { 14 };
-            return GenerateParagraph(lines, fontSizes);
+            String[] colors = { "Red" };
+            return GenerateParagraph(lines, fontSizes, colors);
         }
         public static Wp.Paragraph GenerateParagraph6()
         {
@@ -119,10 +126,12 @@ namespace CreateWordFiles
                 "Ta med eget fika! - Vi ordnar hämtning av Pizza och sallad till pausen!"
             };
             int[] fontSizes = { 14, 14 };
-            return GenerateParagraph(lines, fontSizes);
+            String[] colors = { "Black", "Black" };
+
+            return GenerateParagraph(lines, fontSizes, colors);
         }
 
-        private static Wp.Paragraph GenerateParagraph(string[] lines, int[] fontSizes)
+        private static Wp.Paragraph GenerateParagraph(string[] lines, int[] fontSizes, String[] colors)
         {
             Wp.Paragraph paragraph = new Wp.Paragraph();
             for (int i = 0; i < lines.Length; i++)
@@ -141,6 +150,12 @@ namespace CreateWordFiles
                 runProperties.Append(fontSize);
                 Wp.Text text1 = new Wp.Text();
                 text1.Text = line;
+               if (colors[i]=="Red")
+                {
+                    Wp.Color color= new Wp.Color() { Val = "FF0000" };
+                    runProperties.Append(color);
+
+                }
                 run.Append(runProperties);
                 run.Append(text1);
                 run.Append(new Wp.Break());
@@ -191,7 +206,7 @@ namespace CreateWordFiles
             Wp.TableCell[] tableCell= new Wp.TableCell[4];
             for (int i = 0; i < content.Length; i++)
             {
-               tableCell[i] = createACell(content[i], colWidth[i]);
+               tableCell[i] = createACell(content[i], colWidth[i], true);
                 row.Append(tableCell[i]);
             }
 
@@ -240,7 +255,7 @@ namespace CreateWordFiles
             return row;
 
         }
-        private static Wp.TableCell createACell(String text, int width)
+        private static Wp.TableCell createACell(String text, int width, Boolean underline= false)
         {
             String widthStr = width.ToString();
             Wp.TableCell tableCell = new Wp.TableCell();
@@ -252,6 +267,11 @@ namespace CreateWordFiles
             var txt = new Wp.Text(text);
 
             Wp.RunProperties runProperties = new Wp.RunProperties();
+            if (underline)
+            {
+                Wp.Underline ul = new Wp.Underline() { Val = Wp.UnderlineValues.Single };
+                runProperties.Append(ul);
+            }
             runProperties.Append(fontSize);
             runProperties.Append(runFonts);
 
