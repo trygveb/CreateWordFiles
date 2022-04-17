@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Globalization;
 
 using OXML = DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
@@ -14,18 +15,31 @@ namespace CreateWordFiles
     {
         private static Wp.Color wpColorBlackx = new Wp.Color() { Val = "000000" };
         private static Wp.Color wpColorRedx = new Wp.Color() { Val = "FF0000" };
-        private static String[] monthNames = { "Januari", "Februari", "Mars", "April", "Maj", "Juni", "Juli", "Augusti", "September", "Oktober", "November", "December" };
+        
+        /// <summary>
+        /// Only weekend dances supported 
+        /// </summary>
+        /// <param name="filepath"></param>
+        /// <param name="danceName"></param>
+        /// <param name="danceDateStart"></param>
+        /// <param name="danceDateEnd"></param>
         public static void CreateWordprocessingDocument(string filepath, String danceName, DateTime danceDateStart, DateTime danceDateEnd)
         {
-            //12 -13 november 2022
-            String danceDates = String.Format("{0} - {1} {2}", danceDateStart.Day, danceDateEnd.Day, monthNames[danceDateStart.Month - 1]);
             int month1 = danceDateStart.Month;
             int month2 = danceDateEnd.Month;
+            DayOfWeek dayOfWeek1 = danceDateStart.DayOfWeek;
+            String day1 = DateTimeFormatInfo.CurrentInfo.GetDayName(dayOfWeek1);
+            DayOfWeek dayOfWeek2 = danceDateEnd.DayOfWeek;
+            String day2 = DateTimeFormatInfo.CurrentInfo.GetDayName(dayOfWeek2);
+            String monthName1 = DateTimeFormatInfo.CurrentInfo.GetMonthName(month1);
+            String monthName2 = DateTimeFormatInfo.CurrentInfo.GetMonthName(month2);
+            String danceDates = String.Format("{0} - {1} {2}", danceDateStart.Day, danceDateEnd.Day, monthName1);
             if (month1 != month2)
             {
-                danceDates = String.Format("{0}{1} - {2} {3}", danceDateStart.Day, danceDateEnd.Day, monthNames[danceDateStart.Month - 1], monthNames[danceDateEnd.Month - 1]);
+                danceDates = String.Format("{0}{1} - {2} {3}", danceDateStart.Day, danceDateEnd.Day, monthName1, monthName2);
             }
 
+            String x = GetHtmlCode(danceDateStart, danceDateEnd, monthName1, monthName2);
             // Create a document by supplying the filepath. 
             using (WordprocessingDocument wordDocument =
                 WordprocessingDocument.Create(filepath, OXML.WordprocessingDocumentType.Document))
@@ -648,17 +662,33 @@ namespace CreateWordFiles
             return _drawing;
         }
 
+        public static String GetHtmlCode(DateTime danceDateStart, DateTime danceDateEnd, String monthName1, String monthName2)
+        {
+            
+            var sb = new System.Text.StringBuilder();
+            sb.Append(String.Format("<p>Lördag {0} {1} <br/>11:00 - 14:00 - C1  <br/> 15:00 - 18:00 - C2 </p>", danceDateStart.Day, monthName1));
+            sb.Append(String.Format("<p>Söndag {0} {1} <br/>10:00 - 13:00 - C3A <br/> 14:00 - 17:00 - C3B</p>", danceDateEnd.Day, monthName2));
+            sb.Append("<p class='mobile - undersized - lower'>Medlem: <span style='background - color: #ffff00;'>100</span> kr/pass, samtliga pass <span style='background-color: #ffff00;'>350</span> kr<br/>");
+            sb.Append("Ej medlem: <span style='background - color: #ffff00;'>120</span> kr/pass, samtliga pass <span style='background-color: #ffff00;'>400</span> kr<br/>");
+            sb.Append("Betala gärna i förväg på PlusGiro 85 56 69-8 (MOTIV8'S)<br/> Swish till 070-422 82 27 (Arne G) eller kontanter ”i dörren” går också bra.</p>");
+            sb.Append("<p><span style='color: #ff0000;'>OBS! Plats: Segersjö Folkets Hus, Scheelevägen 41 i Tumba</span></p>");
+            sb.Append("<ul>");
+            sb.Append("<li>Vi använder rotationsprogram på samtliga nivåer!</li>");
+            sb.Append("<li>Ta med eget fika!</li>");
+            sb.Append("<li>Vi ordnar hämtning av Pizza och sallad till pausen.</li>");
+            sb.Append("</ul>");
+            sb.Append("<p><em><em>Om du har några symtom som halsont, snuva, feber, hosta eller sjukdomskänsla så ska du stanna hemma.<br />Reservation för att vi inte kan genomföra dansen på grund av restriktioner.</em></em></p>");
+            return sb.ToString();
+        }
         /*
-<p>Lördag 21 maj<br />11:00-14:00 - C1<br />15:00-18:00 - C2</p>
-<p>Söndag 22 maj <br />10:00-13:00 - C3A<br />14:00-17:00 - C3B**<br />** Kursnivå enligt Jespers kurs i Örebro</p>
-<p class="mobile-undersized-lower">Medlem: <span style="background-color: #ffff00;">100</span> kr/pass, samtliga pass <span style="background-color: #ffff00;">350</span> kr<br />Ej medlem: <span style="background-color: #ffff00;">120</span> kr/pass, samtliga pass <span style="background-color: #ffff00;">400</span> kr<br />Betala gärna i förväg på PlusGiro 85 56 69-8 (MOTIV8'S)<br /> Swish till 070-422 82 27 (Arne G) eller kontanter ”i dörren” går också bra.</p>
-<p><span style="color: #ff0000;">OBS! Plats: Segersjö Folkets Hus, Scheelevägen 41 i Tumba</span></p>
-<ul>
-<li>Vi använder rotationsprogram på samtliga nivåer!</li>
-<li>Ta med eget fika!</li>
-<li>Vi ordnar hämtning av Pizza och sallad till pausen.</li>
-</ul>
-<p><em><em>Om du har några symtom som halsont, snuva, feber, hosta eller sjukdomskänsla så ska du stanna hemma.<br />Reservation för att vi inte kan genomföra dansen på grund av restriktioner.</em></em></p>         
+
+
+
+
+
+
+
+         
         */
     }
 }
