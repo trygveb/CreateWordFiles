@@ -37,12 +37,42 @@ namespace CreateWordFiles
                 body.AppendChild(GenerateParagraph2());
 
                 Wp.Table table = CreateTable();
-                body.AppendChild(table);
-                body.AppendChild(new Wp.Break());
+                Wp.Paragraph tableParagraph= generateTableParagraph(table);
+                //body.AppendChild(table);
+                body.AppendChild(tableParagraph);
+
+
+                //body.AppendChild(new Wp.Break());
                 body.AppendChild(GenerateParagraph4());
                 body.AppendChild(GenerateParagraph5());
                 body.AppendChild(GenerateParagraph6());
             }
+        }
+        private static Wp.Paragraph generateTableLineParagraph()
+        {
+            Wp.Paragraph paragraph = new Wp.Paragraph();
+            Wp.ParagraphProperties paragraphProperties = new Wp.ParagraphProperties();
+            Wp.SpacingBetweenLines spacingBetweenLines = new Wp.SpacingBetweenLines();
+            spacingBetweenLines.LineRule = Wp.LineSpacingRuleValues.Exact;
+            spacingBetweenLines.Line = "270";
+            paragraphProperties.Append(spacingBetweenLines);
+            paragraph.Append(paragraphProperties);
+            return paragraph;
+        }
+
+        private static Wp.Paragraph generateTableParagraph(Wp.Table table)
+        {
+            Wp.Paragraph paragraph = new Wp.Paragraph();
+            Wp.ParagraphProperties paragraphProperties = new Wp.ParagraphProperties();
+            Wp.SpacingBetweenLines spacingBetweenLines = new Wp.SpacingBetweenLines();
+            spacingBetweenLines.LineRule = Wp.LineSpacingRuleValues.Exact;
+            spacingBetweenLines.Line = "200";
+            //paragraphProperties.Append(spacingBetweenLines); It seems like only the first cell gets this
+            paragraph.Append(paragraphProperties);
+            Wp.Run run = new Wp.Run();
+            run.Append(table);
+            paragraph.Append(run);
+            return paragraph;
         }
         public static Wp.Paragraph GenerateParagraph1(String danceName, String danceDates)
         {
@@ -124,19 +154,14 @@ namespace CreateWordFiles
         // Insert a table into a word processing document.
         public static Wp.Table CreateTable()
         {
-            // Use the file name and path passed in as an argument 
-            // to open an existing Word 2007 document.
 
-            // Create an empty table.
             Wp.Table table = new Wp.Table();
 
-            // Create a TableProperties object and specify its border information.
-            //Wp.TableProperties tblProp = new Wp.TableProperties(createTableBorders(Wp.BorderValues.Dashed, 12));
-
-            // Append the TableProperties object to the empty table.
+            Wp.TableProperties tblProp = new Wp.TableProperties(createTableBorders(Wp.BorderValues.Dashed, 12));
             //table.AppendChild<Wp.TableProperties>(tblProp);
-            int[] colWidth = { 3000, 1000, 3000, 1000 };
+            int[] colWidth = { 2500, 1000, 2500, 1000 };
             String[] content1 = { "Lördag", "", "Söndag", "" };
+
             Wp.TableRow tr1 = createRow1(content1, colWidth);
             table.Append(tr1);
 
@@ -154,7 +179,7 @@ namespace CreateWordFiles
 
         private static Wp.TableRow createRow1(String[] content, int[] colWidth)
         {
-            Wp.TableRow row = new Wp.TableRow();
+             Wp.TableRow row = new Wp.TableRow();
             var rowProps = new Wp.TableRowProperties();
 
 
@@ -221,7 +246,8 @@ namespace CreateWordFiles
             Wp.TableCell tableCell = new Wp.TableCell();
             Wp.FontSize fontSize = new Wp.FontSize { Val = "28" };  // Size in half points
             Wp.RunFonts runFonts = new Wp.RunFonts { Ascii = "Comic Sans MS" };
-            var paragraph = new Wp.Paragraph();
+            var paragraph = generateTableLineParagraph();
+
             var run = new Wp.Run();
             var txt = new Wp.Text(text);
 
@@ -233,7 +259,11 @@ namespace CreateWordFiles
             run.Append(txt);
 
             paragraph.Append(run);
+
+  
+
             tableCell.Append(paragraph);
+           // tableCell.Append(run);
 
             // Specify the width property of the table cell.
             tableCell.Append(new Wp.TableCellProperties(
