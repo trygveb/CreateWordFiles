@@ -39,10 +39,11 @@ namespace CreateWordFiles
                 danceDates = String.Format("{0}{1} - {2} {3}", danceDateStart.Day, danceDateEnd.Day, monthName1, monthName2);
             }
 
-            String x = GetHtmlCode(danceDateStart, danceDateEnd, monthName1, monthName2);
+            String htmlText = GetHtmlCode(danceDateStart, danceDateEnd, monthName1, monthName2);
+            File.WriteAllText(Path.Combine(filepath, String.Format("{0}.html", danceName)), htmlText);
             // Create a document by supplying the filepath. 
             using (WordprocessingDocument wordDocument =
-                WordprocessingDocument.Create(filepath, OXML.WordprocessingDocumentType.Document))
+                WordprocessingDocument.Create(Path.Combine(filepath, String.Format("{0}.docx", danceName)), OXML.WordprocessingDocumentType.Document))
             {
                 // Add a main document part. 
                 MainDocumentPart mainPart = wordDocument.AddMainDocumentPart();

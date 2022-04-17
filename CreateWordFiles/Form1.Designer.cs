@@ -37,21 +37,25 @@
             this.dateTimePickerStart = new System.Windows.Forms.DateTimePicker();
             this.dateTimePickerEnd = new System.Windows.Forms.DateTimePicker();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.comboBoxCaller = new System.Windows.Forms.ComboBox();
             this.textBoxCallerPicture = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
+            this.textBoxOutputFolder = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.buttonSelectOutputFolder = new System.Windows.Forms.Button();
+            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonOk
             // 
-            this.buttonOk.Location = new System.Drawing.Point(308, 313);
+            this.buttonOk.Location = new System.Drawing.Point(308, 333);
             this.buttonOk.Name = "buttonOk";
-            this.buttonOk.Size = new System.Drawing.Size(143, 54);
+            this.buttonOk.Size = new System.Drawing.Size(143, 34);
             this.buttonOk.TabIndex = 0;
             this.buttonOk.Text = "OK";
             this.buttonOk.UseVisualStyleBackColor = true;
@@ -100,7 +104,7 @@
             // 
             this.groupBox1.Controls.Add(this.radioButtonFestival);
             this.groupBox1.Controls.Add(this.radioButtonWeekEnd);
-            this.groupBox1.Location = new System.Drawing.Point(261, 35);
+            this.groupBox1.Location = new System.Drawing.Point(268, 17);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(110, 79);
             this.groupBox1.TabIndex = 7;
@@ -128,21 +132,12 @@
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.dateTimePickerEnd);
             this.groupBox2.Controls.Add(this.dateTimePickerStart);
-            this.groupBox2.Location = new System.Drawing.Point(21, 167);
+            this.groupBox2.Location = new System.Drawing.Point(21, 77);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(226, 93);
             this.groupBox2.TabIndex = 11;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Datum";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(16, 22);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(29, 13);
-            this.label3.TabIndex = 11;
-            this.label3.Text = "Start";
             // 
             // label4
             // 
@@ -153,10 +148,19 @@
             this.label4.TabIndex = 12;
             this.label4.Text = "Slut";
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(16, 22);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(29, 13);
+            this.label3.TabIndex = 11;
+            this.label3.Text = "Start";
+            // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(34, 124);
+            this.label5.Location = new System.Drawing.Point(24, 196);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(62, 13);
             this.label5.TabIndex = 13;
@@ -165,7 +169,7 @@
             // comboBoxCaller
             // 
             this.comboBoxCaller.FormattingEnabled = true;
-            this.comboBoxCaller.Location = new System.Drawing.Point(31, 140);
+            this.comboBoxCaller.Location = new System.Drawing.Point(21, 212);
             this.comboBoxCaller.Name = "comboBoxCaller";
             this.comboBoxCaller.Size = new System.Drawing.Size(141, 21);
             this.comboBoxCaller.TabIndex = 14;
@@ -173,25 +177,55 @@
             // 
             // textBoxCallerPicture
             // 
-            this.textBoxCallerPicture.Location = new System.Drawing.Point(200, 141);
+            this.textBoxCallerPicture.Location = new System.Drawing.Point(190, 213);
             this.textBoxCallerPicture.Name = "textBoxCallerPicture";
-            this.textBoxCallerPicture.Size = new System.Drawing.Size(217, 20);
+            this.textBoxCallerPicture.Size = new System.Drawing.Size(298, 20);
             this.textBoxCallerPicture.TabIndex = 15;
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(197, 125);
+            this.label6.Location = new System.Drawing.Point(187, 197);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(52, 13);
             this.label6.TabIndex = 16;
             this.label6.Text = "Caller bild";
+            // 
+            // textBoxOutputFolder
+            // 
+            this.textBoxOutputFolder.Location = new System.Drawing.Point(31, 278);
+            this.textBoxOutputFolder.Name = "textBoxOutputFolder";
+            this.textBoxOutputFolder.Size = new System.Drawing.Size(298, 20);
+            this.textBoxOutputFolder.TabIndex = 17;
+            this.textBoxOutputFolder.Text = "D:\\Mina dokument\\Sqd\\Motiv8s\\Flyers";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(28, 262);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(77, 13);
+            this.label2.TabIndex = 18;
+            this.label2.Text = "Utdata katalog";
+            // 
+            // buttonSelectOutputFolder
+            // 
+            this.buttonSelectOutputFolder.Location = new System.Drawing.Point(335, 274);
+            this.buttonSelectOutputFolder.Name = "buttonSelectOutputFolder";
+            this.buttonSelectOutputFolder.Size = new System.Drawing.Size(107, 27);
+            this.buttonSelectOutputFolder.TabIndex = 19;
+            this.buttonSelectOutputFolder.Text = "Välj";
+            this.buttonSelectOutputFolder.UseVisualStyleBackColor = true;
+            this.buttonSelectOutputFolder.Click += new System.EventHandler(this.buttonSelectOutputFolder_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(510, 391);
+            this.Controls.Add(this.buttonSelectOutputFolder);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.textBoxOutputFolder);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.textBoxCallerPicture);
             this.Controls.Add(this.comboBoxCaller);
@@ -229,6 +263,10 @@
         private System.Windows.Forms.ComboBox comboBoxCaller;
         private System.Windows.Forms.TextBox textBoxCallerPicture;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox textBoxOutputFolder;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button buttonSelectOutputFolder;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
     }
 }
 

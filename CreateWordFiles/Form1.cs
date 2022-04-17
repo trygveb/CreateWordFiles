@@ -20,6 +20,9 @@ namespace CreateWordFiles
         }
         private void myInit()
         {
+            this.folderBrowserDialog1.Description =
+            "Välj katalog för utdata.";
+
             var lines = System.IO.File.ReadAllLines(@"Resources\Callers.txt");
             foreach (var line in lines)
             {
@@ -30,9 +33,10 @@ namespace CreateWordFiles
         }
         private void buttonOk_Click(object sender, EventArgs e)
         {
-            String file = @"d:\Development\Visual Studio\Projects\CreateWordFiles\CreateWordFiles\Documents\Test.docx";
-            Creator.CreateWordprocessingDocument(file, this.textBoxDanceName.Text, this.dateTimePickerStart.Value, this.dateTimePickerEnd.Value);
-            System.Diagnostics.Process.Start(file);
+            //String file = @"d:\Development\Visual Studio\Projects\CreateWordFiles\CreateWordFiles\Documents\Test.docx";
+           
+            Creator.CreateWordprocessingDocument(this.textBoxOutputFolder.Text, this.textBoxDanceName.Text, this.dateTimePickerStart.Value, this.dateTimePickerEnd.Value);
+            //System.Diagnostics.Process.Start(file);
             this.Close();
         }
 
@@ -52,6 +56,16 @@ namespace CreateWordFiles
 
             }
             this.dateTimePickerEnd.Value = this.dateTimePickerStart.Value + ts;
+        }
+
+        private void buttonSelectOutputFolder_Click(object sender, EventArgs e)
+        {
+
+            DialogResult result = folderBrowserDialog1.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                this.textBoxOutputFolder.Text = folderBrowserDialog1.SelectedPath;
+            }
         }
     }
 }
