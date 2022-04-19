@@ -1,2 +1,2 @@
-Jesper Wilhelmsson;D:\Mina dokument\Sqd\Motiv8s\Dokument\Flyers\Callers\jesper.jpg
-Thomas Bernhed;D:\Mina dokument\Sqd\Motiv8s\Dokument\Flyers\Callers\thomas_b.jpg
+Jesper Wilhelmsson;D:\Mina dokument\Sqd\Motiv8s\Dokument\Flyers\jesper.jpg
+Thomas Bernhed;D:\Mina dokument\Sqd\Motiv8s\Dokument\Flyers\thomas_b.jpg

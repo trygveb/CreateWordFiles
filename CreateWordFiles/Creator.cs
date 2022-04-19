@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Drawing;
 using System.Globalization;
 
 using OXML = DocumentFormat.OpenXml;
@@ -26,19 +27,8 @@ namespace CreateWordFiles
         public static void CreateWordprocessingDocument(string filepath, String danceName, DateTime danceDateStart, DateTime danceDateEnd,
             String callerName, String callerPictureFile)
         {
-            int month1 = danceDateStart.Month;
-            int month2 = danceDateEnd.Month;
-            DayOfWeek dayOfWeek1 = danceDateStart.DayOfWeek;
-            String day1 = DateTimeFormatInfo.CurrentInfo.GetDayName(dayOfWeek1);
-            DayOfWeek dayOfWeek2 = danceDateEnd.DayOfWeek;
-            String day2 = DateTimeFormatInfo.CurrentInfo.GetDayName(dayOfWeek2);
-            String monthName1 = DateTimeFormatInfo.CurrentInfo.GetMonthName(month1);
-            String monthName2 = DateTimeFormatInfo.CurrentInfo.GetMonthName(month2);
-            String danceDates = String.Format("{0} - {1} {2}", danceDateStart.Day, danceDateEnd.Day, monthName1);
-            if (month1 != month2)
-            {
-                danceDates = String.Format("{0}{1} - {2} {3}", danceDateStart.Day, danceDateEnd.Day, monthName1, monthName2);
-            }
+            string monthName1, monthName2, danceDates;
+            danceDates= createDanceDates(danceDateStart, danceDateEnd, out monthName1, out monthName2);
 
             String htmlText = GetHtmlCode(danceDateStart, danceDateEnd, monthName1, monthName2);
             File.WriteAllText(Path.Combine(filepath, String.Format("{0}.html", danceName)), htmlText);
@@ -56,16 +46,17 @@ namespace CreateWordFiles
                 Wp.Paragraph paragraph1 = GenerateParagraph1(danceName.ToUpper(), danceDates);
                 body.AppendChild(paragraph1);
 
-                String fileNameLogo = @"D:\Mina dokument\Sqd\Motiv8s\Badge\M8-logo1.gif";
+                //String fileNameLogo = @"D:\Mina dokument\Sqd\Motiv8s\Badge\M8-logo1.gif";
+                String fileNameLogo = @"Resources\M8-logo1.gif";
                 addImage("Anchor", wordDocument, fileNameLogo, 0.1667, 1.0, 1.6);
 
-                String fileNameCaller = @"D:\Mina dokument\Sqd\Motiv8s\Dokument\Flyers\jesper_cr.jpg";
-                addImage("Inline", wordDocument, fileNameCaller, 0.8, 6.0, 10.0);
+                //String fileNameCaller = @"D:\Mina dokument\Sqd\Motiv8s\Dokument\Flyers\jesper_cr.jpg";
+                addImage("Inline", wordDocument, callerPictureFile, 0.8, 6.0, 10.0);
 
-                body.AppendChild(GenerateParagraph2());
+                body.AppendChild(GenerateParagraph2(callerName));
 
                 Wp.Table table = CreateTable();
-                Wp.Paragraph tableParagraph= generateTableParagraph(table);
+                Wp.Paragraph tableParagraph = generateTableParagraph(table);
                 //body.AppendChild(table);
                 body.AppendChild(tableParagraph);
 
@@ -76,6 +67,25 @@ namespace CreateWordFiles
                 body.AppendChild(GenerateParagraph6());
             }
         }
+
+        private static String createDanceDates(DateTime danceDateStart, DateTime danceDateEnd, out string monthName1, out string monthName2)
+        {
+            int month1 = danceDateStart.Month;
+            int month2 = danceDateEnd.Month;
+            DayOfWeek dayOfWeek1 = danceDateStart.DayOfWeek;
+            String day1 = DateTimeFormatInfo.CurrentInfo.GetDayName(dayOfWeek1);
+            DayOfWeek dayOfWeek2 = danceDateEnd.DayOfWeek;
+            String day2 = DateTimeFormatInfo.CurrentInfo.GetDayName(dayOfWeek2);
+            monthName1 = DateTimeFormatInfo.CurrentInfo.GetMonthName(month1);
+            monthName2 = DateTimeFormatInfo.CurrentInfo.GetMonthName(month2);
+            String danceDates = String.Format("{0} - {1} {2}", danceDateStart.Day, danceDateEnd.Day, monthName1);
+            if (month1 != month2)
+            {
+                danceDates = String.Format("{0}{1} - {2} {3}", danceDateStart.Day, danceDateEnd.Day, monthName1, monthName2);
+            }
+            return danceDates;
+        }
+
         private static Wp.Paragraph generateTableLineParagraph()
         {
             Wp.Paragraph paragraph = new Wp.Paragraph();
@@ -114,9 +124,9 @@ namespace CreateWordFiles
             int[] fontSizes = { 20, 12, 32, 20 };
             return GenerateParagraph(lines, fontSizes, colors);
         }
-        public static Wp.Paragraph GenerateParagraph2()
+        public static Wp.Paragraph GenerateParagraph2(String callerName)
         {
-            String[] lines = { "Jesper Wilhelmsson" };
+            String[] lines = { callerName };
             String[] colors = { "Black"};
             int[] fontSizes = { 32 };
             return GenerateParagraph(lines, fontSizes, colors);
