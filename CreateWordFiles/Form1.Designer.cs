@@ -47,17 +47,19 @@
             this.label2 = new System.Windows.Forms.Label();
             this.buttonSelectOutputFolder = new System.Windows.Forms.Button();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.buttonCancel = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonOk
             // 
+            this.buttonOk.Enabled = false;
             this.buttonOk.Location = new System.Drawing.Point(308, 333);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(143, 34);
             this.buttonOk.TabIndex = 0;
-            this.buttonOk.Text = "OK";
+            this.buttonOk.Text = "Skapa flyer";
             this.buttonOk.UseVisualStyleBackColor = true;
             this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
             // 
@@ -99,6 +101,7 @@
             this.radioButtonFestival.TabIndex = 6;
             this.radioButtonFestival.Text = "Festival";
             this.radioButtonFestival.UseVisualStyleBackColor = true;
+            this.radioButtonFestival.CheckedChanged += new System.EventHandler(this.radioButtonFestival_CheckedChanged);
             // 
             // groupBox1
             // 
@@ -214,15 +217,26 @@
             this.buttonSelectOutputFolder.Name = "buttonSelectOutputFolder";
             this.buttonSelectOutputFolder.Size = new System.Drawing.Size(107, 27);
             this.buttonSelectOutputFolder.TabIndex = 19;
-            this.buttonSelectOutputFolder.Text = "Välj";
+            this.buttonSelectOutputFolder.Text = "Välj annan katalog";
             this.buttonSelectOutputFolder.UseVisualStyleBackColor = true;
             this.buttonSelectOutputFolder.Click += new System.EventHandler(this.buttonSelectOutputFolder_Click);
+            // 
+            // buttonCancel
+            // 
+            this.buttonCancel.Location = new System.Drawing.Point(27, 333);
+            this.buttonCancel.Name = "buttonCancel";
+            this.buttonCancel.Size = new System.Drawing.Size(109, 27);
+            this.buttonCancel.TabIndex = 20;
+            this.buttonCancel.Text = "Avbryt";
+            this.buttonCancel.UseVisualStyleBackColor = true;
+            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(510, 391);
+            this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonSelectOutputFolder);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.textBoxOutputFolder);
@@ -267,6 +281,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button buttonSelectOutputFolder;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
+        private System.Windows.Forms.Button buttonCancel;
     }
 }
 

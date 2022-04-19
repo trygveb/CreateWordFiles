@@ -23,7 +23,8 @@ namespace CreateWordFiles
         /// <param name="danceName"></param>
         /// <param name="danceDateStart"></param>
         /// <param name="danceDateEnd"></param>
-        public static void CreateWordprocessingDocument(string filepath, String danceName, DateTime danceDateStart, DateTime danceDateEnd)
+        public static void CreateWordprocessingDocument(string filepath, String danceName, DateTime danceDateStart, DateTime danceDateEnd,
+            String callerName, String callerPictureFile)
         {
             int month1 = danceDateStart.Month;
             int month2 = danceDateEnd.Month;
