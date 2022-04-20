@@ -61,7 +61,8 @@ namespace CreateWordFiles.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to welcome;Welcome
+        ///to;to.
         /// </summary>
         internal static string texts_en {
             get {
@@ -70,29 +71,12 @@ namespace CreateWordFiles.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to welcome;Välkommen
+        ///to;till.
         /// </summary>
         internal static string texts_se {
             get {
                 return ResourceManager.GetString("texts_se", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Welcome.
-        /// </summary>
-        internal static string welcome_en {
-            get {
-                return ResourceManager.GetString("welcome_en", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Väkommen.
-        /// </summary>
-        internal static string welcome_se {
-            get {
-                return ResourceManager.GetString("welcome_se", resourceCulture);
             }
         }
     }

@@ -1,2 +1,3 @@
 welcome;Välkommen
 to;till
+pass_1_weekend;Kl. 11.00 - 14.00

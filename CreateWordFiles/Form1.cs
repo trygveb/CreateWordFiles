@@ -46,16 +46,16 @@ namespace CreateWordFiles
         }
         private void buttonOk_Click(object sender, EventArgs e)
         {
-            Dictionary < String, String > texts= this.getTexts();
-            Creator.CreateWordprocessingDocument(texts, this.dateTimePickerStart.Value, this.dateTimePickerEnd.Value);
+            var radioButtonLanguage = groupBoxLanguage.Controls.OfType<RadioButton>()
+                   .Where(r => r.Checked).FirstOrDefault();
+            String lang = (String)radioButtonLanguage.Tag;
+            Dictionary<String, String> texts = this.getTexts(lang);
+            Creator.CreateWordprocessingDocument(texts, lang, this.dateTimePickerStart.Value, this.dateTimePickerEnd.Value);
             //System.Diagnostics.Process.Start(file);
             this.Close();
         }
-        private Dictionary<String, String> getTexts()
+        private Dictionary<String, String> getTexts(String lang)
         {
-            var radioButtonLanguage = groupBoxLanguage.Controls.OfType<RadioButton>()
-                     .Where(r => r.Checked).FirstOrDefault();
-            String lang = (String)radioButtonLanguage.Tag;
             String[] lines;
             String fileName = String.Format(@"Resources\texts_{0}.txt", lang);
             lines = System.IO.File.ReadAllLines(fileName);

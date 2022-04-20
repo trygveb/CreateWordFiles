@@ -17,7 +17,7 @@ namespace CreateWordFiles
     {
         private static Wp.Color wpColorBlackx = new Wp.Color() { Val = "000000" };
         private static Wp.Color wpColorRedx = new Wp.Color() { Val = "FF0000" };
-        
+        private static Dictionary<String, String> texts;
         /// <summary>
         /// Only weekend dances supported 
         /// </summary>
@@ -25,10 +25,11 @@ namespace CreateWordFiles
         /// <param name="danceName"></param>
         /// <param name="danceDateStart"></param>
         /// <param name="danceDateEnd"></param>
-        public static void CreateWordprocessingDocument(Dictionary<String, String> texts, DateTime danceDateStart, DateTime danceDateEnd)
+        public static void CreateWordprocessingDocument(Dictionary<String, String> myTexts, String lang, DateTime danceDateStart, DateTime danceDateEnd)
         {
             string monthName1, monthName2, danceDates;
-            danceDates= createDanceDates(danceDateStart, danceDateEnd, out monthName1, out monthName2);
+            texts = myTexts;
+            danceDates = createDanceDates(danceDateStart, danceDateEnd, out monthName1, out monthName2);
 
             String htmlText = GetHtmlCode(danceDateStart, danceDateEnd, monthName1, monthName2);
             File.WriteAllText(Path.Combine(texts["outputFolder"], String.Format("{0}.html", texts["danceName"])), htmlText);
@@ -43,19 +44,16 @@ namespace CreateWordFiles
                 mainPart.Document = new Wp.Document();
                 Wp.Body body = mainPart.Document.AppendChild(new Wp.Body());
 
-     
-                //String fileNameLogo = @"D:\Mina dokument\Sqd\Motiv8s\Badge\M8-logo1.gif";
                 String fileNameLogo = @"Resources\M8-logo1.gif";
                 addImage("Anchor", wordDocument, fileNameLogo, 0.1667, 1.0, 1.6);
                 Wp.Paragraph paragraph1 = GenerateWelcomeParagraph(texts["danceName"].ToUpper(), danceDates);
                 body.AppendChild(paragraph1);
 
-                //String fileNameCaller = @"D:\Mina dokument\Sqd\Motiv8s\Dokument\Flyers\jesper_cr.jpg";
                 addImage("Inline", wordDocument, texts["callerPictureFile"], 0.8, 6.0, 10.0);
 
-                body.AppendChild(GenerateParagraph2(texts["callerName"]));
+                body.AppendChild(GenerateCallerNameParagraph(texts["callerName"]));
 
-                Wp.Table table = CreateTable();
+                Wp.Table table = CreateDanceSchemaTable(lang);
                 Wp.Paragraph tableParagraph = generateTableParagraph(table);
                 //body.AppendChild(table);
                 body.AppendChild(tableParagraph);
@@ -117,14 +115,13 @@ namespace CreateWordFiles
             //Paragraph paragraph1 = new Paragraph() { RsidParagraphAddition = "004F7104", RsidParagraphProperties = "008F2986", RsidRunAdditionDefault = "004F7104" };
             Wp.Paragraph paragraph1 = new Wp.Paragraph();
 
-            String welcome = Properties.Resources.welcome_se;
-            String[] lines = { welcome, "till", danceName, danceDates };
+            String[] lines = { texts["welcome"], texts["to"], danceName, danceDates };
             
             String[] colors = { "Black", "Black", "Black", "Black" };
             int[] fontSizes = { 20, 12, 32, 20 };
             return GenerateParagraph(lines, fontSizes, colors);
         }
-        public static Wp.Paragraph GenerateParagraph2(String callerName)
+        public static Wp.Paragraph GenerateCallerNameParagraph(String callerName)
         {
             String[] lines = { callerName };
             String[] colors = { "Black"};
@@ -203,7 +200,7 @@ namespace CreateWordFiles
         }
 
         // Insert a table into a word processing document.
-        public static Wp.Table CreateTable()
+        public static Wp.Table CreateDanceSchemaTable(String lang)
         {
 
             Wp.Table table = new Wp.Table();
@@ -213,10 +210,15 @@ namespace CreateWordFiles
             int[] colWidth = { 2500, 1000, 2500, 1000 };
             String[] content1 = { "Lördag", "", "Söndag", "" };
 
+            if (lang=="en")
+            {
+                content1[0] = "Saturday";
+                content1[2] = "Sunday";
+            }
             Wp.TableRow tr1 = createRow1(content1, colWidth);
             table.Append(tr1);
 
-            String[] content2 = { "Kl. 11.00 - 14.00", "C1", "Kl. 10.00 - 13.00", "C3A" };
+            String[] content2 = { texts["pass_1_weekend"], "C1", "Kl. 10.00 - 13.00", "C3A" };
             Wp.TableRow tr2 = createRow(content2, colWidth);
             table.Append(tr2);
 
@@ -563,34 +565,6 @@ namespace CreateWordFiles
             };
             DW.WrapNone _wpn = new DW.WrapNone();
             
-            //DW.WrapTight _wp = new DW.WrapTight()
-            //{
-            //    WrapText = DW.WrapTextValues.BothSides
-            //};
-
-            //DW.WrapPolygon _wpp = new DW.WrapPolygon()
-            //{
-            //    Edited = false
-            //};
-            //DW.StartPoint _sp = new DW.StartPoint()
-            //{
-            //    X = 0L,
-            //    Y = 0L
-            //};
-
-            //DW.LineTo _l1 = new DW.LineTo() { X = 0L, Y = 0L };
-            //DW.LineTo _l2 = new DW.LineTo() { X = 0L, Y = 0L };
-            //DW.LineTo _l3 = new DW.LineTo() { X = 0L, Y = 0L };
-            //DW.LineTo _l4 = new DW.LineTo() { X = 0L, Y = 0L };
-
-            //_wpp.Append(_sp);
-            //_wpp.Append(_l1);
-            //_wpp.Append(_l2);
-            //_wpp.Append(_l3);
-            //_wpp.Append(_l4);
-
-            //_wp.Append(_wpp);
-
             DW.DocProperties _dp = new DW.DocProperties()
             {
                 Id = 1U,
