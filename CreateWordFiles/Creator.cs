@@ -2,6 +2,7 @@
 using System.IO;
 using System.Drawing;
 using System.Globalization;
+using System.Collections.Generic;
 
 using OXML = DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
@@ -24,36 +25,35 @@ namespace CreateWordFiles
         /// <param name="danceName"></param>
         /// <param name="danceDateStart"></param>
         /// <param name="danceDateEnd"></param>
-        public static void CreateWordprocessingDocument(string filepath, String danceName, DateTime danceDateStart, DateTime danceDateEnd,
-            String callerName, String callerPictureFile)
+        public static void CreateWordprocessingDocument(Dictionary<String, String> texts, DateTime danceDateStart, DateTime danceDateEnd)
         {
             string monthName1, monthName2, danceDates;
             danceDates= createDanceDates(danceDateStart, danceDateEnd, out monthName1, out monthName2);
 
             String htmlText = GetHtmlCode(danceDateStart, danceDateEnd, monthName1, monthName2);
-            File.WriteAllText(Path.Combine(filepath, String.Format("{0}.html", danceName)), htmlText);
+            File.WriteAllText(Path.Combine(texts["outputFolder"], String.Format("{0}.html", texts["danceName"])), htmlText);
             // Create a document by supplying the filepath. 
             using (WordprocessingDocument wordDocument =
-                WordprocessingDocument.Create(Path.Combine(filepath, String.Format("{0}.docx", danceName)), OXML.WordprocessingDocumentType.Document))
+                WordprocessingDocument.Create(Path.Combine(texts["outputFolder"], String.Format("{0}.docx", texts["danceName"])),
+                OXML.WordprocessingDocumentType.Document))
             {
                 // Add a main document part. 
                 MainDocumentPart mainPart = wordDocument.AddMainDocumentPart();
 
-                // Create the document structure and add some text.
                 mainPart.Document = new Wp.Document();
                 Wp.Body body = mainPart.Document.AppendChild(new Wp.Body());
 
-                Wp.Paragraph paragraph1 = GenerateParagraph1(danceName.ToUpper(), danceDates);
-                body.AppendChild(paragraph1);
-
+     
                 //String fileNameLogo = @"D:\Mina dokument\Sqd\Motiv8s\Badge\M8-logo1.gif";
                 String fileNameLogo = @"Resources\M8-logo1.gif";
                 addImage("Anchor", wordDocument, fileNameLogo, 0.1667, 1.0, 1.6);
+                Wp.Paragraph paragraph1 = GenerateWelcomeParagraph(texts["danceName"].ToUpper(), danceDates);
+                body.AppendChild(paragraph1);
 
                 //String fileNameCaller = @"D:\Mina dokument\Sqd\Motiv8s\Dokument\Flyers\jesper_cr.jpg";
-                addImage("Inline", wordDocument, callerPictureFile, 0.8, 6.0, 10.0);
+                addImage("Inline", wordDocument, texts["callerPictureFile"], 0.8, 6.0, 10.0);
 
-                body.AppendChild(GenerateParagraph2(callerName));
+                body.AppendChild(GenerateParagraph2(texts["callerName"]));
 
                 Wp.Table table = CreateTable();
                 Wp.Paragraph tableParagraph = generateTableParagraph(table);
@@ -112,13 +112,13 @@ namespace CreateWordFiles
             paragraph.Append(run);
             return paragraph;
         }
-        public static Wp.Paragraph GenerateParagraph1(String danceName, String danceDates)
+        public static Wp.Paragraph GenerateWelcomeParagraph(String danceName, String danceDates)
         {
             //Paragraph paragraph1 = new Paragraph() { RsidParagraphAddition = "004F7104", RsidParagraphProperties = "008F2986", RsidRunAdditionDefault = "004F7104" };
             Wp.Paragraph paragraph1 = new Wp.Paragraph();
 
-
-            String[] lines = { "VÄLKOMNA", "till", danceName, danceDates };
+            String welcome = Properties.Resources.welcome_se;
+            String[] lines = { welcome, "till", danceName, danceDates };
             
             String[] colors = { "Black", "Black", "Black", "Black" };
             int[] fontSizes = { 20, 12, 32, 20 };
@@ -395,7 +395,7 @@ namespace CreateWordFiles
         public static void AddAnchorImageToBody(WordprocessingDocument wordprocessingDocument, String relationshipId, int iWidth, int iHeight, double x0_cm, double y0_cm)
         {
             // Define the reference of the image.
-            var x = new DW.Anchor();
+            //var x = new DW.Anchor();
             var element = GetAnchorPicture(relationshipId, x0_cm, y0_cm, iWidth, iHeight);
             // Append the reference to the body. The element should be in 
             // a DocumentFormat.OpenXml.Wordprocessing.Run.
@@ -501,8 +501,8 @@ namespace CreateWordFiles
         {
             // convert the cm to EMUs this way:
             long f1 = 360000;
-            long x0_emu = (long)Math.Round(x0_cm * f1);
-            long y0_emu = (long)Math.Round(y0_cm * f1);
+            //long x0_emu = (long)Math.Round(x0_cm * f1);
+            //long y0_emu = (long)Math.Round(y0_cm * f1);
             // convert the pixels to EMUs this way:
             long iWidth = (long)Math.Round((decimal)wPixels * 9525);
             long iHeight = (long)Math.Round((decimal)hPixels * 9525);
@@ -512,30 +512,30 @@ namespace CreateWordFiles
             {
                 DistanceFromTop = (OXML.UInt32Value)0U,
                 DistanceFromBottom = (OXML.UInt32Value)0U,
-                DistanceFromLeft = (OXML.UInt32Value)0U,
-                DistanceFromRight = (OXML.UInt32Value)0U,
-                SimplePos = true,
-                RelativeHeight = (OXML.UInt32Value)0U,
-                BehindDoc = false,
+                DistanceFromLeft = (OXML.UInt32Value)114300U,
+                DistanceFromRight = (OXML.UInt32Value)114300U,
+                SimplePos = false,
+                RelativeHeight = (OXML.UInt32Value)251658240U,
+                BehindDoc = true,
                 Locked = false,
                 LayoutInCell = true,
                 AllowOverlap = true,
                 EditId = "44CEF5E4",
                 AnchorId = "44803ED1"
             };
+            
             DW.SimplePosition _spos = new DW.SimplePosition()
             {
-                X = x0_emu,
-                Y = y0_emu
-            };
+                X = 0,
+                Y = 0
+             };
 
             DW.HorizontalPosition _hp = new DW.HorizontalPosition()
             {
                 RelativeFrom = DW.HorizontalRelativePositionValues.Column
             };
             DW.PositionOffset _hPO = new DW.PositionOffset();
-            // _hPO.Text = "76200";
-            _hPO.Text = "0";
+             _hPO.Text = "4445";
             _hp.Append(_hPO);
 
             DW.VerticalPosition _vp = new DW.VerticalPosition()
@@ -543,7 +543,6 @@ namespace CreateWordFiles
                 RelativeFrom = DW.VerticalRelativePositionValues.Paragraph
             };
             DW.PositionOffset _vPO = new DW.PositionOffset();
-            //_vPO.Text = "83820";
             _vPO.Text = "0";
             _vp.Append(_vPO);
 
@@ -562,34 +561,35 @@ namespace CreateWordFiles
                 RightEdge = 0L,
                 BottomEdge = 0L
             };
+            DW.WrapNone _wpn = new DW.WrapNone();
+            
+            //DW.WrapTight _wp = new DW.WrapTight()
+            //{
+            //    WrapText = DW.WrapTextValues.BothSides
+            //};
 
-            DW.WrapTight _wp = new DW.WrapTight()
-            {
-                WrapText = DW.WrapTextValues.BothSides
-            };
+            //DW.WrapPolygon _wpp = new DW.WrapPolygon()
+            //{
+            //    Edited = false
+            //};
+            //DW.StartPoint _sp = new DW.StartPoint()
+            //{
+            //    X = 0L,
+            //    Y = 0L
+            //};
 
-            DW.WrapPolygon _wpp = new DW.WrapPolygon()
-            {
-                Edited = false
-            };
-            DW.StartPoint _sp = new DW.StartPoint()
-            {
-                X = 0L,
-                Y = 0L
-            };
+            //DW.LineTo _l1 = new DW.LineTo() { X = 0L, Y = 0L };
+            //DW.LineTo _l2 = new DW.LineTo() { X = 0L, Y = 0L };
+            //DW.LineTo _l3 = new DW.LineTo() { X = 0L, Y = 0L };
+            //DW.LineTo _l4 = new DW.LineTo() { X = 0L, Y = 0L };
 
-            DW.LineTo _l1 = new DW.LineTo() { X = 0L, Y = 0L };
-            DW.LineTo _l2 = new DW.LineTo() { X = 0L, Y = 0L };
-            DW.LineTo _l3 = new DW.LineTo() { X = 0L, Y = 0L };
-            DW.LineTo _l4 = new DW.LineTo() { X = 0L, Y = 0L };
+            //_wpp.Append(_sp);
+            //_wpp.Append(_l1);
+            //_wpp.Append(_l2);
+            //_wpp.Append(_l3);
+            //_wpp.Append(_l4);
 
-            _wpp.Append(_sp);
-            _wpp.Append(_l1);
-            _wpp.Append(_l2);
-            _wpp.Append(_l3);
-            _wpp.Append(_l4);
-
-            _wp.Append(_wpp);
+            //_wp.Append(_wpp);
 
             DW.DocProperties _dp = new DW.DocProperties()
             {
@@ -665,7 +665,8 @@ namespace CreateWordFiles
             _anchor.Append(_vp);
             _anchor.Append(_e);
             _anchor.Append(_ee);
-            _anchor.Append(_wp);
+            //_anchor.Append(_wp);
+            _anchor.Append(_wpn);
             _anchor.Append(_dp);
             _anchor.Append(_g);
 

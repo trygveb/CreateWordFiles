@@ -46,12 +46,31 @@ namespace CreateWordFiles
         }
         private void buttonOk_Click(object sender, EventArgs e)
         {
-            //String file = @"d:\Development\Visual Studio\Projects\CreateWordFiles\CreateWordFiles\Documents\Test.docx";
-           
-            Creator.CreateWordprocessingDocument(this.textBoxOutputFolder.Text, this.textBoxDanceName.Text,
-                this.dateTimePickerStart.Value, this.dateTimePickerEnd.Value, this.callerName, this.callerPictureFile);
+            Dictionary < String, String > texts= this.getTexts();
+            Creator.CreateWordprocessingDocument(texts, this.dateTimePickerStart.Value, this.dateTimePickerEnd.Value);
             //System.Diagnostics.Process.Start(file);
             this.Close();
+        }
+        private Dictionary<String, String> getTexts()
+        {
+            var radioButtonLanguage = groupBoxLanguage.Controls.OfType<RadioButton>()
+                     .Where(r => r.Checked).FirstOrDefault();
+            String lang = (String)radioButtonLanguage.Tag;
+            String[] lines;
+            String fileName = String.Format(@"Resources\texts_{0}.txt", lang);
+            lines = System.IO.File.ReadAllLines(fileName);
+            Dictionary<String, String> map = new Dictionary<String, String>();
+            foreach (String line in lines)
+            {
+                String[] atoms= line.Split(';');
+                map[atoms[0]] = atoms[1];
+
+            }
+            map["outputFolder"] = this.textBoxOutputFolder.Text;
+            map["danceName"] = this.textBoxDanceName.Text;
+            map["callerName"] = this.callerName;
+            map["callerPictureFile"]= this.callerPictureFile;
+            return map;
         }
 
         private void comboBoxCaller_SelectedIndexChanged(object sender, EventArgs e)

@@ -48,8 +48,13 @@
             this.buttonSelectOutputFolder = new System.Windows.Forms.Button();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.buttonCancel = new System.Windows.Forms.Button();
+            this.groupBoxLanguage = new System.Windows.Forms.GroupBox();
+            this.radioButtonSwedish = new System.Windows.Forms.RadioButton();
+            this.radioButtonEnglish = new System.Windows.Forms.RadioButton();
+            this.radioButtonMeeting = new System.Windows.Forms.RadioButton();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.groupBoxLanguage.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonOk
@@ -69,7 +74,7 @@
             this.textBoxDanceName.Name = "textBoxDanceName";
             this.textBoxDanceName.Size = new System.Drawing.Size(160, 20);
             this.textBoxDanceName.TabIndex = 1;
-            this.textBoxDanceName.Text = "Jesperdansen";
+            this.textBoxDanceName.Text = "Test_Dans";
             // 
             // label1
             // 
@@ -105,11 +110,12 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.radioButtonMeeting);
             this.groupBox1.Controls.Add(this.radioButtonFestival);
             this.groupBox1.Controls.Add(this.radioButtonWeekEnd);
             this.groupBox1.Location = new System.Drawing.Point(268, 17);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(110, 79);
+            this.groupBox1.Size = new System.Drawing.Size(203, 79);
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Danstyp";
@@ -231,11 +237,56 @@
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
             // 
+            // groupBoxLanguage
+            // 
+            this.groupBoxLanguage.Controls.Add(this.radioButtonEnglish);
+            this.groupBoxLanguage.Controls.Add(this.radioButtonSwedish);
+            this.groupBoxLanguage.Location = new System.Drawing.Point(268, 99);
+            this.groupBoxLanguage.Name = "groupBoxLanguage";
+            this.groupBoxLanguage.Size = new System.Drawing.Size(110, 71);
+            this.groupBoxLanguage.TabIndex = 21;
+            this.groupBoxLanguage.TabStop = false;
+            this.groupBoxLanguage.Text = "Språk";
+            // 
+            // radioButtonSwedish
+            // 
+            this.radioButtonSwedish.AutoSize = true;
+            this.radioButtonSwedish.Checked = true;
+            this.radioButtonSwedish.Location = new System.Drawing.Point(11, 19);
+            this.radioButtonSwedish.Name = "radioButtonSwedish";
+            this.radioButtonSwedish.Size = new System.Drawing.Size(67, 17);
+            this.radioButtonSwedish.TabIndex = 0;
+            this.radioButtonSwedish.Tag = "se";
+            this.radioButtonSwedish.Text = "Svenska";
+            this.radioButtonSwedish.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonEnglish
+            // 
+            this.radioButtonEnglish.AutoSize = true;
+            this.radioButtonEnglish.Location = new System.Drawing.Point(11, 44);
+            this.radioButtonEnglish.Name = "radioButtonEnglish";
+            this.radioButtonEnglish.Size = new System.Drawing.Size(69, 17);
+            this.radioButtonEnglish.TabIndex = 1;
+            this.radioButtonEnglish.Tag = "en";
+            this.radioButtonEnglish.Text = "Engelska";
+            this.radioButtonEnglish.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonMeeting
+            // 
+            this.radioButtonMeeting.AutoSize = true;
+            this.radioButtonMeeting.Location = new System.Drawing.Point(102, 25);
+            this.radioButtonMeeting.Name = "radioButtonMeeting";
+            this.radioButtonMeeting.Size = new System.Drawing.Size(63, 17);
+            this.radioButtonMeeting.TabIndex = 7;
+            this.radioButtonMeeting.Text = "Årsmöte";
+            this.radioButtonMeeting.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(510, 391);
+            this.Controls.Add(this.groupBoxLanguage);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonSelectOutputFolder);
             this.Controls.Add(this.label2);
@@ -255,6 +306,8 @@
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.groupBoxLanguage.ResumeLayout(false);
+            this.groupBoxLanguage.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -282,6 +335,10 @@
         private System.Windows.Forms.Button buttonSelectOutputFolder;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.Button buttonCancel;
+        private System.Windows.Forms.RadioButton radioButtonMeeting;
+        private System.Windows.Forms.GroupBox groupBoxLanguage;
+        private System.Windows.Forms.RadioButton radioButtonEnglish;
+        private System.Windows.Forms.RadioButton radioButtonSwedish;
     }
 }
 

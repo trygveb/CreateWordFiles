@@ -61,12 +61,38 @@ namespace CreateWordFiles.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Jesper Wilhelmsson;D:\Mina dokument\Sqd\Motiv8s\Dokument\Flyers\Callers\jesper.jpg
-        ///Thomas Bernhed;D:\Mina dokument\Sqd\Motiv8s\Dokument\Flyers\Callers\thomas_b.jpg.
+        ///   Looks up a localized string similar to .
         /// </summary>
-        internal static string Callers {
+        internal static string texts_en {
             get {
-                return ResourceManager.GetString("Callers", resourceCulture);
+                return ResourceManager.GetString("texts_en", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string texts_se {
+            get {
+                return ResourceManager.GetString("texts_se", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Welcome.
+        /// </summary>
+        internal static string welcome_en {
+            get {
+                return ResourceManager.GetString("welcome_en", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Väkommen.
+        /// </summary>
+        internal static string welcome_se {
+            get {
+                return ResourceManager.GetString("welcome_se", resourceCulture);
             }
         }
     }
