@@ -1,3 +1,6 @@
 welcome;Välkommen
 to;till
-pass_1_weekend;Kl. 11.00 - 14.00
+pass_1_weekend_time;Kl. 11.00 - 14.00
+pass_1_weekend_level;C1
+pass_2_weekend_time;Kl. 15.00 - 18.00
+pass_2_weekend_level; C2

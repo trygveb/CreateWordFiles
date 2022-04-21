@@ -1,3 +1,6 @@
 welcome;Welcome
 to;to
-pass_1_weekend;Kl. 11 AM - 2 PM
+pass_1_weekend_time;Kl. 11 AM - 2 PM
+pass_1_weekend_level;C1
+pass_2_weekend_time;Kl. 3 PM - 6 PM
+pass_2_weekend_level;C2

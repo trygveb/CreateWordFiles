@@ -35,7 +35,7 @@ namespace CreateWordFiles
             File.WriteAllText(Path.Combine(texts["outputFolder"], String.Format("{0}.html", texts["danceName"])), htmlText);
             // Create a document by supplying the filepath. 
             using (WordprocessingDocument wordDocument =
-                WordprocessingDocument.Create(Path.Combine(texts["outputFolder"], String.Format("{0}.docx", texts["danceName"])),
+                WordprocessingDocument.Create(Path.Combine(texts["outputFolder"], String.Format("{0}_{1}.docx", texts["danceName"], lang)),
                 OXML.WordprocessingDocumentType.Document))
             {
                 // Add a main document part. 
@@ -218,11 +218,11 @@ namespace CreateWordFiles
             Wp.TableRow tr1 = createRow1(content1, colWidth);
             table.Append(tr1);
 
-            String[] content2 = { texts["pass_1_weekend"], "C1", "Kl. 10.00 - 13.00", "C3A" };
+            String[] content2 = { texts["pass_1_weekend_time"], texts["pass_1_weekend_level"], "Kl. 10.00 - 13.00", "C3A" };
             Wp.TableRow tr2 = createRow(content2, colWidth);
             table.Append(tr2);
 
-            String[] content3 = { "Kl. 15.00 - 18.00", "C2", "Kl. 14.00 - 17.00", "C3B" };
+            String[] content3 = { texts["pass_2_weekend_time"], texts["pass_2_weekend_level"], "Kl. 14.00 - 17.00", "C3B" };
             Wp.TableRow tr3 = createRow(content3, colWidth);
             table.Append(tr3);
             
