@@ -1,6 +1,14 @@
 welcome;Välkommen
 to;till
-pass_1_weekend_time;Kl. 11.00 - 14.00
+pass_1_weekend_time;11.00 - 14.00
 pass_1_weekend_level;C1
-pass_2_weekend_time;Kl. 15.00 - 18.00
-pass_2_weekend_level; C2
+pass_2_weekend_time;15.00 - 18.00
+pass_2_weekend_level;C2
+pass_3_weekend_time;10.00 - 13.00
+pass_3_weekend_level;C3A
+pass_4_weekend_time;15.00 - 18.00
+pass_4_weekend_level;C3B
+Friday;Fredag
+Saturday;Lördag
+Sunday;Söndag
+Monday;Måndag

@@ -58,7 +58,7 @@ namespace CreateWordFiles
         {
             String[] lines;
             String fileName = String.Format(@"Resources\texts_{0}.txt", lang);
-            lines = System.IO.File.ReadAllLines(fileName);
+            lines = System.IO.File.ReadAllLines(fileName,  Encoding.Default);
             Dictionary<String, String> map = new Dictionary<String, String>();
             foreach (String line in lines)
             {

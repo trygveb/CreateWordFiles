@@ -3,6 +3,7 @@ using System.IO;
 using System.Drawing;
 using System.Globalization;
 using System.Collections.Generic;
+using System.Text;
 
 using OXML = DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
@@ -170,7 +171,13 @@ namespace CreateWordFiles
             for (int i = 0; i < lines.Length; i++)
             {
                 String fontSizeTxt = (fontSizes[i] * 2).ToString();
+               
+
+                //byte[] bytes= Encoding.Default.GetBytes(lines[i]);
+                //String line = Encoding.UTF8.GetString(bytes); 
                 String line = lines[i];
+
+
                 Wp.FontSize fontSize = new Wp.FontSize { Val = new OXML.StringValue(fontSizeTxt) };  // Size in half points
                 Wp.ParagraphProperties paragraphProperties = new Wp.ParagraphProperties();
                 Wp.Justification justification = new Wp.Justification() { Val = Wp.JustificationValues.Center };
@@ -178,7 +185,7 @@ namespace CreateWordFiles
 
                 Wp.Run run = new Wp.Run();
                 Wp.RunProperties runProperties = new Wp.RunProperties();
-                Wp.RunFonts runFonts = new Wp.RunFonts { Ascii = "Comic Sans MS" };
+                Wp.RunFonts runFonts = new Wp.RunFonts { Ascii = "Comic Sans MS", HighAnsi = "Comic Sans MS" };
                 runProperties.Append(runFonts);
                 runProperties.Append(fontSize);
                 Wp.Text text1 = new Wp.Text();
@@ -206,23 +213,27 @@ namespace CreateWordFiles
             Wp.Table table = new Wp.Table();
 
             Wp.TableProperties tblProp = new Wp.TableProperties(createTableBorders(Wp.BorderValues.Dashed, 12));
-            //table.AppendChild<Wp.TableProperties>(tblProp);
-            int[] colWidth = { 2500, 1000, 2500, 1000 };
-            String[] content1 = { "Lördag", "", "Söndag", "" };
-
-            if (lang=="en")
+            
+            int[] colWidth = { 2000, 500, 300, 2000, 500 }; 
+            if (texts["pass_1_weekend_time"].Contains("AM") || texts["pass_1_weekend_time"].Contains("PM"))
             {
-                content1[0] = "Saturday";
-                content1[2] = "Sunday";
+                colWidth[0] = 2700;
+                colWidth[3] = 2700;
             }
+
+            String[] content1= new String[5];// = { "Lördag", "", "Söndag", "" };
+            content1[0] = texts["Saturday"];
+            content1[3] = texts["Sunday"];
             Wp.TableRow tr1 = createRow1(content1, colWidth);
             table.Append(tr1);
 
-            String[] content2 = { texts["pass_1_weekend_time"], texts["pass_1_weekend_level"], "Kl. 10.00 - 13.00", "C3A" };
+            String[] content2 = { texts["pass_1_weekend_time"], texts["pass_1_weekend_level"],"",
+                                  texts["pass_3_weekend_time"], texts["pass_3_weekend_level"] };
             Wp.TableRow tr2 = createRow(content2, colWidth);
             table.Append(tr2);
 
-            String[] content3 = { texts["pass_2_weekend_time"], texts["pass_2_weekend_level"], "Kl. 14.00 - 17.00", "C3B" };
+            String[] content3 = { texts["pass_2_weekend_time"], texts["pass_2_weekend_level"],"",
+                                  texts["pass_4_weekend_time"], texts["pass_4_weekend_level"] };
             Wp.TableRow tr3 = createRow(content3, colWidth);
             table.Append(tr3);
             
@@ -241,7 +252,7 @@ namespace CreateWordFiles
             //rowProps.Append(new Wp.TableRowHeight { HeightType = Wp.HeightRuleValues.Auto });
 
             row.Append(rowProps);
-            Wp.TableCell[] tableCell= new Wp.TableCell[4];
+            Wp.TableCell[] tableCell= new Wp.TableCell[5];
             for (int i = 0; i < content.Length; i++)
             {
                tableCell[i] = createACell(content[i], colWidth[i], true);
@@ -250,7 +261,7 @@ namespace CreateWordFiles
 
 
             MergeCells(tableCell[0], tableCell[1]);
-            MergeCells(tableCell[2], tableCell[3]);
+            MergeCells(tableCell[3], tableCell[4]);
 
             return row;
 
@@ -653,7 +664,8 @@ namespace CreateWordFiles
         {
             
             var sb = new System.Text.StringBuilder();
-            sb.Append(String.Format("<p>Lördag {0} {1} <br/>11:00 - 14:00 - C1  <br/> 15:00 - 18:00 - C2 </p>", danceDateStart.Day, monthName1));
+            sb.Append(String.Format("<p>{0} {1} {2}<br/>{3} - {4}<br/>{5} - {6} </p>", texts["Saturday"], danceDateStart.Day, monthName1,
+                texts["pass_1_weekend_time"], texts["pass_1_weekend_level"], texts["pass_2_weekend_time"], texts["pass_2_weekend_level"]));
             sb.Append(String.Format("<p>Söndag {0} {1} <br/>10:00 - 13:00 - C3A <br/> 14:00 - 17:00 - C3B</p>", danceDateEnd.Day, monthName2));
             sb.Append("<p class='mobile - undersized - lower'>Medlem: <span style='background - color: #ffff00;'>100</span> kr/pass, samtliga pass <span style='background-color: #ffff00;'>350</span> kr<br/>");
             sb.Append("Ej medlem: <span style='background - color: #ffff00;'>120</span> kr/pass, samtliga pass <span style='background-color: #ffff00;'>400</span> kr<br/>");
