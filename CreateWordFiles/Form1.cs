@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
+using System.Net;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows.Forms;
 
 namespace CreateWordFiles
@@ -25,15 +25,48 @@ namespace CreateWordFiles
             this.folderBrowserDialog1.Description =
             "Välj katalog för utdata.";
 
-            var lines = System.IO.File.ReadAllLines(@"Resources\Callers.txt");
-            foreach (var line in lines)
-            {
-                String[] atoms= line.Split(new char[] { ';' });
-                this.comboBoxCaller.Items.Add(atoms[0]);
-                Caller_dictionary.Add(atoms[0], atoms[1]);  
-            }
+            getCallers();
             this.dateTimePickerEnd.Value = this.dateTimePickerStart.Value + new TimeSpan(24, 0, 0);
         }
+
+        private void getCallers()
+        {
+            xxx();
+            //var lines = System.IO.File.ReadAllLines(@"Resources\Callers.txt");
+            //foreach (var line in lines)
+            //{
+            //    String[] atoms = line.Split(new char[] { ';' });
+            //    this.comboBoxCaller.Items.Add(atoms[0]);
+            //    Caller_dictionary.Add(atoms[0], atoms[1]);
+            //}
+        }
+        private void xxx()
+        {
+            var url = "https://motiv8s.se/19/caller_list.php";//Paste ur url here  
+            var picturesRoot = "https://www.motiv8s.se/19/images/callers/";
+            WebRequest request = HttpWebRequest.Create(url);
+
+            WebResponse response = request.GetResponse();
+
+            StreamReader reader = new StreamReader(response.GetResponseStream());
+
+            string responseText = reader.ReadToEnd();
+            String[] callerPictureFiles= responseText.Split(new char[] { ';' });
+            foreach (var callerPictureFile in callerPictureFiles)
+            {
+                if (callerPictureFile.Length > 4)
+                {
+                    String callerPictureUrl = picturesRoot + callerPictureFile;
+                    String callerName = callerPictureFile.Substring(0, callerPictureFile.Length - 4);
+                    this.comboBoxCaller.Items.Add(callerName);
+
+                    Caller_dictionary.Add(callerName, callerPictureUrl);
+                }
+            }
+
+
+        }
+
         private void setEndDate()
         {
             System.TimeSpan ts = new TimeSpan(24, 0, 0);
@@ -52,7 +85,8 @@ namespace CreateWordFiles
             Dictionary<String, String> texts = this.getTexts(lang);
             Creator.CreateWordprocessingDocument(texts, lang, this.dateTimePickerStart.Value, this.dateTimePickerEnd.Value);
             //System.Diagnostics.Process.Start(file);
-            this.Close();
+            MessageBox.Show("Flyer skapad");
+            //this.Close();
         }
         private Dictionary<String, String> getTexts(String lang)
         {
@@ -76,11 +110,19 @@ namespace CreateWordFiles
         private void comboBoxCaller_SelectedIndexChanged(object sender, EventArgs e)
         {
             this.callerName= comboBoxCaller.SelectedItem.ToString();
-            this.callerPictureFile = Caller_dictionary[callerName];
-            this.textBoxCallerPicture.Text = callerPictureFile;
-            if (callerName != "" && callerPictureFile != "")
+            String[] names = callerName.Split('_');
+            if (names.Length == 2)
             {
-                this.buttonOk.Enabled = true;
+                this.callerPictureFile = Caller_dictionary[callerName];
+                this.textBoxCallerPicture.Text = callerPictureFile;
+                if (callerName != "" && callerPictureFile != "")
+                {
+                    this.buttonOk.Enabled = true;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Fel format på callernamn. Skall vara förnamn_efternamn");
             }
         }
 

@@ -3,7 +3,7 @@ using System.IO;
 using System.Drawing;
 using System.Globalization;
 using System.Collections.Generic;
-using System.Text;
+using System.Net.Cache;
 
 using OXML = DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
@@ -36,7 +36,7 @@ namespace CreateWordFiles
             File.WriteAllText(Path.Combine(texts["outputFolder"], String.Format("{0}.html", texts["danceName"])), htmlText);
             // Create a document by supplying the filepath. 
             using (WordprocessingDocument wordDocument =
-                WordprocessingDocument.Create(Path.Combine(texts["outputFolder"], String.Format("{0}_{1}.docx", texts["danceName"], lang)),
+                WordprocessingDocument.Create(Path.Combine(texts["outputFolder"], String.Format("{0}_{1}_{2}.docx", texts["callerName"], texts["danceName"], lang)),
                 OXML.WordprocessingDocumentType.Document))
             {
                 // Add a main document part. 
@@ -45,7 +45,8 @@ namespace CreateWordFiles
                 mainPart.Document = new Wp.Document();
                 Wp.Body body = mainPart.Document.AppendChild(new Wp.Body());
 
-                String fileNameLogo = @"Resources\M8-logo1.gif";
+                //String fileNameLogo = @"Resources\M8-logo1.gif";
+                String fileNameLogo= "https://motiv8s.se/19/images/M8/Logga_Transparent.jpg";
                 addImage("Anchor", wordDocument, fileNameLogo, 0.1667, 1.0, 1.6);
                 Wp.Paragraph paragraph1 = GenerateWelcomeParagraph(texts["danceName"].ToUpper(), danceDates);
                 body.AppendChild(paragraph1);
@@ -124,6 +125,12 @@ namespace CreateWordFiles
         }
         public static Wp.Paragraph GenerateCallerNameParagraph(String callerName)
         {
+            String[] names= callerName.Split('_');
+
+            String firstName = char.ToUpper(names[0][0]) + names[0].Substring(1);
+            String lastName = char.ToUpper(names[1][0]) + names[1].Substring(1);
+
+            callerName = String.Format("{0} {1}",names[0], names[1]);
             String[] lines = { callerName };
             String[] colors = { "Black"};
             int[] fontSizes = { 32 };
@@ -387,14 +394,39 @@ namespace CreateWordFiles
             //String fileName = @"D:\Mina dokument\Sqd\Motiv8s\Badge\M8-logo1.gif";
             int iWidth = 0;
             int iHeight = 0;
-            using (System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(fileName))
+
+
+            // Set a default policy level for the "http:" and "https" schemes.
+            HttpRequestCachePolicy policy = new HttpRequestCachePolicy(HttpRequestCacheLevel.Default);
+            System.Net.HttpWebRequest.DefaultCachePolicy = policy;
+            // Create the request.
+            //WebRequest request = WebRequest.Create(uri);
+            // Define a cache policy for this request only. 
+            HttpRequestCachePolicy noCachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore);
+           
+
+
+            System.Net.WebRequest request= System.Net.WebRequest.Create(fileName);
+            request.CachePolicy = noCachePolicy;
+            System.Net.WebResponse response = request.GetResponse();
+            using (System.IO.Stream responseStream = response.GetResponseStream())
             {
-                iWidth = bmp.Width;
-                iHeight = bmp.Height;
-            }
-            using (FileStream stream = new FileStream(fileName, FileMode.Open))
-            {
-                imagePart.FeedData(stream);
+                Console.WriteLine("IsFromCache? {0}", response.IsFromCache);
+                // Convert the System.Net.Connectstream responseStream to a System.IO.MemoryStream
+                // as imagePart.FeedData (below) will need this to function OK
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    using (Bitmap bmp = new Bitmap(responseStream))
+                    {
+                        iWidth = bmp.Width;
+                        iHeight = bmp.Height;
+                        bmp.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Jpeg);
+                    }
+
+
+                    memoryStream.Position = 0;
+                    imagePart.FeedData(memoryStream);
+                }
             }
             if (type == "Anchor")
             {
