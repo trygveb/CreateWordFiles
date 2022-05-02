@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Data;
 using System.Net;
 using System.Linq;
@@ -10,8 +11,23 @@ using System.Windows.Forms;
 
 namespace CreateWordFiles
 {
+    public class DancePass
+    {
+        public int pass_no { get; set; }
+        public int day { get; set; }
+        public String start_time { get; set; }
+        public String end_time { get; set; }
+        public String level { get; set; }
+    }
+    class datamodel
+    {
+        public string key1 { get; set; }
+        public string key2 { get; set; }
+        public string key3 { get; set; }
+    }
     public partial class Form1 : Form
     {
+        private String callerPicturesRoot = "https://www.motiv8s.se/19/images/callers/";
         Dictionary<string, string> Caller_dictionary = new Dictionary<string, string>();
         String callerName= "";
         String callerPictureFile = "";
@@ -31,32 +47,18 @@ namespace CreateWordFiles
 
         private void getCallers()
         {
-            xxx();
-            //var lines = System.IO.File.ReadAllLines(@"Resources\Callers.txt");
-            //foreach (var line in lines)
-            //{
-            //    String[] atoms = line.Split(new char[] { ';' });
-            //    this.comboBoxCaller.Items.Add(atoms[0]);
-            //    Caller_dictionary.Add(atoms[0], atoms[1]);
-            //}
-        }
-        private void xxx()
-        {
-            var url = "https://motiv8s.se/19/caller_list.php";//Paste ur url here  
-            var picturesRoot = "https://www.motiv8s.se/19/images/callers/";
-            WebRequest request = HttpWebRequest.Create(url);
+            var jsonFile = "https://motiv8s.se/19/danstider/jesper_dans.json";
+            string jsonText = getResponseText(jsonFile);
+            DancePass[] dancePasses= JsonConvert.DeserializeObject<DancePass[]>(jsonText);
 
-            WebResponse response = request.GetResponse();
-
-            StreamReader reader = new StreamReader(response.GetResponseStream());
-
-            string responseText = reader.ReadToEnd();
-            String[] callerPictureFiles= responseText.Split(new char[] { ';' });
+            var url = "https://motiv8s.se/19/caller_list.php";
+            string callerList = getResponseText(url);
+            String[] callerPictureFiles = callerList.Split(new char[] { ';' });
             foreach (var callerPictureFile in callerPictureFiles)
             {
                 if (callerPictureFile.Length > 4)
                 {
-                    String callerPictureUrl = picturesRoot + callerPictureFile;
+                    String callerPictureUrl = this.callerPicturesRoot + callerPictureFile;
                     String callerName = callerPictureFile.Substring(0, callerPictureFile.Length - 4);
                     this.comboBoxCaller.Items.Add(callerName);
 
@@ -65,6 +67,16 @@ namespace CreateWordFiles
             }
 
 
+        }
+
+        private static string getResponseText(string url)
+        {
+            WebRequest request = HttpWebRequest.Create(url);
+            WebResponse response = request.GetResponse();
+            StreamReader reader = new StreamReader(response.GetResponseStream());
+
+            string responseText = reader.ReadToEnd();
+            return responseText;
         }
 
         private void setEndDate()

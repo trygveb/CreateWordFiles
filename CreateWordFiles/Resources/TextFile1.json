@@ -1,0 +1,31 @@
+﻿[
+    {
+        "pass_no": 1,
+        "day": 1,
+        "start_time": "11:00",
+        "end_time": "14:00",
+        "level": "C1"
+    },
+    {
+        "pass_no": 2,
+        "day": 1,
+        "start_time": "15:00",
+        "end_time": "8:00",
+        "level": "C2"
+    },
+    {
+        "pass_no": 3,
+        "day": 2,
+        "start_time": "10:00",
+        "end_time": "13:00",
+        "level": "C3A"
+    },
+    {
+        "pass_no": 4,
+        "day": 2,
+        "start_time": "14:00",
+        "end_time": "17:00",
+        "level": "C3A"
+    }
+]
+
