@@ -221,9 +221,16 @@ namespace CreateWordFiles
 
             var n = dancePasses.Select(o => new { Day = o.day }).Distinct();
             int numberOfDistinctDays = n.Count();
+            List<DancePass[]> dancePassesDayList = new List<DancePass[]>();
+
+            for (int i = 1; i <= numberOfDistinctDays; i++)
+            {
+                dancePassesDayList.Add(getDancePassesForDay(dancePasses, i));
+            }
+
             if (numberOfDistinctDays == 2)
             {
-               return createWeekendDanceSchemaTable(lang, dancePasses);
+               return createWeekendDanceSchemaTable(lang, dancePassesDayList);
             } else if (numberOfDistinctDays == 4)
             {
                 return createFestivalDanceSchemaTable();
@@ -237,58 +244,54 @@ namespace CreateWordFiles
             Wp.Table table = new Wp.Table();
             return table;
         }
-        public static Wp.Table createWeekendDanceSchemaTable(String lang, List<DancePass> dancePasses) {
-            //var p = dancePasses.OrderBy(x => x.pass_no);
-
-            //foreach (var line in dancePasses.GroupBy(dp => dp.day)
-            //                        .Select(group => new {
-            //                            Day = group.Key,
-            //                            Count = group.Count()
-            //                        })
-            //                        .OrderBy(x => x.Day))
-            //{
-            //    Console.WriteLine("{0} {1}", line.Day, line.Count);
-            //}
-            IEnumerable<DancePass> dayOnePasses = from dancePass in dancePasses
-                                       where dancePass.day == 1
-                                       orderby dancePass.pass_no ascending
-                                       select dancePass;
-            var dayOnePassesArray = dayOnePasses.ToArray();
+        public static Wp.Table createWeekendDanceSchemaTable(String lang, List<DancePass[]> dancePassesDayList)
+        {
+              //}
             Wp.Table table = new Wp.Table();
 
             Wp.TableProperties tblProp = new Wp.TableProperties(createTableBorders(Wp.BorderValues.Dashed, 12));
-            
-            int[] colWidth = { 2000, 500, 300, 2000, 500 }; 
-            //if (texts["pass_1_weekend_time"].Contains("AM") || texts["pass_1_weekend_time"].Contains("PM"))
-            //{
-            //    colWidth[0] = 2700;
-            //    colWidth[3] = 2700;
-            //}
 
-            String[] content1= new String[5];// = { "Lördag", "", "Söndag", "" };
+            int[] colWidth = { 2000, 500, 300, 2000, 500 };
+
+            String[] content1 = new String[5];// = { "Lördag", "", "Söndag", "" };
             content1[0] = texts["Saturday"];
             content1[3] = texts["Sunday"];
             Wp.TableRow tr1 = createRow1(content1, colWidth);
             table.Append(tr1);
 
-            //String[] content2 = { texts["pass_1_weekend_time"], texts["pass_1_weekend_level"],"",
-            //                      texts["pass_3_weekend_time"], texts["pass_3_weekend_level"] };
-            String[] content2 = {String.Format("{0}-{1}",dayOnePassesArray[0].start_time,dayOnePassesArray[0].end_time),
-                dayOnePassesArray[0].level,
+            String[] content2 = { formatTimeInterval(dancePassesDayList[0], 0),
+                dancePassesDayList[0][0].level,
                 "",
-                "pass_3_time",
-                "pass_3_level" };
+                formatTimeInterval(dancePassesDayList[1], 0),
+                dancePassesDayList[1][0].level };
 
             Wp.TableRow tr2 = createRow(content2, colWidth);
             table.Append(tr2);
 
-            String[] content3 = { "pass_2_time", "C3","",
-                                  "pass_4_time", "C3" };
+            String[] content3 = { formatTimeInterval(dancePassesDayList[0], 1),
+                dancePassesDayList[0][1].level,
+                "",
+                 formatTimeInterval(dancePassesDayList[1], 1),
+                dancePassesDayList[1][1].level};
             Wp.TableRow tr3 = createRow(content3, colWidth);
             table.Append(tr3);
-            
+
             return table;
 
+        }
+
+        private static String formatTimeInterval(DancePass[] dancePasses, int row)
+        {
+            return String.Format("{0}-{1}", dancePasses[row].start_time, dancePasses[row].end_time);
+        }
+        private static DancePass[] getDancePassesForDay(List<DancePass> dancePasses, int day)
+        {
+            IEnumerable<DancePass> dayOnePasses = from dancePass in dancePasses
+                                                  where dancePass.day == day
+                                                  orderby dancePass.pass_no ascending
+                                                  select dancePass;
+            var dayOnePassesArray = dayOnePasses.ToArray();
+            return dayOnePassesArray;
         }
 
         private static Wp.TableRow createRow1(String[] content, int[] colWidth)
