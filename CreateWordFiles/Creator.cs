@@ -218,20 +218,42 @@ namespace CreateWordFiles
         public static Wp.Table CreateDanceSchemaTable(String lang, List<DancePass> dancePasses)
         {
 
-            int count = dancePasses.Where(dp => dp.day == 1).Count();
 
-            foreach (var line in dancePasses.GroupBy(dp => dp.day)
-                                    .Select(group => new {
-                                        Day = group.Key,
-                                        Count = group.Count()
-                                    })
-                                    .OrderBy(x => x.Day))
+            var n = dancePasses.Select(o => new { Day = o.day }).Distinct();
+            int numberOfDistinctDays = n.Count();
+            if (numberOfDistinctDays == 2)
             {
-                Console.WriteLine("{0} {1}", line.Day, line.Count);
+               return createWeekendDanceSchemaTable(lang, dancePasses);
+            } else if (numberOfDistinctDays == 4)
+            {
+                return createFestivalDanceSchemaTable();
+            } else
+            {
+                return null;
             }
-            var n= dancePasses.Select(o => new { Day = o.day }).Distinct();
-            int numberOfDisticntDays = n.Count();
+        }
+        public static Wp.Table createFestivalDanceSchemaTable()
+        {
+            Wp.Table table = new Wp.Table();
+            return table;
+        }
+        public static Wp.Table createWeekendDanceSchemaTable(String lang, List<DancePass> dancePasses) {
+            //var p = dancePasses.OrderBy(x => x.pass_no);
 
+            //foreach (var line in dancePasses.GroupBy(dp => dp.day)
+            //                        .Select(group => new {
+            //                            Day = group.Key,
+            //                            Count = group.Count()
+            //                        })
+            //                        .OrderBy(x => x.Day))
+            //{
+            //    Console.WriteLine("{0} {1}", line.Day, line.Count);
+            //}
+            IEnumerable<DancePass> dayOnePasses = from dancePass in dancePasses
+                                       where dancePass.day == 1
+                                       orderby dancePass.pass_no ascending
+                                       select dancePass;
+            var dayOnePassesArray = dayOnePasses.ToArray();
             Wp.Table table = new Wp.Table();
 
             Wp.TableProperties tblProp = new Wp.TableProperties(createTableBorders(Wp.BorderValues.Dashed, 12));
@@ -249,13 +271,19 @@ namespace CreateWordFiles
             Wp.TableRow tr1 = createRow1(content1, colWidth);
             table.Append(tr1);
 
-            String[] content2 = { texts["pass_1_weekend_time"], texts["pass_1_weekend_level"],"",
-                                  texts["pass_3_weekend_time"], texts["pass_3_weekend_level"] };
+            //String[] content2 = { texts["pass_1_weekend_time"], texts["pass_1_weekend_level"],"",
+            //                      texts["pass_3_weekend_time"], texts["pass_3_weekend_level"] };
+            String[] content2 = {String.Format("{0}-{1}",dayOnePassesArray[0].start_time,dayOnePassesArray[0].end_time),
+                dayOnePassesArray[0].level,
+                "",
+                "pass_3_time",
+                "pass_3_level" };
+
             Wp.TableRow tr2 = createRow(content2, colWidth);
             table.Append(tr2);
 
-            String[] content3 = { texts["pass_2_weekend_time"], texts["pass_2_weekend_level"],"",
-                                  texts["pass_4_weekend_time"], texts["pass_4_weekend_level"] };
+            String[] content3 = { "pass_2_time", "C3","",
+                                  "pass_4_time", "C3" };
             Wp.TableRow tr3 = createRow(content3, colWidth);
             table.Append(tr3);
             
