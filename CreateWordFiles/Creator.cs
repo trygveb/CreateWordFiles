@@ -26,7 +26,7 @@ namespace CreateWordFiles
         /// <param name="danceName"></param>
         /// <param name="danceDateStart"></param>
         /// <param name="danceDateEnd"></param>
-        public static void CreateWordprocessingDocument(Dictionary<String, String> myTexts, String lang, DateTime danceDateStart, DateTime danceDateEnd)
+        public static void CreateWordprocessingDocument(Dictionary<String, String> myTexts, String lang, List<DancePass> dancePass,DateTime danceDateStart, DateTime danceDateEnd)
         {
             string monthName1, monthName2, danceDates;
             texts = myTexts;

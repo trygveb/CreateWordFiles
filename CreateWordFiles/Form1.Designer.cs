@@ -31,9 +31,6 @@
             this.buttonOk = new System.Windows.Forms.Button();
             this.textBoxDanceName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.radioButtonWeekEnd = new System.Windows.Forms.RadioButton();
-            this.radioButtonFestival = new System.Windows.Forms.RadioButton();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.dateTimePickerStart = new System.Windows.Forms.DateTimePicker();
             this.dateTimePickerEnd = new System.Windows.Forms.DateTimePicker();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -49,10 +46,10 @@
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.groupBoxLanguage = new System.Windows.Forms.GroupBox();
-            this.radioButtonSwedish = new System.Windows.Forms.RadioButton();
             this.radioButtonEnglish = new System.Windows.Forms.RadioButton();
-            this.radioButtonMeeting = new System.Windows.Forms.RadioButton();
-            this.groupBox1.SuspendLayout();
+            this.radioButtonSwedish = new System.Windows.Forms.RadioButton();
+            this.comboBoxDanceSchema = new System.Windows.Forms.ComboBox();
+            this.label7 = new System.Windows.Forms.Label();
             this.groupBox2.SuspendLayout();
             this.groupBoxLanguage.SuspendLayout();
             this.SuspendLayout();
@@ -84,41 +81,6 @@
             this.label1.Size = new System.Drawing.Size(78, 13);
             this.label1.TabIndex = 2;
             this.label1.Text = "Dansens namn";
-            // 
-            // radioButtonWeekEnd
-            // 
-            this.radioButtonWeekEnd.AutoSize = true;
-            this.radioButtonWeekEnd.Checked = true;
-            this.radioButtonWeekEnd.Location = new System.Drawing.Point(6, 25);
-            this.radioButtonWeekEnd.Name = "radioButtonWeekEnd";
-            this.radioButtonWeekEnd.Size = new System.Drawing.Size(72, 17);
-            this.radioButtonWeekEnd.TabIndex = 5;
-            this.radioButtonWeekEnd.TabStop = true;
-            this.radioButtonWeekEnd.Text = "Weekend";
-            this.radioButtonWeekEnd.UseVisualStyleBackColor = true;
-            // 
-            // radioButtonFestival
-            // 
-            this.radioButtonFestival.AutoSize = true;
-            this.radioButtonFestival.Location = new System.Drawing.Point(6, 48);
-            this.radioButtonFestival.Name = "radioButtonFestival";
-            this.radioButtonFestival.Size = new System.Drawing.Size(61, 17);
-            this.radioButtonFestival.TabIndex = 6;
-            this.radioButtonFestival.Text = "Festival";
-            this.radioButtonFestival.UseVisualStyleBackColor = true;
-            this.radioButtonFestival.CheckedChanged += new System.EventHandler(this.radioButtonFestival_CheckedChanged);
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.radioButtonMeeting);
-            this.groupBox1.Controls.Add(this.radioButtonFestival);
-            this.groupBox1.Controls.Add(this.radioButtonWeekEnd);
-            this.groupBox1.Location = new System.Drawing.Point(268, 17);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(203, 79);
-            this.groupBox1.TabIndex = 7;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Danstyp";
             // 
             // dateTimePickerStart
             // 
@@ -241,12 +203,23 @@
             // 
             this.groupBoxLanguage.Controls.Add(this.radioButtonEnglish);
             this.groupBoxLanguage.Controls.Add(this.radioButtonSwedish);
-            this.groupBoxLanguage.Location = new System.Drawing.Point(268, 99);
+            this.groupBoxLanguage.Location = new System.Drawing.Point(274, 33);
             this.groupBoxLanguage.Name = "groupBoxLanguage";
-            this.groupBoxLanguage.Size = new System.Drawing.Size(110, 71);
+            this.groupBoxLanguage.Size = new System.Drawing.Size(183, 49);
             this.groupBoxLanguage.TabIndex = 21;
             this.groupBoxLanguage.TabStop = false;
             this.groupBoxLanguage.Text = "Språk";
+            // 
+            // radioButtonEnglish
+            // 
+            this.radioButtonEnglish.AutoSize = true;
+            this.radioButtonEnglish.Location = new System.Drawing.Point(84, 19);
+            this.radioButtonEnglish.Name = "radioButtonEnglish";
+            this.radioButtonEnglish.Size = new System.Drawing.Size(69, 17);
+            this.radioButtonEnglish.TabIndex = 1;
+            this.radioButtonEnglish.Tag = "en";
+            this.radioButtonEnglish.Text = "Engelska";
+            this.radioButtonEnglish.UseVisualStyleBackColor = true;
             // 
             // radioButtonSwedish
             // 
@@ -256,36 +229,35 @@
             this.radioButtonSwedish.Name = "radioButtonSwedish";
             this.radioButtonSwedish.Size = new System.Drawing.Size(67, 17);
             this.radioButtonSwedish.TabIndex = 0;
+            this.radioButtonSwedish.TabStop = true;
             this.radioButtonSwedish.Tag = "se";
             this.radioButtonSwedish.Text = "Svenska";
             this.radioButtonSwedish.UseVisualStyleBackColor = true;
             // 
-            // radioButtonEnglish
+            // comboBoxDanceSchema
             // 
-            this.radioButtonEnglish.AutoSize = true;
-            this.radioButtonEnglish.Location = new System.Drawing.Point(11, 44);
-            this.radioButtonEnglish.Name = "radioButtonEnglish";
-            this.radioButtonEnglish.Size = new System.Drawing.Size(69, 17);
-            this.radioButtonEnglish.TabIndex = 1;
-            this.radioButtonEnglish.Tag = "en";
-            this.radioButtonEnglish.Text = "Engelska";
-            this.radioButtonEnglish.UseVisualStyleBackColor = true;
+            this.comboBoxDanceSchema.FormattingEnabled = true;
+            this.comboBoxDanceSchema.Location = new System.Drawing.Point(265, 109);
+            this.comboBoxDanceSchema.Name = "comboBoxDanceSchema";
+            this.comboBoxDanceSchema.Size = new System.Drawing.Size(214, 21);
+            this.comboBoxDanceSchema.TabIndex = 22;
             // 
-            // radioButtonMeeting
+            // label7
             // 
-            this.radioButtonMeeting.AutoSize = true;
-            this.radioButtonMeeting.Location = new System.Drawing.Point(102, 25);
-            this.radioButtonMeeting.Name = "radioButtonMeeting";
-            this.radioButtonMeeting.Size = new System.Drawing.Size(63, 17);
-            this.radioButtonMeeting.TabIndex = 7;
-            this.radioButtonMeeting.Text = "Årsmöte";
-            this.radioButtonMeeting.UseVisualStyleBackColor = true;
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(262, 93);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(69, 13);
+            this.label7.TabIndex = 23;
+            this.label7.Text = "Dansschema";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(510, 391);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.comboBoxDanceSchema);
             this.Controls.Add(this.groupBoxLanguage);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonSelectOutputFolder);
@@ -296,14 +268,11 @@
             this.Controls.Add(this.comboBoxCaller);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBoxDanceName);
             this.Controls.Add(this.buttonOk);
             this.Name = "Form1";
             this.Text = "Form1";
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBoxLanguage.ResumeLayout(false);
@@ -318,9 +287,6 @@
         private System.Windows.Forms.Button buttonOk;
         private System.Windows.Forms.TextBox textBoxDanceName;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.RadioButton radioButtonWeekEnd;
-        private System.Windows.Forms.RadioButton radioButtonFestival;
-        private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.DateTimePicker dateTimePickerStart;
         private System.Windows.Forms.DateTimePicker dateTimePickerEnd;
         private System.Windows.Forms.GroupBox groupBox2;
@@ -335,10 +301,11 @@
         private System.Windows.Forms.Button buttonSelectOutputFolder;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.Button buttonCancel;
-        private System.Windows.Forms.RadioButton radioButtonMeeting;
         private System.Windows.Forms.GroupBox groupBoxLanguage;
         private System.Windows.Forms.RadioButton radioButtonEnglish;
         private System.Windows.Forms.RadioButton radioButtonSwedish;
+        private System.Windows.Forms.ComboBox comboBoxDanceSchema;
+        private System.Windows.Forms.Label label7;
     }
 }
 
