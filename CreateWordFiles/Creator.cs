@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Collections.Generic;
 using System.Net.Cache;
+using System.Linq;
 
 using OXML = DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
@@ -32,9 +33,9 @@ namespace CreateWordFiles
             texts = myTexts;
             danceDates = createDanceDates(danceDateStart, danceDateEnd, out monthName1, out monthName2);
 
-            String htmlText = GetHtmlCode(danceDateStart, danceDateEnd, monthName1, monthName2);
-            File.WriteAllText(Path.Combine(texts["outputFolder"], String.Format("{0}.html", texts["danceName"])), htmlText);
-            // Create a document by supplying the filepath. 
+            //String htmlText = GetHtmlCode(danceDateStart, danceDateEnd, monthName1, monthName2);
+            //File.WriteAllText(Path.Combine(texts["outputFolder"], String.Format("{0}.html", texts["danceName"])), htmlText);
+            //// Create a document by supplying the filepath. 
             using (WordprocessingDocument wordDocument =
                 WordprocessingDocument.Create(Path.Combine(texts["outputFolder"], String.Format("{0}_{1}_{2}.docx", texts["callerName"], texts["danceName"], lang)),
                 OXML.WordprocessingDocumentType.Document))
@@ -55,7 +56,7 @@ namespace CreateWordFiles
 
                 body.AppendChild(GenerateCallerNameParagraph(texts["callerName"]));
 
-                Wp.Table table = CreateDanceSchemaTable(lang);
+                Wp.Table table = CreateDanceSchemaTable(lang, dancePass);
                 Wp.Paragraph tableParagraph = generateTableParagraph(table);
                 //body.AppendChild(table);
                 body.AppendChild(tableParagraph);
@@ -214,19 +215,33 @@ namespace CreateWordFiles
         }
 
         // Insert a table into a word processing document.
-        public static Wp.Table CreateDanceSchemaTable(String lang)
+        public static Wp.Table CreateDanceSchemaTable(String lang, List<DancePass> dancePasses)
         {
+
+            int count = dancePasses.Where(dp => dp.day == 1).Count();
+
+            foreach (var line in dancePasses.GroupBy(dp => dp.day)
+                                    .Select(group => new {
+                                        Day = group.Key,
+                                        Count = group.Count()
+                                    })
+                                    .OrderBy(x => x.Day))
+            {
+                Console.WriteLine("{0} {1}", line.Day, line.Count);
+            }
+            var n= dancePasses.Select(o => new { Day = o.day }).Distinct();
+            int numberOfDisticntDays = n.Count();
 
             Wp.Table table = new Wp.Table();
 
             Wp.TableProperties tblProp = new Wp.TableProperties(createTableBorders(Wp.BorderValues.Dashed, 12));
             
             int[] colWidth = { 2000, 500, 300, 2000, 500 }; 
-            if (texts["pass_1_weekend_time"].Contains("AM") || texts["pass_1_weekend_time"].Contains("PM"))
-            {
-                colWidth[0] = 2700;
-                colWidth[3] = 2700;
-            }
+            //if (texts["pass_1_weekend_time"].Contains("AM") || texts["pass_1_weekend_time"].Contains("PM"))
+            //{
+            //    colWidth[0] = 2700;
+            //    colWidth[3] = 2700;
+            //}
 
             String[] content1= new String[5];// = { "Lördag", "", "Söndag", "" };
             content1[0] = texts["Saturday"];

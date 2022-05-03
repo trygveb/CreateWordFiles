@@ -13,7 +13,7 @@ namespace CreateWordFiles
 {
        public partial class Form1 : Form
     {
-        private String callerPicturesRoot;
+        //private String callerPicturesRoot;
         String callerName= "";
         String callerPictureFile = "";
         public Form1()
