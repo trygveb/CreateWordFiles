@@ -20,6 +20,8 @@ namespace CreateWordFiles
         private static Wp.Color wpColorBlackx = new Wp.Color() { Val = "000000" };
         private static Wp.Color wpColorRedx = new Wp.Color() { Val = "FF0000" };
         private static Dictionary<String, String> texts;
+        private static List<DancePass[]> dancePassesDayList = new List<DancePass[]>();
+
         /// <summary>
         /// Only weekend dances supported 
         /// </summary>
@@ -52,7 +54,7 @@ namespace CreateWordFiles
                 Wp.Paragraph paragraph1 = GenerateWelcomeParagraph(texts["danceName"].ToUpper(), danceDates);
                 body.AppendChild(paragraph1);
 
-                addImage("Inline", wordDocument, texts["callerPictureFile"], 0.8, 6.0, 10.0);
+                addImage("Inline", wordDocument, texts["callerPictureFile"], 0.7, 6.0, 10.0);
 
                 body.AppendChild(GenerateCallerNameParagraph(texts["callerName"]));
 
@@ -221,7 +223,8 @@ namespace CreateWordFiles
 
             var n = dancePasses.Select(o => new { Day = o.day }).Distinct();
             int numberOfDistinctDays = n.Count();
-            List<DancePass[]> dancePassesDayList = new List<DancePass[]>();
+            
+            dancePassesDayList.Clear();
 
             for (int i = 1; i <= numberOfDistinctDays; i++)
             {
@@ -246,43 +249,61 @@ namespace CreateWordFiles
         }
         public static Wp.Table createWeekendDanceSchemaTable(String lang, List<DancePass[]> dancePassesDayList)
         {
-              //}
+            //}
             Wp.Table table = new Wp.Table();
 
             Wp.TableProperties tblProp = new Wp.TableProperties(createTableBorders(Wp.BorderValues.Dashed, 12));
 
             int[] colWidth = { 2000, 500, 300, 2000, 500 };
 
-            String[] content1 = new String[5];// = { "Lördag", "", "Söndag", "" };
-            content1[0] = texts["Saturday"];
-            content1[3] = texts["Sunday"];
-            Wp.TableRow tr1 = createRow1(content1, colWidth);
-            table.Append(tr1);
-
-            String[] content2 = { formatTimeInterval(dancePassesDayList[0], 0),
-                dancePassesDayList[0][0].level,
-                "",
-                formatTimeInterval(dancePassesDayList[1], 0),
-                dancePassesDayList[1][0].level };
-
-            Wp.TableRow tr2 = createRow(content2, colWidth);
-            table.Append(tr2);
-
-            String[] content3 = { formatTimeInterval(dancePassesDayList[0], 1),
-                dancePassesDayList[0][1].level,
-                "",
-                 formatTimeInterval(dancePassesDayList[1], 1),
-                dancePassesDayList[1][1].level};
-            Wp.TableRow tr3 = createRow(content3, colWidth);
-            table.Append(tr3);
+            createFirstWeekendRow(table, colWidth);  // Header row
+            createWeekEndRow(dancePassesDayList, table, colWidth, 2);  // row 2
+            createWeekEndRow(dancePassesDayList, table, colWidth, 3);  // row 3
 
             return table;
 
         }
 
+        private static void createWeekEndRow(List<DancePass[]> dancePassesDayList, Wp.Table table, int[] colWidth, int row)
+        {
+            int i1 = row - 2;
+            // Row 3, column2 might be empty if we only have one pass on Sunday 
+            String level2 = "";
+            String timeString2 = "";
+            if (dancePassesDayList[1].Length == 2 || row==2)
+            {
+                timeString2 = formatTimeInterval(dancePassesDayList[1], i1);
+                level2 = dancePassesDayList[1][i1].level;
+            }
+            
+            String[] content = { formatTimeInterval(dancePassesDayList[0], i1),
+                dancePassesDayList[0][i1].level,
+                "",
+                timeString2,
+                level2 };
+
+            table.Append(createRow(content, colWidth));
+        }
+
+        /// <summary>
+        /// Create the header row for a Weekend dance schedule
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="colWidth"></param>
+        private static void createFirstWeekendRow(Wp.Table table, int[] colWidth)
+        {
+            String[] content = new String[5];// = { "Lördag", "", "Söndag", "" };
+            content[0] = texts["Saturday"];
+            content[3] = texts["Sunday"];
+
+            Wp.TableRow tr1 = createRow1(content, colWidth);
+            table.Append(tr1);
+        }
+
         private static String formatTimeInterval(DancePass[] dancePasses, int row)
         {
-            return String.Format("{0}-{1}", dancePasses[row].start_time, dancePasses[row].end_time);
+            String text = String.Format("{0}-{1}", dancePasses[row].start_time, dancePasses[row].end_time);
+            return text;
         }
         private static DancePass[] getDancePassesForDay(List<DancePass> dancePasses, int day)
         {

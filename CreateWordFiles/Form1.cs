@@ -52,7 +52,7 @@ namespace CreateWordFiles
             }
         }
 
-        private List<DancePass> getDanceSchema()
+        private List<DancePass> getDancePasses()
         {
             List<DancePass> dancpasses = new List<DancePass>();
             String schema= this.comboBoxDanceSchema.Text;
@@ -76,8 +76,38 @@ namespace CreateWordFiles
                 }
             }
         }
+        /// <summary>
+        /// Create a random (letter) string of given length
+        /// </summary>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        private static String createRandomString(int length = 7)
+        {
+
+            StringBuilder str_build = new StringBuilder();
+            Random random = new Random();
+
+            char letter;
+
+            for (int i = 0; i < length; i++)
+            {
+                double flt = random.NextDouble();
+                int shift = Convert.ToInt32(Math.Floor(25 * flt));
+                letter = Convert.ToChar(shift + 65);
+                str_build.Append(letter);
+            }
+            return (str_build.ToString());
+        }
+
+        /// <summary>
+        /// Fetches data (text) via a WebRequest.
+        /// Appends a random querystring to force fresh fetch (avoid cached data)
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
         private static string getResponseText(string url)
         {
+            url = url + "?"+ createRandomString(8);
             WebRequest request = HttpWebRequest.Create(url);
             WebResponse response = request.GetResponse();
             StreamReader reader = new StreamReader(response.GetResponseStream());
@@ -97,7 +127,7 @@ namespace CreateWordFiles
                    .Where(r => r.Checked).FirstOrDefault();
             String lang = (String)radioButtonLanguage.Tag;
             this.getTexts(lang);
-            List<DancePass> danceSchema = this.getDanceSchema();
+            List<DancePass> danceSchema = this.getDancePasses();
             Creator.CreateWordprocessingDocument(Utility.map, lang, danceSchema, this.dateTimePickerStart.Value, this.dateTimePickerEnd.Value);
             //System.Diagnostics.Process.Start(file);
             MessageBox.Show("Flyer skapad");
