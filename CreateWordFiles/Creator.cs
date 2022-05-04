@@ -29,7 +29,8 @@ namespace CreateWordFiles
         /// <param name="danceName"></param>
         /// <param name="danceDateStart"></param>
         /// <param name="danceDateEnd"></param>
-        public static void CreateWordprocessingDocument(Dictionary<String, String> myTexts, String lang, List<DancePass> dancePass,DateTime danceDateStart, DateTime danceDateEnd)
+        public static void CreateWordprocessingDocument(Dictionary<String, String> myTexts, String lang, List<DancePass> dancePass,
+            String schemaName, DateTime danceDateStart, DateTime danceDateEnd)
         {
             string monthName1, monthName2, danceDates;
             texts = myTexts;
@@ -38,8 +39,14 @@ namespace CreateWordFiles
             //String htmlText = GetHtmlCode(danceDateStart, danceDateEnd, monthName1, monthName2);
             //File.WriteAllText(Path.Combine(texts["outputFolder"], String.Format("{0}.html", texts["danceName"])), htmlText);
             //// Create a document by supplying the filepath. 
+
+#if DEBUG
+            String fileName = String.Format("{0}_{1}_{2}.docx", schemaName, texts["danceName"], lang);
+#else
+            String fileName= String.Format("{0}_{1}.docx", texts["danceName"], lang);
+#endif
             using (WordprocessingDocument wordDocument =
-                WordprocessingDocument.Create(Path.Combine(texts["outputFolder"], String.Format("{0}_{1}_{2}.docx", texts["callerName"], texts["danceName"], lang)),
+                WordprocessingDocument.Create(Path.Combine(texts["outputFolder"],fileName),
                 OXML.WordprocessingDocumentType.Document))
             {
                 // Add a main document part. 
@@ -256,9 +263,13 @@ namespace CreateWordFiles
 
             int[] colWidth = { 2000, 500, 300, 2000, 500 };
 
-            createFirstWeekendRow(table, colWidth);  // Header row
-            createWeekEndRow(dancePassesDayList, table, colWidth, 2);  // row 2
-            createWeekEndRow(dancePassesDayList, table, colWidth, 3);  // row 3
+            createFirstWeekendRow(table, colWidth);                     // row 1, Header row
+            createWeekEndRow(dancePassesDayList, table, colWidth, 2);   // row 2
+            createWeekEndRow(dancePassesDayList, table, colWidth, 3);   // row 3
+            if (dancePassesDayList[0].Length> 2 || dancePassesDayList[1].Length > 2)
+            {
+                createWeekEndRow(dancePassesDayList, table, colWidth, 4);  // row 4
+            }
 
             return table;
 
@@ -267,17 +278,31 @@ namespace CreateWordFiles
         private static void createWeekEndRow(List<DancePass[]> dancePassesDayList, Wp.Table table, int[] colWidth, int row)
         {
             int i1 = row - 2;
-            // Row 3, column2 might be empty if we only have one pass on Sunday 
             String level2 = "";
             String timeString2 = "";
-            if (dancePassesDayList[1].Length == 2 || row==2)
+            try
             {
                 timeString2 = formatTimeInterval(dancePassesDayList[1], i1);
                 level2 = dancePassesDayList[1][i1].level;
+            } catch (Exception e)
+            {
+
             }
-            
-            String[] content = { formatTimeInterval(dancePassesDayList[0], i1),
-                dancePassesDayList[0][i1].level,
+            String level1 = "";
+            String timeString1 = "";
+            try
+            {
+                timeString1 = formatTimeInterval(dancePassesDayList[0], i1);
+                level1 = dancePassesDayList[0][i1].level;
+            }
+            catch (Exception e)
+            {
+
+            }
+
+
+            String[] content = { timeString1,
+                level1,
                 "",
                 timeString2,
                 level2 };

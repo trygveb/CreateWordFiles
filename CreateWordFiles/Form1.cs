@@ -128,7 +128,8 @@ namespace CreateWordFiles
             String lang = (String)radioButtonLanguage.Tag;
             this.getTexts(lang);
             List<DancePass> danceSchema = this.getDancePasses();
-            Creator.CreateWordprocessingDocument(Utility.map, lang, danceSchema, this.dateTimePickerStart.Value, this.dateTimePickerEnd.Value);
+            Creator.CreateWordprocessingDocument(Utility.map, lang, danceSchema, this.comboBoxDanceSchema.Text,
+            this.dateTimePickerStart.Value, this.dateTimePickerEnd.Value);
             //System.Diagnostics.Process.Start(file);
             MessageBox.Show("Flyer skapad");
             //this.Close();
