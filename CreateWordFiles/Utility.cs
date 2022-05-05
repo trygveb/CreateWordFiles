@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace CreateWordFiles
 {
+    public class SchemaInfo
+    {
+        public String schemaName { get; set; }
+        public List<DancePass> danceSchema { get; set; }
+        public List<int> colWidth { get; set; }
+    }
     public class DancePass
     {
         public int pass_no { get; set; }

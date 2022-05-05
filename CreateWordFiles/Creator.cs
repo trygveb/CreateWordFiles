@@ -29,10 +29,11 @@ namespace CreateWordFiles
         /// <param name="danceName"></param>
         /// <param name="danceDateStart"></param>
         /// <param name="danceDateEnd"></param>
-        public static void CreateWordprocessingDocument(Dictionary<String, String> myTexts, String lang, List<DancePass> dancePass,
-            String schemaName, DateTime danceDateStart, DateTime danceDateEnd)
+        public static void CreateWordprocessingDocument(Dictionary<String, String> myTexts, String lang, SchemaInfo schemaInfo,
+            String schemaName, String path, DateTime danceDateStart, DateTime danceDateEnd)
         {
             string monthName1, monthName2, danceDates;
+
             texts = myTexts;
             danceDates = createDanceDates(danceDateStart, danceDateEnd, out monthName1, out monthName2);
 
@@ -40,41 +41,42 @@ namespace CreateWordFiles
             //File.WriteAllText(Path.Combine(texts["outputFolder"], String.Format("{0}.html", texts["danceName"])), htmlText);
             //// Create a document by supplying the filepath. 
 
-#if DEBUG
-            String fileName = String.Format("{0}_{1}_{2}.docx", schemaName, texts["danceName"], lang);
-#else
-            String fileName= String.Format("{0}_{1}.docx", texts["danceName"], lang);
-#endif
-            using (WordprocessingDocument wordDocument =
-                WordprocessingDocument.Create(Path.Combine(texts["outputFolder"],fileName),
-                OXML.WordprocessingDocumentType.Document))
+            try
             {
-                // Add a main document part. 
-                MainDocumentPart mainPart = wordDocument.AddMainDocumentPart();
+                using (WordprocessingDocument wordDocument =
+                    WordprocessingDocument.Create(path, OXML.WordprocessingDocumentType.Document))
+                {
+                    // Add a main document part. 
+                    MainDocumentPart mainPart = wordDocument.AddMainDocumentPart();
 
-                mainPart.Document = new Wp.Document();
-                Wp.Body body = mainPart.Document.AppendChild(new Wp.Body());
+                    mainPart.Document = new Wp.Document();
+                    Wp.Body body = mainPart.Document.AppendChild(new Wp.Body());
 
-                //String fileNameLogo = @"Resources\M8-logo1.gif";
-                String fileNameLogo= "https://motiv8s.se/19/images/M8/Logga_Transparent.jpg";
-                addImage("Anchor", wordDocument, fileNameLogo, 0.1667, 1.0, 1.6);
-                Wp.Paragraph paragraph1 = GenerateWelcomeParagraph(texts["danceName"].ToUpper(), danceDates);
-                body.AppendChild(paragraph1);
+                    //String fileNameLogo = @"Resources\M8-logo1.gif";
+                    String fileNameLogo = "https://motiv8s.se/19/images/M8/Logga_Transparent.jpg";
+                    addImage("Anchor", wordDocument, fileNameLogo, 0.1667, 1.0, 1.6);
+                    Wp.Paragraph paragraph1 = GenerateWelcomeParagraph(texts["danceName"].ToUpper(), danceDates);
+                    body.AppendChild(paragraph1);
 
-                addImage("Inline", wordDocument, texts["callerPictureFile"], 0.7, 6.0, 10.0);
+                    addImage("Inline", wordDocument, texts["callerPictureFile"], 0.7, 6.0, 10.0);
 
-                body.AppendChild(GenerateCallerNameParagraph(texts["callerName"]));
+                    body.AppendChild(GenerateCallerNameParagraph(texts["callerName"]));
 
-                Wp.Table table = CreateDanceSchemaTable(lang, dancePass);
-                Wp.Paragraph tableParagraph = generateTableParagraph(table);
-                //body.AppendChild(table);
-                body.AppendChild(tableParagraph);
+                    Wp.Table table = CreateDanceSchemaTable(lang, schemaInfo, schemaName);
+                    Wp.Paragraph tableParagraph = generateTableParagraph(table);
+                    //body.AppendChild(table);
+                    body.AppendChild(tableParagraph);
 
 
-                //body.AppendChild(new Wp.Break());
-                body.AppendChild(GenerateParagraph4());
-                body.AppendChild(GenerateParagraph5());
-                body.AppendChild(GenerateParagraph6());
+                    //body.AppendChild(new Wp.Break());
+                    body.AppendChild(GenerateParagraph4());
+                    body.AppendChild(GenerateParagraph5());
+                    body.AppendChild(GenerateParagraph6());
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
             }
         }
 
@@ -128,21 +130,21 @@ namespace CreateWordFiles
             Wp.Paragraph paragraph1 = new Wp.Paragraph();
 
             String[] lines = { texts["welcome"], texts["to"], danceName, danceDates };
-            
+
             String[] colors = { "Black", "Black", "Black", "Black" };
             int[] fontSizes = { 20, 12, 32, 20 };
             return GenerateParagraph(lines, fontSizes, colors);
         }
         public static Wp.Paragraph GenerateCallerNameParagraph(String callerName)
         {
-            String[] names= callerName.Split('_');
+            String[] names = callerName.Split('_');
 
             String firstName = char.ToUpper(names[0][0]) + names[0].Substring(1);
             String lastName = char.ToUpper(names[1][0]) + names[1].Substring(1);
 
-            callerName = String.Format("{0} {1}",names[0], names[1]);
+            callerName = String.Format("{0} {1}", names[0], names[1]);
             String[] lines = { callerName };
-            String[] colors = { "Black"};
+            String[] colors = { "Black" };
             int[] fontSizes = { 32 };
             return GenerateParagraph(lines, fontSizes, colors);
         }
@@ -188,7 +190,7 @@ namespace CreateWordFiles
             for (int i = 0; i < lines.Length; i++)
             {
                 String fontSizeTxt = (fontSizes[i] * 2).ToString();
-               
+
 
                 //byte[] bytes= Encoding.Default.GetBytes(lines[i]);
                 //String line = Encoding.UTF8.GetString(bytes); 
@@ -207,9 +209,9 @@ namespace CreateWordFiles
                 runProperties.Append(fontSize);
                 Wp.Text text1 = new Wp.Text();
                 text1.Text = line;
-               if (colors[i]=="Red")
+                if (colors[i] == "Red")
                 {
-                    Wp.Color color= new Wp.Color() { Val = "FF0000" };
+                    Wp.Color color = new Wp.Color() { Val = "FF0000" };
                     runProperties.Append(color);
 
                 }
@@ -224,13 +226,13 @@ namespace CreateWordFiles
         }
 
         // Insert a table into a word processing document.
-        public static Wp.Table CreateDanceSchemaTable(String lang, List<DancePass> dancePasses)
+        public static Wp.Table CreateDanceSchemaTable(String lang, SchemaInfo schemaInfo, String schemaName)
         {
-
+            List<DancePass> dancePasses = schemaInfo.danceSchema;
 
             var n = dancePasses.Select(o => new { Day = o.day }).Distinct();
             int numberOfDistinctDays = n.Count();
-            
+
             dancePassesDayList.Clear();
 
             for (int i = 1; i <= numberOfDistinctDays; i++)
@@ -240,21 +242,23 @@ namespace CreateWordFiles
 
             if (numberOfDistinctDays == 2)
             {
-               return createWeekendDanceSchemaTable(lang, dancePassesDayList);
-            } else if (numberOfDistinctDays == 4)
+                return createWeekendDanceSchemaTable(lang, dancePassesDayList, schemaInfo);
+            }
+            else if (numberOfDistinctDays == 4)
             {
-                return createFestivalDanceSchemaTable();
-            } else
+                return createFestivalDanceSchemaTable(schemaInfo);
+            }
+            else
             {
                 return null;
             }
         }
-        public static Wp.Table createFestivalDanceSchemaTable()
+        public static Wp.Table createFestivalDanceSchemaTable(SchemaInfo schemaInfo)
         {
             Wp.Table table = new Wp.Table();
             return table;
         }
-        public static Wp.Table createWeekendDanceSchemaTable(String lang, List<DancePass[]> dancePassesDayList)
+        public static Wp.Table createWeekendDanceSchemaTable(String lang, List<DancePass[]> dancePassesDayList, SchemaInfo schemaInfo)
         {
             //}
             Wp.Table table = new Wp.Table();
@@ -263,19 +267,20 @@ namespace CreateWordFiles
 
             int[] colWidth = { 2000, 500, 300, 2000, 500 };
 
-            createFirstWeekendRow(table, colWidth);                     // row 1, Header row
-            createWeekEndRow(dancePassesDayList, table, colWidth, 2);   // row 2
-            createWeekEndRow(dancePassesDayList, table, colWidth, 3);   // row 3
-            if (dancePassesDayList[0].Length> 2 || dancePassesDayList[1].Length > 2)
+            createFirstWeekendRow(table, colWidth);                                 // row 1, Header row
+            createWeekEndRow(dancePassesDayList, table, schemaInfo.colWidth, 2);    // row 2
+            // Merge column 1 and 2 if schemaName== "weekend_meeting"
+            createWeekEndRow(dancePassesDayList, table, schemaInfo.colWidth, 3, schemaInfo.schemaName == "weekend_meeting");   // row 3
+            if (dancePassesDayList[0].Length > 2 || dancePassesDayList[1].Length > 2)
             {
-                createWeekEndRow(dancePassesDayList, table, colWidth, 4);  // row 4
+                createWeekEndRow(dancePassesDayList, table, schemaInfo.colWidth, 4);  // row 4
             }
 
             return table;
 
         }
 
-        private static void createWeekEndRow(List<DancePass[]> dancePassesDayList, Wp.Table table, int[] colWidth, int row)
+        private static void createWeekEndRow(List<DancePass[]> dancePassesDayList, Wp.Table table, List<int> colWidth, int row, Boolean merge = false)
         {
             int i1 = row - 2;
             String level2 = "";
@@ -284,7 +289,8 @@ namespace CreateWordFiles
             {
                 timeString2 = formatTimeInterval(dancePassesDayList[1], i1);
                 level2 = dancePassesDayList[1][i1].level;
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
 
             }
@@ -307,7 +313,7 @@ namespace CreateWordFiles
                 timeString2,
                 level2 };
 
-            table.Append(createRow(content, colWidth));
+            table.Append(createRow(content, colWidth.ToArray(), merge));
         }
 
         /// <summary>
@@ -328,6 +334,10 @@ namespace CreateWordFiles
         private static String formatTimeInterval(DancePass[] dancePasses, int row)
         {
             String text = String.Format("{0}-{1}", dancePasses[row].start_time, dancePasses[row].end_time);
+            if (dancePasses[row].end_time.Length > 6) // quick and dirty solution for Årsmöte
+            {
+                text = String.Format("{0} {1}", dancePasses[row].start_time, dancePasses[row].end_time);
+            }
             return text;
         }
         private static DancePass[] getDancePassesForDay(List<DancePass> dancePasses, int day)
@@ -342,19 +352,17 @@ namespace CreateWordFiles
 
         private static Wp.TableRow createRow1(String[] content, int[] colWidth)
         {
-             Wp.TableRow row = new Wp.TableRow();
+            Wp.TableRow row = new Wp.TableRow();
             var rowProps = new Wp.TableRowProperties();
 
 
             rowProps.Append(new Wp.TableJustification { Val = Wp.TableRowAlignmentValues.Center });
-//            rowProps.Append(new Wp.TableRowHeight { Val = (OXML.UInt32Value) 15 });
-            //rowProps.Append(new Wp.TableRowHeight { HeightType = Wp.HeightRuleValues.Auto });
 
             row.Append(rowProps);
-            Wp.TableCell[] tableCell= new Wp.TableCell[5];
+            Wp.TableCell[] tableCell = new Wp.TableCell[5];
             for (int i = 0; i < content.Length; i++)
             {
-               tableCell[i] = createACell(content[i], colWidth[i], true);
+                tableCell[i] = createACell(content[i], colWidth[i], true);
                 row.Append(tableCell[i]);
             }
 
@@ -383,27 +391,29 @@ namespace CreateWordFiles
             tc2.Append(cellTwoProperties);
 
         }
-        private static Wp.TableRow createRow(String[] content, int[] colWidth)
+        private static Wp.TableRow createRow(String[] content, int[] colWidth, bool merge = false)
         {
-            
+
             Wp.TableRow row = new Wp.TableRow();
             var rowProps = new Wp.TableRowProperties();
             rowProps.Append(new Wp.TableJustification { Val = Wp.TableRowAlignmentValues.Center });
-//            rowProps.Append(new Wp.TableRowHeight { Val = (OXML.UInt32Value)15 });
-            //rowProps.Append(new Wp.TableRowHeight { HeightType = Wp.HeightRuleValues.Auto });
 
             row.Append(rowProps);
+            List<Wp.TableCell> tableCells = new List<Wp.TableCell>();
             for (int i = 0; i < content.Length; i++)
             {
-                Wp.TableCell tableCell = createACell(content[i], colWidth[i]);
-                row.Append(tableCell);
+                Wp.TableCell tableCell1 = createACell(content[i], colWidth[i]);
+                tableCells.Add(tableCell1);
+                row.Append(tableCell1);
             }
-
-
+            if (merge)
+            {
+                MergeCells(tableCells[0], tableCells[1]);
+            }
             return row;
 
         }
-        private static Wp.TableCell createACell(String text, int width, Boolean underline= false)
+        private static Wp.TableCell createACell(String text, int width, Boolean underline = false)
         {
             String widthStr = width.ToString();
             Wp.TableCell tableCell = new Wp.TableCell();
@@ -428,10 +438,10 @@ namespace CreateWordFiles
 
             paragraph.Append(run);
 
-  
+
 
             tableCell.Append(paragraph);
-           // tableCell.Append(run);
+            // tableCell.Append(run);
 
             // Specify the width property of the table cell.
             tableCell.Append(new Wp.TableCellProperties(
@@ -495,10 +505,10 @@ namespace CreateWordFiles
             //WebRequest request = WebRequest.Create(uri);
             // Define a cache policy for this request only. 
             HttpRequestCachePolicy noCachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore);
-           
 
 
-            System.Net.WebRequest request= System.Net.WebRequest.Create(fileName);
+
+            System.Net.WebRequest request = System.Net.WebRequest.Create(fileName);
             request.CachePolicy = noCachePolicy;
             System.Net.WebResponse response = request.GetResponse();
             using (System.IO.Stream responseStream = response.GetResponseStream())
@@ -660,19 +670,19 @@ namespace CreateWordFiles
                 EditId = "44CEF5E4",
                 AnchorId = "44803ED1"
             };
-            
+
             DW.SimplePosition _spos = new DW.SimplePosition()
             {
                 X = 0,
                 Y = 0
-             };
+            };
 
             DW.HorizontalPosition _hp = new DW.HorizontalPosition()
             {
                 RelativeFrom = DW.HorizontalRelativePositionValues.Column
             };
             DW.PositionOffset _hPO = new DW.PositionOffset();
-             _hPO.Text = "4445";
+            _hPO.Text = "4445";
             _hp.Append(_hPO);
 
             DW.VerticalPosition _vp = new DW.VerticalPosition()
@@ -699,7 +709,7 @@ namespace CreateWordFiles
                 BottomEdge = 0L
             };
             DW.WrapNone _wpn = new DW.WrapNone();
-            
+
             DW.DocProperties _dp = new DW.DocProperties()
             {
                 Id = 1U,
@@ -786,7 +796,7 @@ namespace CreateWordFiles
 
         public static String GetHtmlCode(DateTime danceDateStart, DateTime danceDateEnd, String monthName1, String monthName2)
         {
-            
+
             var sb = new System.Text.StringBuilder();
             sb.Append(String.Format("<p>{0} {1} {2}<br/>{3} - {4}<br/>{5} - {6} </p>", texts["Saturday"], danceDateStart.Day, monthName1,
                 texts["pass_1_weekend_time"], texts["pass_1_weekend_level"], texts["pass_2_weekend_time"], texts["pass_2_weekend_level"]));

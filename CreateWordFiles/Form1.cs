@@ -52,14 +52,15 @@ namespace CreateWordFiles
             }
         }
 
-        private List<DancePass> getDancePasses()
+        private SchemaInfo getSchemaInfo()
         {
             List<DancePass> dancpasses = new List<DancePass>();
             String schema= this.comboBoxDanceSchema.Text;
             String url = String.Format("{0}/{1}.json", Utility.map["dance_schemas"], schema);
             String schemaJson = getResponseText(url);
-            dancpasses = JsonConvert.DeserializeObject<List<DancePass>>(schemaJson);
-            return dancpasses;
+            SchemaInfo schemaInfo= JsonConvert.DeserializeObject<SchemaInfo > (schemaJson);
+            dancpasses = schemaInfo.danceSchema;
+            return schemaInfo;
         }
 
 
@@ -127,12 +128,25 @@ namespace CreateWordFiles
                    .Where(r => r.Checked).FirstOrDefault();
             String lang = (String)radioButtonLanguage.Tag;
             this.getTexts(lang);
-            List<DancePass> danceSchema = this.getDancePasses();
-            Creator.CreateWordprocessingDocument(Utility.map, lang, danceSchema, this.comboBoxDanceSchema.Text,
-            this.dateTimePickerStart.Value, this.dateTimePickerEnd.Value);
-            //System.Diagnostics.Process.Start(file);
-            MessageBox.Show("Flyer skapad");
-            //this.Close();
+            SchemaInfo schemaInfo= this.getSchemaInfo();
+            String schemaName = this.comboBoxDanceSchema.Text;
+#if DEBUG
+            String fileName = String.Format("{0}_{1}_{2}.docx", schemaName, Utility.map["danceName"], lang);
+#else
+            String fileName = String.Format("{0}_{1}.docx", texts["danceName"], lang);
+#endif
+            String path = Path.Combine(Utility.map["outputFolder"], fileName);
+            try
+            {
+                Creator.CreateWordprocessingDocument(Utility.map, lang, schemaInfo, schemaName, path,
+                this.dateTimePickerStart.Value, this.dateTimePickerEnd.Value);
+                System.Diagnostics.Process.Start(path);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(String.Format("Något gick fel. Är filen {0} öppen?", path));
+            }
+             
         }
         private void getTexts(String lang)
         {
