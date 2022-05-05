@@ -62,7 +62,17 @@ namespace CreateWordFiles.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to welcome;Welcome
-        ///to;to.
+        ///to;to
+        ///Friday;Friday
+        ///Saturday;Saturday
+        ///Sunday;Sunday
+        ///Monday;Monday
+        ///weekend_member_fees;Members: SEK {0}/pass, all passes SEK {1}
+        ///weekend_non_member_fees;Non members: SEK {0}/pass, all passes SEK {1}
+        ///one_pass_sunday;(sunday counts as 2 passes)
+        ///pg_pay;N/A
+        ///swish_pay;N/A
+        ///.
         /// </summary>
         internal static string texts_en {
             get {
@@ -72,7 +82,17 @@ namespace CreateWordFiles.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to welcome;Välkommen
-        ///to;till.
+        ///to;till
+        ///Friday;Fredag
+        ///Saturday;Lördag
+        ///Sunday;Söndag
+        ///Monday;Måndag
+        ///weekend_member_fees;Medlem: {0} kr/pass, samtliga pass {1} kr
+        ///weekend_non_member_fees;Ej medlem: {0} kr/pass, samtliga pass {1} kr
+        ///one_pass_sunday;(söndag räknas som 2 pass)
+        ///pg_pay;Betala gärna i förväg på PlusGiro 85 56 69-8 (MOTIV8&apos;S)
+        ///swish_pay;Swisha till 070-422 82 27 (Arne G) eller kontanter ”i dörren” går också bra
+        ///.
         /// </summary>
         internal static string texts_se {
             get {

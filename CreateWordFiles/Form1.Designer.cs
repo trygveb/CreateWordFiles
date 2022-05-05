@@ -50,6 +50,8 @@
             this.radioButtonSwedish = new System.Windows.Forms.RadioButton();
             this.comboBoxDanceSchema = new System.Windows.Forms.ComboBox();
             this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.comboBoxDanceLocation = new System.Windows.Forms.ComboBox();
             this.groupBox2.SuspendLayout();
             this.groupBoxLanguage.SuspendLayout();
             this.SuspendLayout();
@@ -251,11 +253,30 @@
             this.label7.TabIndex = 23;
             this.label7.Text = "Dansschema";
             // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(262, 150);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(54, 13);
+            this.label8.TabIndex = 25;
+            this.label8.Text = "Danslokal";
+            // 
+            // comboBoxDanceLocation
+            // 
+            this.comboBoxDanceLocation.FormattingEnabled = true;
+            this.comboBoxDanceLocation.Location = new System.Drawing.Point(265, 166);
+            this.comboBoxDanceLocation.Name = "comboBoxDanceLocation";
+            this.comboBoxDanceLocation.Size = new System.Drawing.Size(214, 21);
+            this.comboBoxDanceLocation.TabIndex = 24;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(510, 391);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.comboBoxDanceLocation);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.comboBoxDanceSchema);
             this.Controls.Add(this.groupBoxLanguage);
@@ -306,6 +327,8 @@
         private System.Windows.Forms.RadioButton radioButtonSwedish;
         private System.Windows.Forms.ComboBox comboBoxDanceSchema;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.ComboBox comboBoxDanceLocation;
     }
 }
 

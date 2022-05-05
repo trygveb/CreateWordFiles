@@ -19,8 +19,9 @@ namespace CreateWordFiles
     {
         private static Wp.Color wpColorBlackx = new Wp.Color() { Val = "000000" };
         private static Wp.Color wpColorRedx = new Wp.Color() { Val = "FF0000" };
-        private static Dictionary<String, String> texts;
+        private static Dictionary<String, String> myTexts;
         private static List<DancePass[]> dancePassesDayList = new List<DancePass[]>();
+        private static Fees myFees;
 
         /// <summary>
         /// Only weekend dances supported 
@@ -29,12 +30,14 @@ namespace CreateWordFiles
         /// <param name="danceName"></param>
         /// <param name="danceDateStart"></param>
         /// <param name="danceDateEnd"></param>
-        public static void CreateWordprocessingDocument(Dictionary<String, String> myTexts, String lang, SchemaInfo schemaInfo,
-            String schemaName, String path, DateTime danceDateStart, DateTime danceDateEnd)
+        public static void CreateWordprocessingDocument(Dictionary<String, String> texts, String lang, SchemaInfo schemaInfo,
+            String schemaName, String path, Fees fees,  DateTime danceDateStart, DateTime danceDateEnd)
         {
             string monthName1, monthName2, danceDates;
 
-            texts = myTexts;
+            myTexts = texts;
+            myFees = fees;
+
             danceDates = createDanceDates(danceDateStart, danceDateEnd, out monthName1, out monthName2);
 
             //String htmlText = GetHtmlCode(danceDateStart, danceDateEnd, monthName1, monthName2);
@@ -55,12 +58,12 @@ namespace CreateWordFiles
                     //String fileNameLogo = @"Resources\M8-logo1.gif";
                     String fileNameLogo = "https://motiv8s.se/19/images/M8/Logga_Transparent.jpg";
                     addImage("Anchor", wordDocument, fileNameLogo, 0.1667, 1.0, 1.6);
-                    Wp.Paragraph paragraph1 = GenerateWelcomeParagraph(texts["danceName"].ToUpper(), danceDates);
+                    Wp.Paragraph paragraph1 = GenerateWelcomeParagraph(myTexts["danceName"].ToUpper(), danceDates);
                     body.AppendChild(paragraph1);
 
-                    addImage("Inline", wordDocument, texts["callerPictureFile"], 0.7, 6.0, 10.0);
+                    addImage("Inline", wordDocument, myTexts["callerPictureFile"], 0.7, 6.0, 10.0);
 
-                    body.AppendChild(GenerateCallerNameParagraph(texts["callerName"]));
+                    body.AppendChild(GenerateCallerNameParagraph(myTexts["callerName"]));
 
                     Wp.Table table = CreateDanceSchemaTable(lang, schemaInfo, schemaName);
                     Wp.Paragraph tableParagraph = generateTableParagraph(table);
@@ -69,7 +72,7 @@ namespace CreateWordFiles
 
 
                     //body.AppendChild(new Wp.Break());
-                    body.AppendChild(GenerateParagraph4());
+                    body.AppendChild(GenerateFeesParagraph(schemaInfo));
                     body.AppendChild(GenerateParagraph5());
                     body.AppendChild(GenerateParagraph6());
                 }
@@ -126,10 +129,9 @@ namespace CreateWordFiles
         }
         public static Wp.Paragraph GenerateWelcomeParagraph(String danceName, String danceDates)
         {
-            //Paragraph paragraph1 = new Paragraph() { RsidParagraphAddition = "004F7104", RsidParagraphProperties = "008F2986", RsidRunAdditionDefault = "004F7104" };
             Wp.Paragraph paragraph1 = new Wp.Paragraph();
 
-            String[] lines = { texts["welcome"], texts["to"], danceName, danceDates };
+            String[] lines = { myTexts["welcome"], myTexts["to"], danceName, danceDates };
 
             String[] colors = { "Black", "Black", "Black", "Black" };
             int[] fontSizes = { 20, 12, 32, 20 };
@@ -142,7 +144,7 @@ namespace CreateWordFiles
             String firstName = char.ToUpper(names[0][0]) + names[0].Substring(1);
             String lastName = char.ToUpper(names[1][0]) + names[1].Substring(1);
 
-            callerName = String.Format("{0} {1}", names[0], names[1]);
+            callerName = String.Format("{0} {1}", firstName, lastName);
             String[] lines = { callerName };
             String[] colors = { "Black" };
             int[] fontSizes = { 32 };
@@ -151,17 +153,31 @@ namespace CreateWordFiles
 
 
 
-        public static Wp.Paragraph GenerateParagraph4()
+        public static Wp.Paragraph GenerateFeesParagraph(SchemaInfo schemaInfo)
         {
-            String[] lines = {
-                "Medlem: 100 kr/pass, samtliga pass 350 kr",
-                "Ej medlem: 120 kr/pass, samtliga pass 400 kr",
-                "Betala gärna i förväg på PlusGiro 85 56 69-8 (MOTIV8'S)",
-                "Swish till 070-422 82 27 (Arne G) eller kontanter ”i dörren” går också bra",
-            };
+           List<String> lines = new List<String>();
+            if (schemaInfo.schemaName.StartsWith("weekend"))
+            {
+                lines.Add(String.Format(myTexts["weekend_member_fees"], myFees.weekends[0], myFees.weekends[1]));
+                lines.Add(String.Format(myTexts["weekend_non_member_fees"], myFees.weekends[2], myFees.weekends[3]));
+                if (schemaInfo.schemaName == "weekend_january")
+                {
+                    lines.Add(myTexts["one_pass_sunday"]);
+                }
+                String pgPay = myTexts["pg_pay"];
+                if (pgPay != "N/A") { 
+                    lines.Add(pgPay);
+                }
+                String swishpay = myTexts["swish_pay"];
+                if (swishpay != "N/A")
+                {
+                    lines.Add(swishpay);
+                }
+            }
+
             int[] fontSizes = { 12, 12, 12, 12 };
             String[] colors = { "Black", "Black", "Black", "Black" };
-            return GenerateParagraph(lines, fontSizes, colors);
+            return GenerateParagraph(lines.ToArray(), fontSizes, colors);
         }
         public static Wp.Paragraph GenerateParagraph5()
         {
@@ -324,8 +340,8 @@ namespace CreateWordFiles
         private static void createFirstWeekendRow(Wp.Table table, int[] colWidth)
         {
             String[] content = new String[5];// = { "Lördag", "", "Söndag", "" };
-            content[0] = texts["Saturday"];
-            content[3] = texts["Sunday"];
+            content[0] = myTexts["Saturday"];
+            content[3] = myTexts["Sunday"];
 
             Wp.TableRow tr1 = createRow1(content, colWidth);
             table.Append(tr1);
@@ -798,8 +814,8 @@ namespace CreateWordFiles
         {
 
             var sb = new System.Text.StringBuilder();
-            sb.Append(String.Format("<p>{0} {1} {2}<br/>{3} - {4}<br/>{5} - {6} </p>", texts["Saturday"], danceDateStart.Day, monthName1,
-                texts["pass_1_weekend_time"], texts["pass_1_weekend_level"], texts["pass_2_weekend_time"], texts["pass_2_weekend_level"]));
+            sb.Append(String.Format("<p>{0} {1} {2}<br/>{3} - {4}<br/>{5} - {6} </p>", myTexts["Saturday"], danceDateStart.Day, monthName1,
+                myTexts["pass_1_weekend_time"], myTexts["pass_1_weekend_level"], myTexts["pass_2_weekend_time"], myTexts["pass_2_weekend_level"]));
             sb.Append(String.Format("<p>Söndag {0} {1} <br/>10:00 - 13:00 - C3A <br/> 14:00 - 17:00 - C3B</p>", danceDateEnd.Day, monthName2));
             sb.Append("<p class='mobile - undersized - lower'>Medlem: <span style='background - color: #ffff00;'>100</span> kr/pass, samtliga pass <span style='background-color: #ffff00;'>350</span> kr<br/>");
             sb.Append("Ej medlem: <span style='background - color: #ffff00;'>120</span> kr/pass, samtliga pass <span style='background-color: #ffff00;'>400</span> kr<br/>");

@@ -1,6 +1,0 @@
-welcome;Välkommen
-to;till
-Friday;Fredag
-Saturday;Lördag
-Sunday;Söndag
-Monday;Måndag

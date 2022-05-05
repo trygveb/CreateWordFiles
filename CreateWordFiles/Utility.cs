@@ -12,6 +12,10 @@ namespace CreateWordFiles
         public List<DancePass> danceSchema { get; set; }
         public List<int> colWidth { get; set; }
     }
+    public class Fees
+    {
+        public List<int> weekends { get; set; }
+    }
     public class DancePass
     {
         public int pass_no { get; set; }
@@ -32,6 +36,7 @@ namespace CreateWordFiles
         /// Dictionary holding urls and texts in different languages
         /// </summary>
         public static Dictionary<String, String> map = new Dictionary<String, String>();
+        public static Dictionary<String, String> danceLocations = new Dictionary<String, String>();
         public static Dictionary<string, string> callerDictionary = new Dictionary<string, string>();
 
         /// <summary>

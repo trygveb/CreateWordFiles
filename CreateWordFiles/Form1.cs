@@ -26,7 +26,14 @@ namespace CreateWordFiles
             this.folderBrowserDialog1.Description =
             "Välj katalog för utdata.";
             Utility.readToDictionary(@"Resources\web.csv", Utility.map);
-
+            Utility.readToDictionary(@"Resources\dance_locations.csv", Utility.danceLocations);
+            comboBoxDanceLocation.DataSource = new BindingSource(Utility.danceLocations, null);
+            comboBoxDanceLocation.DisplayMember = "Key";
+            comboBoxDanceLocation.ValueMember = "Value";
+            //foreach (KeyValuePair<string, string> location in Utility.danceLocations)
+            //{
+            //    comboBoxDanceLocation.Items.Add(location);
+            //}
             getCallers();
             getDanceSchemas();
             this.comboBoxCaller.SelectedIndex = 0;
@@ -128,17 +135,20 @@ namespace CreateWordFiles
                    .Where(r => r.Checked).FirstOrDefault();
             String lang = (String)radioButtonLanguage.Tag;
             this.getTexts(lang);
-            SchemaInfo schemaInfo= this.getSchemaInfo();
+            SchemaInfo schemaInfo = this.getSchemaInfo();
+
+            Fees fees= getFees();
+
             String schemaName = this.comboBoxDanceSchema.Text;
 #if DEBUG
             String fileName = String.Format("{0}_{1}_{2}.docx", schemaName, Utility.map["danceName"], lang);
 #else
-            String fileName = String.Format("{0}_{1}.docx", texts["danceName"], lang);
+            String fileName = String.Format("{0}_{1}.docx", Utility.map["danceName"], lang);
 #endif
             String path = Path.Combine(Utility.map["outputFolder"], fileName);
             try
             {
-                Creator.CreateWordprocessingDocument(Utility.map, lang, schemaInfo, schemaName, path,
+                Creator.CreateWordprocessingDocument(Utility.map, lang, schemaInfo, schemaName, path, fees,
                 this.dateTimePickerStart.Value, this.dateTimePickerEnd.Value);
                 System.Diagnostics.Process.Start(path);
             }
@@ -146,12 +156,21 @@ namespace CreateWordFiles
             {
                 MessageBox.Show(String.Format("Något gick fel. Är filen {0} öppen?", path));
             }
-             
+
         }
+
+        private static Fees getFees()
+        {
+            String url = Utility.map["dancing_fees"];
+            String feesJson = getResponseText(url);
+            Fees fees = JsonConvert.DeserializeObject<Fees>(feesJson);
+            return fees;
+        }
+
         private void getTexts(String lang)
         {
             String[] lines;
-            String fileName = String.Format(@"Resources\texts_{0}.txt", lang);
+            String fileName = String.Format(@"Resources\texts_{0}.csv", lang);
             lines = System.IO.File.ReadAllLines(fileName,  Encoding.Default);
             //Dictionary<String, String> map = new Dictionary<String, String>();
             foreach (String line in lines)

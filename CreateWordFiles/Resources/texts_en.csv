@@ -1,0 +1,11 @@
+welcome;Welcome
+to;to
+Friday;Friday
+Saturday;Saturday
+Sunday;Sunday
+Monday;Monday
+weekend_member_fees;Members: SEK {0}/pass, all passes SEK {1}
+weekend_non_member_fees;Non members: SEK {0}/pass, all passes SEK {1}
+one_pass_sunday;(sunday counts as 2 passes)
+pg_pay;N/A
+swish_pay;N/A
