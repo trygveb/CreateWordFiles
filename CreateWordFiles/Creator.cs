@@ -31,7 +31,7 @@ namespace CreateWordFiles
         /// <param name="danceDateStart"></param>
         /// <param name="danceDateEnd"></param>
         public static void CreateWordprocessingDocument(Dictionary<String, String> texts, String lang, SchemaInfo schemaInfo,
-            String schemaName, String path, Fees fees, String danceLocation, DateTime danceDateStart, DateTime danceDateEnd)
+            String schemaName, String path, Fees fees, Boolean coffee, String danceLocation, DateTime danceDateStart, DateTime danceDateEnd)
         {
             string monthName1, monthName2, danceDates;
 
@@ -57,11 +57,11 @@ namespace CreateWordFiles
 
                     //String fileNameLogo = @"Resources\M8-logo1.gif";
                     String fileNameLogo = "https://motiv8s.se/19/images/M8/Logga_Transparent.jpg";
-                    addImage("Anchor", wordDocument, fileNameLogo, 0.1667, 1.0, 1.6);
+                    addImage("Anchor", wordDocument, fileNameLogo, 128, 1.0, 1.6);
                     Wp.Paragraph paragraph1 = GenerateWelcomeParagraph(myTexts["danceName"].ToUpper(), danceDates);
                     body.AppendChild(paragraph1);
-
-                    addImage("Inline", wordDocument, myTexts["callerPictureFile"], 0.7, 6.0, 10.0);
+                    double scale = 0.7;
+                    addImage("Inline", wordDocument, myTexts["callerPictureFile"], 275, 6.0, 10.0);
 
                     body.AppendChild(GenerateCallerNameParagraph(myTexts["callerName"]));
 
@@ -74,7 +74,8 @@ namespace CreateWordFiles
                     //body.AppendChild(new Wp.Break());
                     body.AppendChild(GenerateDanceLocationParagraph(danceLocation));
                     body.AppendChild(GenerateFeesParagraph(schemaInfo));
-                    body.AppendChild(GenerateParagraph6());
+                    body.AppendChild(GenerateCoffeeParagraph(coffee));
+                    body.AppendChild(GenerateRotationParagraph());
                 }
             }
             catch (Exception e)
@@ -151,8 +152,6 @@ namespace CreateWordFiles
             return GenerateParagraph(lines, fontSizes, colors);
         }
 
-
-
         public static Wp.Paragraph GenerateFeesParagraph(SchemaInfo schemaInfo)
         {
             List<String> lines = new List<String>();
@@ -185,21 +184,32 @@ namespace CreateWordFiles
             String[] lines = { danceLocation };
             int[] fontSizes = { 14 };
             String[] colors = { "Black" };
-            Wp.ParagraphBorders borders = createParagraphBorders(Wp.BorderValues.Double, 12, "FF0000");
+            //224/197/18
+            Wp.ParagraphBorders borders = createParagraphBorders(Wp.BorderValues.Double, 12, "E0C512");
             return GenerateParagraph(lines, fontSizes, colors, borders);
         }
-        public static Wp.Paragraph GenerateParagraph6()
+        public static Wp.Paragraph GenerateCoffeeParagraph(Boolean coffee)
         {
-            String[] lines = {
-                "Vi använder rotationsprogram på samtliga nivåer!",
-                "Ta med eget fika! - Vi ordnar hämtning av Pizza och sallad till pausen!"
-            };
-            int[] fontSizes = { 14, 14 };
-            String[] colors = { "Black", "Black" };
+            String text = String.Format("{0} - {1}", myTexts["no_coffee"], myTexts["lunch"]);
+            if (coffee)
+            {
+                text = String.Format("{0} - {1}", myTexts["coffee"], myTexts["lunch"]);
+            }
+            String[] lines = { text };
+            int[] fontSizes = { 13 };
+            String[] colors = { "Black" };
+            Wp.ParagraphBorders borders = createParagraphBorders(Wp.BorderValues.Double, 12, "E0C512");
+            return GenerateParagraph(lines, fontSizes, colors,borders);
+        }
+
+        public static Wp.Paragraph GenerateRotationParagraph()
+        {
+            String[] lines = { myTexts["rotation"] };
+            int[] fontSizes = { 14 };
+            String[] colors = { "Black" };
 
             return GenerateParagraph(lines, fontSizes, colors);
         }
-
         private static Wp.Paragraph GenerateParagraph(string[] lines, int[] fontSizes, String[] colors, Wp.ParagraphBorders borders = null)
         {
             Wp.Paragraph paragraph = new Wp.Paragraph();
@@ -533,7 +543,7 @@ namespace CreateWordFiles
             Wp.TableBorders tableBorders = new Wp.TableBorders(createBorders(type, size));
             return tableBorders;
         }
-        public static void addImage(String type, WordprocessingDocument wordprocessingDocument, String fileName, double scale, double x0_cm, double y0_cm)
+        public static void addImage(String type, WordprocessingDocument wordprocessingDocument, String fileName, int maxHeight, double x0_cm, double y0_cm)
         {
             MainDocumentPart mainPart = wordprocessingDocument.MainDocumentPart;
             ImagePart imagePart = mainPart.AddImagePart(ImagePartType.Jpeg);
@@ -550,14 +560,13 @@ namespace CreateWordFiles
             // Define a cache policy for this request only. 
             HttpRequestCachePolicy noCachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore);
 
-
+            double scale = 1;
 
             System.Net.WebRequest request = System.Net.WebRequest.Create(fileName);
             request.CachePolicy = noCachePolicy;
             System.Net.WebResponse response = request.GetResponse();
             using (System.IO.Stream responseStream = response.GetResponseStream())
             {
-                Console.WriteLine("IsFromCache? {0}", response.IsFromCache);
                 // Convert the System.Net.Connectstream responseStream to a System.IO.MemoryStream
                 // as imagePart.FeedData (below) will need this to function OK
                 using (MemoryStream memoryStream = new MemoryStream())
@@ -569,7 +578,10 @@ namespace CreateWordFiles
                         bmp.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Jpeg);
                     }
 
-
+                    //if (iHeight > maxHeight)
+                    //{
+                        scale = (double) maxHeight / (double) iHeight;
+                    //}
                     memoryStream.Position = 0;
                     imagePart.FeedData(memoryStream);
                 }
@@ -690,11 +702,6 @@ namespace CreateWordFiles
         /// <returns></returns>
         public static Wp.Drawing GetAnchorPicture(String imagePartId, double x0_cm, double y0_cm, int wPixels, int hPixels)
         {
-            // convert the cm to EMUs this way:
-            long f1 = 360000;
-            //long x0_emu = (long)Math.Round(x0_cm * f1);
-            //long y0_emu = (long)Math.Round(y0_cm * f1);
-            // convert the pixels to EMUs this way:
             long iWidth = (long)Math.Round((decimal)wPixels * 9525);
             long iHeight = (long)Math.Round((decimal)hPixels * 9525);
 

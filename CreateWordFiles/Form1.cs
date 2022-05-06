@@ -148,7 +148,7 @@ namespace CreateWordFiles
             String path = Path.Combine(Utility.map["outputFolder"], fileName);
             try
             {
-                Creator.CreateWordprocessingDocument(Utility.map, lang, schemaInfo, schemaName, path, fees,
+                Creator.CreateWordprocessingDocument(Utility.map, lang, schemaInfo, schemaName, path, fees, radioButtonCoffeeYes.Checked,
                 (String) this.comboBoxDanceLocation.SelectedValue, this.dateTimePickerStart.Value, this.dateTimePickerEnd.Value);
                 System.Diagnostics.Process.Start(path);
             }
