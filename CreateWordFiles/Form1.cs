@@ -149,7 +149,7 @@ namespace CreateWordFiles
             try
             {
                 Creator.CreateWordprocessingDocument(Utility.map, lang, schemaInfo, schemaName, path, fees,
-                this.dateTimePickerStart.Value, this.dateTimePickerEnd.Value);
+                (String) this.comboBoxDanceLocation.SelectedValue, this.dateTimePickerStart.Value, this.dateTimePickerEnd.Value);
                 System.Diagnostics.Process.Start(path);
             }
             catch (Exception)
@@ -229,6 +229,20 @@ namespace CreateWordFiles
             this.Close();
         }
 
+ 
+        private void label5_Click(object sender, EventArgs e)
+        {
 
+        }
+
+        private void label6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBoxCallerPicture_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

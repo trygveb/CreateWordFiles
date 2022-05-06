@@ -52,8 +52,12 @@
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.comboBoxDanceLocation = new System.Windows.Forms.ComboBox();
+            this.groupBoxCoffee = new System.Windows.Forms.GroupBox();
+            this.radioButtonCoffeeNo = new System.Windows.Forms.RadioButton();
+            this.radioButtonCoffeeYes = new System.Windows.Forms.RadioButton();
             this.groupBox2.SuspendLayout();
             this.groupBoxLanguage.SuspendLayout();
+            this.groupBoxCoffee.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonOk
@@ -133,16 +137,17 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(24, 196);
+            this.label5.Location = new System.Drawing.Point(24, 215);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(62, 13);
             this.label5.TabIndex = 13;
             this.label5.Text = "Caller namn";
+            this.label5.Click += new System.EventHandler(this.label5_Click);
             // 
             // comboBoxCaller
             // 
             this.comboBoxCaller.FormattingEnabled = true;
-            this.comboBoxCaller.Location = new System.Drawing.Point(21, 212);
+            this.comboBoxCaller.Location = new System.Drawing.Point(21, 231);
             this.comboBoxCaller.Name = "comboBoxCaller";
             this.comboBoxCaller.Size = new System.Drawing.Size(141, 21);
             this.comboBoxCaller.TabIndex = 14;
@@ -150,19 +155,21 @@
             // 
             // textBoxCallerPicture
             // 
-            this.textBoxCallerPicture.Location = new System.Drawing.Point(190, 213);
+            this.textBoxCallerPicture.Location = new System.Drawing.Point(190, 232);
             this.textBoxCallerPicture.Name = "textBoxCallerPicture";
             this.textBoxCallerPicture.Size = new System.Drawing.Size(298, 20);
             this.textBoxCallerPicture.TabIndex = 15;
+            this.textBoxCallerPicture.TextChanged += new System.EventHandler(this.textBoxCallerPicture_TextChanged);
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(187, 197);
+            this.label6.Location = new System.Drawing.Point(187, 216);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(52, 13);
             this.label6.TabIndex = 16;
             this.label6.Text = "Caller bild";
+            this.label6.Click += new System.EventHandler(this.label6_Click);
             // 
             // textBoxOutputFolder
             // 
@@ -205,7 +212,7 @@
             // 
             this.groupBoxLanguage.Controls.Add(this.radioButtonEnglish);
             this.groupBoxLanguage.Controls.Add(this.radioButtonSwedish);
-            this.groupBoxLanguage.Location = new System.Drawing.Point(274, 33);
+            this.groupBoxLanguage.Location = new System.Drawing.Point(278, 4);
             this.groupBoxLanguage.Name = "groupBoxLanguage";
             this.groupBoxLanguage.Size = new System.Drawing.Size(183, 49);
             this.groupBoxLanguage.TabIndex = 21;
@@ -239,7 +246,7 @@
             // comboBoxDanceSchema
             // 
             this.comboBoxDanceSchema.FormattingEnabled = true;
-            this.comboBoxDanceSchema.Location = new System.Drawing.Point(265, 109);
+            this.comboBoxDanceSchema.Location = new System.Drawing.Point(274, 77);
             this.comboBoxDanceSchema.Name = "comboBoxDanceSchema";
             this.comboBoxDanceSchema.Size = new System.Drawing.Size(214, 21);
             this.comboBoxDanceSchema.TabIndex = 22;
@@ -247,7 +254,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(262, 93);
+            this.label7.Location = new System.Drawing.Point(271, 61);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(69, 13);
             this.label7.TabIndex = 23;
@@ -256,7 +263,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(262, 150);
+            this.label8.Location = new System.Drawing.Point(271, 115);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(54, 13);
             this.label8.TabIndex = 25;
@@ -265,16 +272,52 @@
             // comboBoxDanceLocation
             // 
             this.comboBoxDanceLocation.FormattingEnabled = true;
-            this.comboBoxDanceLocation.Location = new System.Drawing.Point(265, 166);
+            this.comboBoxDanceLocation.Location = new System.Drawing.Point(274, 131);
             this.comboBoxDanceLocation.Name = "comboBoxDanceLocation";
             this.comboBoxDanceLocation.Size = new System.Drawing.Size(214, 21);
             this.comboBoxDanceLocation.TabIndex = 24;
+            // 
+            // groupBoxCoffee
+            // 
+            this.groupBoxCoffee.Controls.Add(this.radioButtonCoffeeNo);
+            this.groupBoxCoffee.Controls.Add(this.radioButtonCoffeeYes);
+            this.groupBoxCoffee.Location = new System.Drawing.Point(274, 168);
+            this.groupBoxCoffee.Name = "groupBoxCoffee";
+            this.groupBoxCoffee.Size = new System.Drawing.Size(183, 49);
+            this.groupBoxCoffee.TabIndex = 26;
+            this.groupBoxCoffee.TabStop = false;
+            this.groupBoxCoffee.Text = "Fikaservering";
+            // 
+            // radioButtonCoffeeNo
+            // 
+            this.radioButtonCoffeeNo.AutoSize = true;
+            this.radioButtonCoffeeNo.Checked = true;
+            this.radioButtonCoffeeNo.Location = new System.Drawing.Point(84, 19);
+            this.radioButtonCoffeeNo.Name = "radioButtonCoffeeNo";
+            this.radioButtonCoffeeNo.Size = new System.Drawing.Size(41, 17);
+            this.radioButtonCoffeeNo.TabIndex = 1;
+            this.radioButtonCoffeeNo.TabStop = true;
+            this.radioButtonCoffeeNo.Tag = "en";
+            this.radioButtonCoffeeNo.Text = "Nej";
+            this.radioButtonCoffeeNo.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonCoffeeYes
+            // 
+            this.radioButtonCoffeeYes.AutoSize = true;
+            this.radioButtonCoffeeYes.Location = new System.Drawing.Point(11, 19);
+            this.radioButtonCoffeeYes.Name = "radioButtonCoffeeYes";
+            this.radioButtonCoffeeYes.Size = new System.Drawing.Size(36, 17);
+            this.radioButtonCoffeeYes.TabIndex = 0;
+            this.radioButtonCoffeeYes.Tag = "se";
+            this.radioButtonCoffeeYes.Text = "Ja";
+            this.radioButtonCoffeeYes.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(510, 391);
+            this.Controls.Add(this.groupBoxCoffee);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.comboBoxDanceLocation);
             this.Controls.Add(this.label7);
@@ -298,6 +341,8 @@
             this.groupBox2.PerformLayout();
             this.groupBoxLanguage.ResumeLayout(false);
             this.groupBoxLanguage.PerformLayout();
+            this.groupBoxCoffee.ResumeLayout(false);
+            this.groupBoxCoffee.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -329,6 +374,9 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ComboBox comboBoxDanceLocation;
+        private System.Windows.Forms.GroupBox groupBoxCoffee;
+        private System.Windows.Forms.RadioButton radioButtonCoffeeNo;
+        private System.Windows.Forms.RadioButton radioButtonCoffeeYes;
     }
 }
 

@@ -31,7 +31,7 @@ namespace CreateWordFiles
         /// <param name="danceDateStart"></param>
         /// <param name="danceDateEnd"></param>
         public static void CreateWordprocessingDocument(Dictionary<String, String> texts, String lang, SchemaInfo schemaInfo,
-            String schemaName, String path, Fees fees,  DateTime danceDateStart, DateTime danceDateEnd)
+            String schemaName, String path, Fees fees, String danceLocation, DateTime danceDateStart, DateTime danceDateEnd)
         {
             string monthName1, monthName2, danceDates;
 
@@ -72,8 +72,8 @@ namespace CreateWordFiles
 
 
                     //body.AppendChild(new Wp.Break());
+                    body.AppendChild(GenerateDanceLocationParagraph(danceLocation));
                     body.AppendChild(GenerateFeesParagraph(schemaInfo));
-                    body.AppendChild(GenerateParagraph5());
                     body.AppendChild(GenerateParagraph6());
                 }
             }
@@ -155,7 +155,7 @@ namespace CreateWordFiles
 
         public static Wp.Paragraph GenerateFeesParagraph(SchemaInfo schemaInfo)
         {
-           List<String> lines = new List<String>();
+            List<String> lines = new List<String>();
             if (schemaInfo.schemaName.StartsWith("weekend"))
             {
                 lines.Add(String.Format(myTexts["weekend_member_fees"], myFees.weekends[0], myFees.weekends[1]));
@@ -165,7 +165,8 @@ namespace CreateWordFiles
                     lines.Add(myTexts["one_pass_sunday"]);
                 }
                 String pgPay = myTexts["pg_pay"];
-                if (pgPay != "N/A") { 
+                if (pgPay != "N/A")
+                {
                     lines.Add(pgPay);
                 }
                 String swishpay = myTexts["swish_pay"];
@@ -179,14 +180,13 @@ namespace CreateWordFiles
             String[] colors = { "Black", "Black", "Black", "Black" };
             return GenerateParagraph(lines.ToArray(), fontSizes, colors);
         }
-        public static Wp.Paragraph GenerateParagraph5()
+        public static Wp.Paragraph GenerateDanceLocationParagraph(String danceLocation)
         {
-            String[] lines = {
-                "Plats: Segersjö Folkets Hus, Scheelevägen 41 i Tumba"
-            };
+            String[] lines = { danceLocation };
             int[] fontSizes = { 14 };
-            String[] colors = { "Red" };
-            return GenerateParagraph(lines, fontSizes, colors);
+            String[] colors = { "Black" };
+            Wp.ParagraphBorders borders = createParagraphBorders(Wp.BorderValues.Double, 12, "FF0000");
+            return GenerateParagraph(lines, fontSizes, colors, borders);
         }
         public static Wp.Paragraph GenerateParagraph6()
         {
@@ -200,9 +200,11 @@ namespace CreateWordFiles
             return GenerateParagraph(lines, fontSizes, colors);
         }
 
-        private static Wp.Paragraph GenerateParagraph(string[] lines, int[] fontSizes, String[] colors)
+        private static Wp.Paragraph GenerateParagraph(string[] lines, int[] fontSizes, String[] colors, Wp.ParagraphBorders borders = null)
         {
             Wp.Paragraph paragraph = new Wp.Paragraph();
+
+
             for (int i = 0; i < lines.Length; i++)
             {
                 String fontSizeTxt = (fontSizes[i] * 2).ToString();
@@ -214,7 +216,8 @@ namespace CreateWordFiles
 
 
                 Wp.FontSize fontSize = new Wp.FontSize { Val = new OXML.StringValue(fontSizeTxt) };  // Size in half points
-                Wp.ParagraphProperties paragraphProperties = new Wp.ParagraphProperties();
+                //Wp.ParagraphProperties paragraphProperties = new Wp.ParagraphProperties();
+                Wp.ParagraphProperties paragraphProperties = new Wp.ParagraphProperties(borders);
                 Wp.Justification justification = new Wp.Justification() { Val = Wp.JustificationValues.Center };
                 paragraphProperties.Append(justification);
 
@@ -233,7 +236,10 @@ namespace CreateWordFiles
                 }
                 run.Append(runProperties);
                 run.Append(text1);
-                run.Append(new Wp.Break());
+                if (i < lines.Length - 1)
+                {
+                    run.Append(new Wp.Break());
+                }
                 paragraph.Append(paragraphProperties);
                 paragraph.Append(run);
 
@@ -272,6 +278,7 @@ namespace CreateWordFiles
         public static Wp.Table createFestivalDanceSchemaTable(SchemaInfo schemaInfo)
         {
             Wp.Table table = new Wp.Table();
+            Wp.TableProperties tblProp = new Wp.TableProperties(createTableBorders(Wp.BorderValues.Dashed, 12));
             return table;
         }
         public static Wp.Table createWeekendDanceSchemaTable(String lang, List<DancePass[]> dancePassesDayList, SchemaInfo schemaInfo)
@@ -279,7 +286,6 @@ namespace CreateWordFiles
             //}
             Wp.Table table = new Wp.Table();
 
-            Wp.TableProperties tblProp = new Wp.TableProperties(createTableBorders(Wp.BorderValues.Dashed, 12));
 
             int[] colWidth = { 2000, 500, 300, 2000, 500 };
 
@@ -469,40 +475,62 @@ namespace CreateWordFiles
             return tableCell;
 
         }
+
+        private static OXML.OpenXmlElement[] createBorders(Wp.BorderValues type, OXML.UInt32Value size, String color="000000")
+        {
+            OXML.OpenXmlElement[] borders = {
+            new Wp.TopBorder()
+                {
+                    Val = new OXML.EnumValue<Wp.BorderValues>(type),
+                    Size = size,
+                    Color= color
+            },
+            new Wp.BottomBorder()
+                {
+                    Val = new OXML.EnumValue<Wp.BorderValues>(type),
+                    Size = size,
+                    Color= color
+
+                },
+            new Wp.LeftBorder()
+                {
+                    Val = new OXML.EnumValue<Wp.BorderValues>(type),
+                    Size = size,
+                    Color= color
+
+                },
+            new Wp.RightBorder()
+                {
+                    Val = new OXML.EnumValue<Wp.BorderValues>(type),
+                    Size = size,
+                    Color= color
+
+                },
+            new Wp.InsideHorizontalBorder()
+                {
+                    Val = new OXML.EnumValue<Wp.BorderValues>(type),
+                    Size = size,
+                    Color= color
+
+                },
+            new Wp.InsideVerticalBorder()
+                {
+                    Val = new OXML.EnumValue<Wp.BorderValues>(type),
+                    Size = size,
+                    Color= color
+
+                }
+            };
+            return borders;
+        }
+        public static Wp.ParagraphBorders createParagraphBorders(Wp.BorderValues type, OXML.UInt32Value size, String color="000000")
+        {
+            Wp.ParagraphBorders paragraphBorders = new Wp.ParagraphBorders(createBorders(type, size, color));
+            return paragraphBorders;
+        }
         public static Wp.TableBorders createTableBorders(Wp.BorderValues type, OXML.UInt32Value size)
         {
-            Wp.TableBorders tableBorders = new Wp.TableBorders(
-                new Wp.TopBorder()
-                {
-                    Val = new OXML.EnumValue<Wp.BorderValues>(type),
-                    Size = size
-                },
-                new Wp.BottomBorder()
-                {
-                    Val = new OXML.EnumValue<Wp.BorderValues>(type),
-                    Size = size
-                },
-                new Wp.LeftBorder()
-                {
-                    Val = new OXML.EnumValue<Wp.BorderValues>(type),
-                    Size = size
-                },
-                new Wp.RightBorder()
-                {
-                    Val = new OXML.EnumValue<Wp.BorderValues>(type),
-                    Size = size
-                },
-                new Wp.InsideHorizontalBorder()
-                {
-                    Val = new OXML.EnumValue<Wp.BorderValues>(type),
-                    Size = size
-                },
-                new Wp.InsideVerticalBorder()
-                {
-                    Val = new OXML.EnumValue<Wp.BorderValues>(type),
-                    Size = size
-                }
-            );
+            Wp.TableBorders tableBorders = new Wp.TableBorders(createBorders(type, size));
             return tableBorders;
         }
         public static void addImage(String type, WordprocessingDocument wordprocessingDocument, String fileName, double scale, double x0_cm, double y0_cm)
