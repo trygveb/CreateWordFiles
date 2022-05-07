@@ -76,7 +76,8 @@ namespace CreateWordFiles
                     body.AppendChild(GenerateCoffeeParagraph(coffee));
                     body.AppendChild(GenerateRotationParagraph());
 
-                    String html = htmlStringBuilder.ToString();
+                    String htmlText = htmlStringBuilder.ToString();
+                    File.WriteAllText(path.Replace("docx","html"), htmlText);
                 }
             }
             catch (Exception e)
@@ -158,23 +159,32 @@ namespace CreateWordFiles
             List<String> lines = new List<String>();
             if (schemaInfo.schemaName.StartsWith("weekend"))
             {
-                lines.Add(String.Format(myTexts["weekend_member_fees"], myFees.weekends[0], myFees.weekends[1]));
-                lines.Add(String.Format(myTexts["weekend_non_member_fees"], myFees.weekends[2], myFees.weekends[3]));
+                String line1 = String.Format(myTexts["weekend_member_fees"], myFees.weekends[0], myFees.weekends[1]);
+                htmlStringBuilder.Append("<p style='margin-left:auto; margin-right:auto;text-align:center;'>\n");
+                lines.Add(line1);
+                htmlStringBuilder.Append(line1+"<br>");
+                String line2 = String.Format(myTexts["weekend_non_member_fees"], myFees.weekends[2], myFees.weekends[3]);
+                lines.Add(line2);
+                htmlStringBuilder.Append(line2+"<br>");
                 if (schemaInfo.schemaName == "weekend_january")
                 {
                     lines.Add(myTexts["one_pass_sunday"]);
+                    htmlStringBuilder.Append(myTexts["one_pass_sunday"] + "<br>");
                 }
                 String pgPay = myTexts["pg_pay"];
                 if (pgPay != "N/A")
                 {
                     lines.Add(pgPay);
+                    htmlStringBuilder.Append(pgPay + "<br>");
                 }
                 String swishpay = myTexts["swish_pay"];
                 if (swishpay != "N/A")
                 {
                     lines.Add(swishpay);
+                    htmlStringBuilder.Append(swishpay + "<br>");
                 }
             }
+            htmlStringBuilder.Append("</p>");
 
             int[] fontSizes = { 12, 12, 12, 12 };
             String[] colors = { "Black", "Black", "Black", "Black" };
@@ -187,6 +197,8 @@ namespace CreateWordFiles
             String[] colors = { "Black" };
             //224/197/18
             Wp.ParagraphBorders borders = createParagraphBorders(Wp.BorderValues.Double, 12, "E0C512");
+            htmlStringBuilder.Append(String.Format("<p style='margin-left:auto;margin-right:auto;max-width:400px;border-style:solid; border-color:#E0C512;text-align: center;'>{0}</p>",
+                danceLocation));
             return GenerateParagraph(lines, fontSizes, colors, borders);
         }
         public static Wp.Paragraph GenerateCoffeeParagraph(Boolean coffee)
@@ -275,7 +287,7 @@ namespace CreateWordFiles
 
             if (numberOfDistinctDays == 2)
             {
-                htmlStringBuilder.Append("<table>");
+                htmlStringBuilder.Append("<table style='margin-left:auto; margin-right:auto;'>");
                 Wp.Table table = createWeekendDanceSchemaTable(lang, dancePassesDayList, schemaInfo);
                 htmlStringBuilder.Append("</table>");
                 return table;
@@ -306,9 +318,9 @@ namespace CreateWordFiles
             createFirstWeekendRow(table, colWidth);                                 // row 1, Header row
             htmlStringBuilder.Append("<tr>" +
                "<th colspan=2>" + myTexts["Saturday"] + "</th>" +
-               "<th></th>"+
+               "<th style='min-width:50px;'></th>"+
                 "<th colspan=2>" + myTexts["Sunday"] + "</th>" +
-                "</tr>");
+                "</tr>\n");
 
             createWeekEndRowForFlyer(dancePassesDayList, table, schemaInfo.colWidth, 2);    // row 2
             htmlStringBuilder.Append(createWeekEndRowHtml(lang, dancePassesDayList, 2, schemaInfo));
