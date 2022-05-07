@@ -5,7 +5,7 @@ using System.Globalization;
 using System.Collections.Generic;
 using System.Net.Cache;
 using System.Linq;
-
+using System.Text;
 using OXML = DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using Wp = DocumentFormat.OpenXml.Wordprocessing;
@@ -22,6 +22,7 @@ namespace CreateWordFiles
         private static Dictionary<String, String> myTexts;
         private static List<DancePass[]> dancePassesDayList = new List<DancePass[]>();
         private static Fees myFees;
+        private static StringBuilder htmlStringBuilder=new StringBuilder();
 
         /// <summary>
         /// Only weekend dances supported 
@@ -42,7 +43,6 @@ namespace CreateWordFiles
 
             //String htmlText = GetHtmlCode(danceDateStart, danceDateEnd, monthName1, monthName2);
             //File.WriteAllText(Path.Combine(texts["outputFolder"], String.Format("{0}.html", texts["danceName"])), htmlText);
-            //// Create a document by supplying the filepath. 
 
             try
             {
@@ -55,12 +55,11 @@ namespace CreateWordFiles
                     mainPart.Document = new Wp.Document();
                     Wp.Body body = mainPart.Document.AppendChild(new Wp.Body());
 
-                    //String fileNameLogo = @"Resources\M8-logo1.gif";
-                    String fileNameLogo = "https://motiv8s.se/19/images/M8/Logga_Transparent.jpg";
-                    addImage("Anchor", wordDocument, fileNameLogo, 128, 1.0, 1.6);
+                    String logoFileName = "https://motiv8s.se/19/images/M8/Logga_Transparent.jpg";
+                    addImage("Anchor", wordDocument, logoFileName, 128, 10.0, 16.0);
                     Wp.Paragraph paragraph1 = GenerateWelcomeParagraph(myTexts["danceName"].ToUpper(), danceDates);
                     body.AppendChild(paragraph1);
-                    double scale = 0.7;
+                   // double scale = 0.7;
                     addImage("Inline", wordDocument, myTexts["callerPictureFile"], 275, 6.0, 10.0);
 
                     body.AppendChild(GenerateCallerNameParagraph(myTexts["callerName"]));
@@ -76,6 +75,8 @@ namespace CreateWordFiles
                     body.AppendChild(GenerateFeesParagraph(schemaInfo));
                     body.AppendChild(GenerateCoffeeParagraph(coffee));
                     body.AppendChild(GenerateRotationParagraph());
+
+                    String html = htmlStringBuilder.ToString();
                 }
             }
             catch (Exception e)
@@ -94,10 +95,10 @@ namespace CreateWordFiles
             String day2 = DateTimeFormatInfo.CurrentInfo.GetDayName(dayOfWeek2);
             monthName1 = DateTimeFormatInfo.CurrentInfo.GetMonthName(month1);
             monthName2 = DateTimeFormatInfo.CurrentInfo.GetMonthName(month2);
-            String danceDates = String.Format("{0} - {1} {2}", danceDateStart.Day, danceDateEnd.Day, monthName1);
+            String danceDates = String.Format("{0} - {1} {2} {3}", danceDateStart.Day, danceDateEnd.Day, monthName1, danceDateStart.Year);
             if (month1 != month2)
             {
-                danceDates = String.Format("{0}{1} - {2} {3}", danceDateStart.Day, danceDateEnd.Day, monthName1, monthName2);
+                danceDates = String.Format("{0}{1} - {2} {3} {4}", danceDateStart.Day, danceDateEnd.Day, monthName1, monthName2, danceDateStart.Year);
             }
             return danceDates;
         }
@@ -274,7 +275,10 @@ namespace CreateWordFiles
 
             if (numberOfDistinctDays == 2)
             {
-                return createWeekendDanceSchemaTable(lang, dancePassesDayList, schemaInfo);
+                htmlStringBuilder.Append("<table>");
+                Wp.Table table = createWeekendDanceSchemaTable(lang, dancePassesDayList, schemaInfo);
+                htmlStringBuilder.Append("</table>");
+                return table;
             }
             else if (numberOfDistinctDays == 4)
             {
@@ -300,44 +304,33 @@ namespace CreateWordFiles
             int[] colWidth = { 2000, 500, 300, 2000, 500 };
 
             createFirstWeekendRow(table, colWidth);                                 // row 1, Header row
-            createWeekEndRow(dancePassesDayList, table, schemaInfo.colWidth, 2);    // row 2
+            htmlStringBuilder.Append("<tr>" +
+               "<th colspan=2>" + myTexts["Saturday"] + "</th>" +
+               "<th></th>"+
+                "<th colspan=2>" + myTexts["Sunday"] + "</th>" +
+                "</tr>");
+
+            createWeekEndRowForFlyer(dancePassesDayList, table, schemaInfo.colWidth, 2);    // row 2
+            htmlStringBuilder.Append(createWeekEndRowHtml(lang, dancePassesDayList, 2, schemaInfo));
+
             // Merge column 1 and 2 if schemaName== "weekend_meeting"
-            createWeekEndRow(dancePassesDayList, table, schemaInfo.colWidth, 3, schemaInfo.schemaName == "weekend_meeting");   // row 3
+            createWeekEndRowForFlyer(dancePassesDayList, table, schemaInfo.colWidth, 3, schemaInfo.schemaName == "weekend_meeting");   // row 3
+            htmlStringBuilder.Append(createWeekEndRowHtml(lang, dancePassesDayList, 3, schemaInfo, schemaInfo.schemaName == "weekend_meeting"));
+
             if (dancePassesDayList[0].Length > 2 || dancePassesDayList[1].Length > 2)
             {
-                createWeekEndRow(dancePassesDayList, table, schemaInfo.colWidth, 4);  // row 4
+                createWeekEndRowForFlyer(dancePassesDayList, table, schemaInfo.colWidth, 4);  // row 4
+                htmlStringBuilder.Append(createWeekEndRowHtml(lang, dancePassesDayList, 4, schemaInfo));
             }
 
             return table;
 
         }
 
-        private static void createWeekEndRow(List<DancePass[]> dancePassesDayList, Wp.Table table, List<int> colWidth, int row, Boolean merge = false)
+        private static void createWeekEndRowForFlyer(List<DancePass[]> dancePassesDayList, Wp.Table table, List<int> colWidth, int row, Boolean merge = false)
         {
-            int i1 = row - 2;
-            String level2 = "";
-            String timeString2 = "";
-            try
-            {
-                timeString2 = formatTimeInterval(dancePassesDayList[1], i1);
-                level2 = dancePassesDayList[1][i1].level;
-            }
-            catch (Exception e)
-            {
-
-            }
-            String level1 = "";
-            String timeString1 = "";
-            try
-            {
-                timeString1 = formatTimeInterval(dancePassesDayList[0], i1);
-                level1 = dancePassesDayList[0][i1].level;
-            }
-            catch (Exception e)
-            {
-
-            }
-
+            string level2, timeString2, level1, timeString1;
+            createWeekEndRow(dancePassesDayList, row, out level2, out timeString2, out level1, out timeString1);
 
             String[] content = { timeString1,
                 level1,
@@ -347,6 +340,46 @@ namespace CreateWordFiles
 
             table.Append(createRow(content, colWidth.ToArray(), merge));
         }
+
+        private static void createWeekEndRow(List<DancePass[]> dancePassesDayList, int rowNumber, out string level2, out string timeString2, out string level1, out string timeString1)
+        {
+            int i1 = rowNumber - 2;
+            level2 = "";
+            timeString2 = "";
+            try
+            {
+                timeString2 = formatTimeInterval(dancePassesDayList[1], i1);
+                level2 = dancePassesDayList[1][i1].level;
+            }
+            catch (Exception e)
+            {
+
+            }
+            level1 = "";
+            timeString1 = "";
+            try
+            {
+                timeString1 = formatTimeInterval(dancePassesDayList[0], i1);
+                level1 = dancePassesDayList[0][i1].level;
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+
+        private static String createWeekEndRowHtml(String lang, List<DancePass[]> dancePassesDayList, int rowNumber, SchemaInfo schemaInfo, Boolean merge = false)
+        {
+            string level2, timeString2, level1, timeString1;
+            createWeekEndRow(dancePassesDayList, rowNumber, out level2, out timeString2, out level1, out timeString1);
+
+
+           String row= String.Format("<tr><td>{0}</td><td>{1}</td><td> </td><td>{2}</td><td>{3}</td></tr>", timeString1, level1, timeString2, level2);
+            return row;
+            
+        }
+
+
 
         /// <summary>
         /// Create the header row for a Weekend dance schedule
@@ -543,7 +576,7 @@ namespace CreateWordFiles
             Wp.TableBorders tableBorders = new Wp.TableBorders(createBorders(type, size));
             return tableBorders;
         }
-        public static void addImage(String type, WordprocessingDocument wordprocessingDocument, String fileName, int maxHeight, double x0_cm, double y0_cm)
+        public static void addImage(String type, WordprocessingDocument wordprocessingDocument, String fileName, int maxHeight, double x0_mm, double y0_mm)
         {
             MainDocumentPart mainPart = wordprocessingDocument.MainDocumentPart;
             ImagePart imagePart = mainPart.AddImagePart(ImagePartType.Jpeg);
@@ -588,18 +621,18 @@ namespace CreateWordFiles
             }
             if (type == "Anchor")
             {
-                AddAnchorImageToBody(wordprocessingDocument, mainPart.GetIdOfPart(imagePart), (int)(scale * iWidth), (int)(scale * iHeight), x0_cm, y0_cm);
+                AddAnchorImageToBody(wordprocessingDocument, mainPart.GetIdOfPart(imagePart), (int)(scale * iWidth), (int)(scale * iHeight), x0_mm, y0_mm);
             }
             else
             {
                 AddInlineImageToBody(wordprocessingDocument, mainPart.GetIdOfPart(imagePart), (int)(scale * iWidth), (int)(scale * iHeight));
             }
         }
-        public static void AddAnchorImageToBody(WordprocessingDocument wordprocessingDocument, String relationshipId, int iWidth, int iHeight, double x0_cm, double y0_cm)
+        public static void AddAnchorImageToBody(WordprocessingDocument wordprocessingDocument, String relationshipId, int iWidth, int iHeight, double x0_mm, double y0_mm)
         {
             // Define the reference of the image.
             //var x = new DW.Anchor();
-            var element = GetAnchorPicture(relationshipId, x0_cm, y0_cm, iWidth, iHeight);
+            var element = GetAnchorPicture(relationshipId, x0_mm, y0_mm, iWidth, iHeight);
             // Append the reference to the body. The element should be in 
             // a DocumentFormat.OpenXml.Wordprocessing.Run.
             wordprocessingDocument.MainDocumentPart.Document.Body.AppendChild(new Wp.Paragraph(new Wp.Run(element)));
@@ -695,31 +728,27 @@ namespace CreateWordFiles
         /// 
         /// </summary>
         /// <param name="imagePartId"></param>
-        /// <param name="x0_cm">Logo distance from top of page, cm</param>
-        /// <param name="y0_cm">Logo distance from left edge of page, cm</param>
+        /// <param name="x0_mm">Logo distance from top of page, cm</param>
+        /// <param name="y0_mm">Logo distance from left edge of page, cm</param>
         /// <param name="wPixels">width of logo picture</param>
         /// <param name="hPixels">height of logo picture</param>
         /// <returns></returns>
-        public static Wp.Drawing GetAnchorPicture(String imagePartId, double x0_cm, double y0_cm, int wPixels, int hPixels)
+        public static Wp.Drawing GetAnchorPicture(String imagePartId, double x0_mm, double y0_mm, int wPixels, int hPixels)
         {
             long iWidth = (long)Math.Round((decimal)wPixels * 9525);
             long iHeight = (long)Math.Round((decimal)hPixels * 9525);
-
+            long mmToEmu = 36000L;
             Wp.Drawing _drawing = new Wp.Drawing();
             DW.Anchor _anchor = new DW.Anchor()
             {
                 DistanceFromTop = (OXML.UInt32Value)0U,
                 DistanceFromBottom = (OXML.UInt32Value)0U,
-                DistanceFromLeft = (OXML.UInt32Value)114300U,
-                DistanceFromRight = (OXML.UInt32Value)114300U,
                 SimplePos = false,
                 RelativeHeight = (OXML.UInt32Value)251658240U,
                 BehindDoc = true,
                 Locked = false,
                 LayoutInCell = true,
                 AllowOverlap = true,
-                EditId = "44CEF5E4",
-                AnchorId = "44803ED1"
             };
 
             DW.SimplePosition _spos = new DW.SimplePosition()
@@ -730,18 +759,18 @@ namespace CreateWordFiles
 
             DW.HorizontalPosition _hp = new DW.HorizontalPosition()
             {
-                RelativeFrom = DW.HorizontalRelativePositionValues.Column
+                RelativeFrom = DW.HorizontalRelativePositionValues.LeftMargin
             };
             DW.PositionOffset _hPO = new DW.PositionOffset();
-            _hPO.Text = "4445";
+            _hPO.Text = (x0_mm* mmToEmu).ToString();  // Convert mm to EMU
             _hp.Append(_hPO);
 
             DW.VerticalPosition _vp = new DW.VerticalPosition()
             {
-                RelativeFrom = DW.VerticalRelativePositionValues.Paragraph
+                RelativeFrom = DW.VerticalRelativePositionValues.TopMargin
             };
             DW.PositionOffset _vPO = new DW.PositionOffset();
-            _vPO.Text = "0";
+            _vPO.Text = (y0_mm * mmToEmu).ToString();   // Convert mm to EMU
             _vp.Append(_vPO);
 
             DW.Extent _e = new DW.Extent()
@@ -844,6 +873,19 @@ namespace CreateWordFiles
 
             return _drawing;
         }
+
+        public static String GetHtmlCodeWeekend(DateTime danceDateStart, DateTime danceDateEnd, String monthName1, String monthName2)
+        {
+            var sb = new System.Text.StringBuilder();
+            String xx = "<table>" +
+                "<tr>"+
+                "<th>" + myTexts["Saturday"] + "</th>" +
+                "<th>" + myTexts["Sunday"] + "</th>" +
+                "</tr>"+
+                "</table>";
+            return sb.ToString();
+        }
+
 
         public static String GetHtmlCode(DateTime danceDateStart, DateTime danceDateEnd, String monthName1, String monthName2)
         {
