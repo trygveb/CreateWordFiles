@@ -212,6 +212,9 @@ namespace CreateWordFiles
             int[] fontSizes = { 13 };
             String[] colors = { "Black" };
             Wp.ParagraphBorders borders = createParagraphBorders(Wp.BorderValues.Double, 12, "E0C512");
+            htmlStringBuilder.Append(String.Format("<p style='margin-left:auto;margin-right:auto;max-width:500px;border-style:solid; border-color:#E0C512;text-align: center;'>{0}</p>",
+                text));
+
             return GenerateParagraph(lines, fontSizes, colors,borders);
         }
 
@@ -220,7 +223,8 @@ namespace CreateWordFiles
             String[] lines = { myTexts["rotation"] };
             int[] fontSizes = { 14 };
             String[] colors = { "Black" };
-
+            htmlStringBuilder.Append("<p style='margin-left:auto; margin-right:auto;text-align:center;'>\n");
+            htmlStringBuilder.Append(lines[0] + "</p>\n");
             return GenerateParagraph(lines, fontSizes, colors);
         }
         private static Wp.Paragraph GenerateParagraph(string[] lines, int[] fontSizes, String[] colors, Wp.ParagraphBorders borders = null)
@@ -287,9 +291,9 @@ namespace CreateWordFiles
 
             if (numberOfDistinctDays == 2)
             {
-                htmlStringBuilder.Append("<table style='margin-left:auto; margin-right:auto;'>");
+                htmlStringBuilder.Append("<table style='border:none; max-width:500px;margin-left:auto; margin-right:auto;'>");
                 Wp.Table table = createWeekendDanceSchemaTable(lang, dancePassesDayList, schemaInfo);
-                htmlStringBuilder.Append("</table>");
+                htmlStringBuilder.Append("</table><br>");
                 return table;
             }
             else if (numberOfDistinctDays == 4)
