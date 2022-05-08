@@ -291,7 +291,7 @@ namespace CreateWordFiles
 
             if (numberOfDistinctDays == 2)
             {
-                htmlStringBuilder.Append("<table style='border:none; max-width:500px;margin-left:auto; margin-right:auto;'>");
+                htmlStringBuilder.Append("<table class='m8_schema'>");
                 Wp.Table table = createWeekendDanceSchemaTable(lang, dancePassesDayList, schemaInfo);
                 htmlStringBuilder.Append("</table><br>");
                 return table;
@@ -320,10 +320,10 @@ namespace CreateWordFiles
             int[] colWidth = { 2000, 500, 300, 2000, 500 };
 
             createFirstWeekendRow(table, colWidth);                                 // row 1, Header row
-            htmlStringBuilder.Append("<tr>" +
-               "<th colspan=2>" + myTexts["Saturday"] + "</th>" +
-               "<th style='min-width:50px;'></th>"+
-                "<th colspan=2>" + myTexts["Sunday"] + "</th>" +
+            htmlStringBuilder.Append("<tr class='m8_schema'>" +
+               "<th colspan=2 class='m8_schema'>" + myTexts["Saturday"] + "</th>" +
+               "<th class='m8_schema m8_space' style='min-width:50px;'></th>" +
+                "<th colspan=2 class='m8_schema'>" + myTexts["Sunday"] + "</th>" +
                 "</tr>\n");
 
             createWeekEndRowForFlyer(dancePassesDayList, table, schemaInfo.colWidth, 2);    // row 2
@@ -390,7 +390,8 @@ namespace CreateWordFiles
             createWeekEndRow(dancePassesDayList, rowNumber, out level2, out timeString2, out level1, out timeString1);
 
 
-           String row= String.Format("<tr><td>{0}</td><td>{1}</td><td> </td><td>{2}</td><td>{3}</td></tr>", timeString1, level1, timeString2, level2);
+           String row= String.Format("<tr class='m8_schema'><td class='m8_schema m8_time'>{0}</td><td class='m8_schema m8_level'>{1}</td><td class='m8_schema m8_space'> </td><td class='m8_schema m8_time'>{2}</td><td class='m8_schema m8_level'>{3}</td></tr>",
+               timeString1, level1, timeString2, level2);
             return row;
             
         }
