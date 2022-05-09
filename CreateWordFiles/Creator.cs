@@ -17,6 +17,48 @@ namespace CreateWordFiles
 {
     internal class Creator
     {
+        /*  Dance schema HTML example
+<table class="m8_schema">
+<tbody>
+<tr class="m8_schema">
+<th class="m8_schema" colspan="2">Lördag</th>
+<th class="m8_schema m8_space" style="min-width: 50px;"> </th>
+<th class="m8_schema" colspan="2">Söndag</th>
+</tr>
+<tr class="m8_schema">
+<td class="m8_schema m8_time">13:00-16:00</td>
+<td class="m8_schema m8_level">C1</td>
+<td class="m8_schema m8_space"> </td>
+<td class="m8_schema m8_time">10:00-13:00</td>
+<td class="m8_schema m8_level">C3A</td>
+</tr>
+<tr class="m8_schema">
+<td class="m8_schema m8_time">17:00-20:00</td>
+<td class="m8_schema m8_level">C2</td>
+<td class="m8_schema m8_space"> </td>
+<td class="m8_schema m8_time">14:00-17:00</td>
+<td class="m8_schema m8_level">C3B</td>
+</tr>
+</tbody>
+</table>
+<p></p>
+<p class="m8_schema m8_border" style="max-width: 400px;">Segersjö Folkets Hus, Scheelevägen 41 i Tumba</p>
+<p class="m8_schema">Medlem: 100 kr/pass, samtliga pass 350 kr<br />Ej medlem: 120 kr/pass, samtliga pass 400 kr<br />Betala gärna i förväg på PlusGiro 85 56 69-8 (MOTIV8'S)<br />Swisha till 070-422 82 27 (Arne G) eller kontanter ”i dörren” går också bra</p>
+<p  class="m8_schema m8_border"  style="max-width: 550px;">Ta med eget fika! - Vi ordnar hämtning av Pizza och sallad till pausen!</p>
+<p class="m8_schema" >Vi använder rotationsprogram på samtliga nivåer!</p>
+         */
+        /*
+         CSS example
+.m8_schema {line-height: 1.5;text-align:center;font-size: 1rem; margin-left:auto; margin-right:auto; font-family: "Comic Sans MS", "nunito", "Helvetica", "Tahoma", "Geneva", "Arial", sans-serif;}
+table.m8_schema
+	{max-width:400px;}
+table.m8_schema, th.m8_schema, td.m8_schema {padding:3px 7px; font-size: 1rem;border:none !important;}
+.m8_time {width:30%;}
+.m8_level {width:15%;}
+.m8_space {width:10%;}
+.m8_border {border-style: solid; border-color: #E0C512; border-width: 4px;}
+
+         */
         private static Wp.Color wpColorBlackx = new Wp.Color() { Val = "000000" };
         private static Wp.Color wpColorRedx = new Wp.Color() { Val = "FF0000" };
         private static Dictionary<String, String> myTexts;
