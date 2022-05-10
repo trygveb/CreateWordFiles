@@ -78,7 +78,7 @@ namespace CreateWordFiles
                     body.AppendChild(GenerateFeesParagraph(schemaInfo));
                     body.AppendChild(GenerateCoffeeParagraph(coffee, 500));
                     body.AppendChild(GenerateRotationParagraph());
-                    ApplyFooter(wordDocument);
+                    MyOpenXml.ApplyFooter(wordDocument, @"Ändringar utanför vår kontroll kan ske. Håll utkik på hemsidan www.motiv8s.se", 8);
 
                     String htmlText = htmlStringBuilder.ToString();
                     File.WriteAllText(path.Replace("docx", "htm"), htmlText);
@@ -129,49 +129,7 @@ namespace CreateWordFiles
             return danceDates;
         }
 
-        public static void ApplyFooter(WordprocessingDocument doc, String footerText="Footer")
-        {
-            // Get the main document part.
-            MainDocumentPart mainDocPart = doc.MainDocumentPart;
-
-            FooterPart footerPart1 = mainDocPart.AddNewPart<FooterPart>("r98");
-
-
-
-            Wp.Footer footer1 = new Wp.Footer();
-
-            Wp.Paragraph paragraph1 = new Wp.Paragraph() { };
-
-
-
-            Wp.Run run1 = new Wp.Run();
-            Wp.Text text1 = new Wp.Text();
-            text1.Text = footerText;
-
-            run1.Append(text1);
-
-            paragraph1.Append(run1);
-
-
-            footer1.Append(paragraph1);
-
-            footerPart1.Footer = footer1;
-
-
-
-            Wp.SectionProperties sectionProperties1 = mainDocPart.Document.Body.Descendants<Wp.SectionProperties>().FirstOrDefault();
-            if (sectionProperties1 == null)
-            {
-                sectionProperties1 = new Wp.SectionProperties() { };
-                mainDocPart.Document.Body.Append(sectionProperties1);
-            }
-            Wp.FooterReference footerReference1 = new Wp.FooterReference() { Type = DocumentFormat.OpenXml.Wordprocessing.HeaderFooterValues.Default, Id = "r98" };
-
-
-            sectionProperties1.InsertAt(footerReference1, 0);
-
-        }
-        private static Wp.Paragraph generateTableLineParagraph()
+         private static Wp.Paragraph generateTableLineParagraph()
         {
             Wp.Paragraph paragraph = new Wp.Paragraph();
             Wp.ParagraphProperties paragraphProperties = new Wp.ParagraphProperties();
@@ -714,11 +672,8 @@ namespace CreateWordFiles
         }
         public static void AddAnchorImageToBody(WordprocessingDocument wordprocessingDocument, String relationshipId, int iWidth, int iHeight, double x0_mm, double y0_mm)
         {
-            // Define the reference of the image.
-            //var x = new DW.Anchor();
-            var element = GetAnchorPicture(relationshipId, x0_mm, y0_mm, iWidth, iHeight);
-            // Append the reference to the body. The element should be in 
-            // a DocumentFormat.OpenXml.Wordprocessing.Run.
+            var element = MyOpenXml.GetAnchorPicture(relationshipId, x0_mm, y0_mm, iWidth, iHeight);
+            // Append the reference to the body. The element should be in a DocumentFormat.OpenXml.Wordprocessing.Run.
             wordprocessingDocument.MainDocumentPart.Document.Body.AppendChild(new Wp.Paragraph(new Wp.Run(element)));
 
         }
@@ -817,146 +772,6 @@ namespace CreateWordFiles
         /// <param name="wPixels">width of logo picture</param>
         /// <param name="hPixels">height of logo picture</param>
         /// <returns></returns>
-        public static Wp.Drawing GetAnchorPicture(String imagePartId, double x0_mm, double y0_mm, int wPixels, int hPixels)
-        {
-            long iWidth = (long)Math.Round((decimal)wPixels * 9525);
-            long iHeight = (long)Math.Round((decimal)hPixels * 9525);
-            long mmToEmu = 36000L;
-            Wp.Drawing _drawing = new Wp.Drawing();
-            DW.Anchor _anchor = new DW.Anchor()
-            {
-                DistanceFromTop = (OXML.UInt32Value)0U,
-                DistanceFromBottom = (OXML.UInt32Value)0U,
-                SimplePos = false,
-                RelativeHeight = (OXML.UInt32Value)251658240U,
-                BehindDoc = true,
-                Locked = false,
-                LayoutInCell = true,
-                AllowOverlap = true,
-            };
-
-            DW.SimplePosition _spos = new DW.SimplePosition()
-            {
-                X = 0,
-                Y = 0
-            };
-
-            DW.HorizontalPosition _hp = new DW.HorizontalPosition()
-            {
-                RelativeFrom = DW.HorizontalRelativePositionValues.LeftMargin
-            };
-            DW.PositionOffset _hPO = new DW.PositionOffset();
-            _hPO.Text = (x0_mm* mmToEmu).ToString();  // Convert mm to EMU
-            _hp.Append(_hPO);
-
-            DW.VerticalPosition _vp = new DW.VerticalPosition()
-            {
-                RelativeFrom = DW.VerticalRelativePositionValues.TopMargin
-            };
-            DW.PositionOffset _vPO = new DW.PositionOffset();
-            _vPO.Text = (y0_mm * mmToEmu).ToString();   // Convert mm to EMU
-            _vp.Append(_vPO);
-
-            DW.Extent _e = new DW.Extent()
-            {
-                //Cx = 989965L,
-                //Cy = 791845L
-                Cx = iWidth,
-                Cy = iHeight
-            };
-
-            DW.EffectExtent _ee = new DW.EffectExtent()
-            {
-                LeftEdge = 0L,
-                TopEdge = 0L,
-                RightEdge = 0L,
-                BottomEdge = 0L
-            };
-            DW.WrapNone _wpn = new DW.WrapNone();
-
-            DW.DocProperties _dp = new DW.DocProperties()
-            {
-                Id = 1U,
-                Name = "Test Picture"
-            };
-
-            OXML.Drawing.Graphic _g = new OXML.Drawing.Graphic();
-            OXML.Drawing.GraphicData _gd = new OXML.Drawing.GraphicData() { Uri = "http://schemas.openxmlformats.org/drawingml/2006/picture" };
-            OXML.Drawing.Pictures.Picture _pic = new OXML.Drawing.Pictures.Picture();
-
-            OXML.Drawing.Pictures.NonVisualPictureProperties _nvpp = new OXML.Drawing.Pictures.NonVisualPictureProperties();
-            OXML.Drawing.Pictures.NonVisualDrawingProperties _nvdp = new OXML.Drawing.Pictures.NonVisualDrawingProperties()
-            {
-                Id = 0,
-                Name = "Picture"
-            };
-            OXML.Drawing.Pictures.NonVisualPictureDrawingProperties _nvpdp = new OXML.Drawing.Pictures.NonVisualPictureDrawingProperties();
-            _nvpp.Append(_nvdp);
-            _nvpp.Append(_nvpdp);
-
-
-            OXML.Drawing.Pictures.BlipFill _bf = new OXML.Drawing.Pictures.BlipFill();
-            OXML.Drawing.Blip _b = new OXML.Drawing.Blip()
-            {
-                Embed = imagePartId,
-                CompressionState = OXML.Drawing.BlipCompressionValues.Print
-            };
-            _bf.Append(_b);
-
-            OXML.Drawing.Stretch _str = new OXML.Drawing.Stretch();
-            OXML.Drawing.FillRectangle _fr = new OXML.Drawing.FillRectangle();
-            _str.Append(_fr);
-            _bf.Append(_str);
-
-            OXML.Drawing.Pictures.ShapeProperties _shp = new OXML.Drawing.Pictures.ShapeProperties();
-            OXML.Drawing.Transform2D _t2d = new OXML.Drawing.Transform2D();
-            OXML.Drawing.Offset _os = new OXML.Drawing.Offset()
-            {
-                X = 0L,
-                Y = 0L
-            };
-            OXML.Drawing.Extents _ex = new OXML.Drawing.Extents()
-            {
-                //Cx = 989965L,
-                //Cy = 791845L
-                Cx = iWidth,
-                Cy = iHeight
-            };
-
-            _t2d.Append(_os);
-            _t2d.Append(_ex);
-
-            OXML.Drawing.PresetGeometry _preGeo = new OXML.Drawing.PresetGeometry()
-            {
-                Preset = OXML.Drawing.ShapeTypeValues.Rectangle
-            };
-            OXML.Drawing.AdjustValueList _adl = new OXML.Drawing.AdjustValueList();
-            _preGeo.Append(_adl);
-
-            _shp.Append(_t2d);
-            _shp.Append(_preGeo);
-
-            _pic.Append(_nvpp);
-            _pic.Append(_bf);
-            _pic.Append(_shp);
-
-            _gd.Append(_pic);
-            _g.Append(_gd);
-
-            _anchor.Append(_spos);
-            _anchor.Append(_hp);
-            _anchor.Append(_vp);
-            _anchor.Append(_e);
-            _anchor.Append(_ee);
-            //_anchor.Append(_wp);
-            _anchor.Append(_wpn);
-            _anchor.Append(_dp);
-            _anchor.Append(_g);
-
-            _drawing.Append(_anchor);
-
-            return _drawing;
-        }
 
 
     }
