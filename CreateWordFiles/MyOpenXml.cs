@@ -69,7 +69,7 @@ namespace CreateWordFiles
             {
                 sectionProperties1 = new Wp.SectionProperties() { };
 
-                Wp.PageMargin pageMargin = new Wp.PageMargin() { Top = 720, Right =1008U, Bottom = 1008, Left = 1008U, Header = 720U,
+                Wp.PageMargin pageMargin = new Wp.PageMargin() { Top = 200, Right =1008U, Bottom = 1008, Left = 1008U, Header = 720U,
                     Footer = 640U, Gutter = 0U };
                 sectionProperties1.Append(pageMargin);
 

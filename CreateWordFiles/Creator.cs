@@ -59,7 +59,8 @@ namespace CreateWordFiles
                     Wp.Body body = mainPart.Document.AppendChild(new Wp.Body());
 
                     String logoFileName = "https://motiv8s.se/19/images/M8/Logga_Transparent.jpg";
-                    addImage("Anchor", wordDocument, logoFileName, 128, 10.0, 16.0);
+                    addImage("Anchor", wordDocument, logoFileName, 72, 10.0, 16.0);
+                    addImage("Anchor", wordDocument, logoFileName, 72, 180.0, 16.0);
                     Wp.Paragraph paragraph1 = GenerateWelcomeParagraph(myTexts["danceName"].ToUpper(), danceDates);
                     body.AppendChild(paragraph1);
                     // double scale = 0.7;
@@ -78,7 +79,7 @@ namespace CreateWordFiles
                     body.AppendChild(GenerateFeesParagraph(schemaInfo));
                     body.AppendChild(GenerateCoffeeParagraph(coffee, 500));
                     body.AppendChild(GenerateRotationParagraph());
-                    MyOpenXml.ApplyFooter(wordDocument, @"Ändringar utanför vår kontroll kan ske. Håll utkik på hemsidan www.motiv8s.se", 8);
+                    MyOpenXml.ApplyFooter(wordDocument, myTexts["footer"], 10);
 
                     String htmlText = htmlStringBuilder.ToString();
                     File.WriteAllText(path.Replace("docx", "htm"), htmlText);
