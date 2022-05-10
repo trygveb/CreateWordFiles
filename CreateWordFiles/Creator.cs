@@ -78,6 +78,7 @@ namespace CreateWordFiles
                     body.AppendChild(GenerateFeesParagraph(schemaInfo));
                     body.AppendChild(GenerateCoffeeParagraph(coffee, 500));
                     body.AppendChild(GenerateRotationParagraph());
+                    ApplyFooter(wordDocument);
 
                     String htmlText = htmlStringBuilder.ToString();
                     File.WriteAllText(path.Replace("docx", "htm"), htmlText);
@@ -128,6 +129,48 @@ namespace CreateWordFiles
             return danceDates;
         }
 
+        public static void ApplyFooter(WordprocessingDocument doc, String footerText="Footer")
+        {
+            // Get the main document part.
+            MainDocumentPart mainDocPart = doc.MainDocumentPart;
+
+            FooterPart footerPart1 = mainDocPart.AddNewPart<FooterPart>("r98");
+
+
+
+            Wp.Footer footer1 = new Wp.Footer();
+
+            Wp.Paragraph paragraph1 = new Wp.Paragraph() { };
+
+
+
+            Wp.Run run1 = new Wp.Run();
+            Wp.Text text1 = new Wp.Text();
+            text1.Text = footerText;
+
+            run1.Append(text1);
+
+            paragraph1.Append(run1);
+
+
+            footer1.Append(paragraph1);
+
+            footerPart1.Footer = footer1;
+
+
+
+            Wp.SectionProperties sectionProperties1 = mainDocPart.Document.Body.Descendants<Wp.SectionProperties>().FirstOrDefault();
+            if (sectionProperties1 == null)
+            {
+                sectionProperties1 = new Wp.SectionProperties() { };
+                mainDocPart.Document.Body.Append(sectionProperties1);
+            }
+            Wp.FooterReference footerReference1 = new Wp.FooterReference() { Type = DocumentFormat.OpenXml.Wordprocessing.HeaderFooterValues.Default, Id = "r98" };
+
+
+            sectionProperties1.InsertAt(footerReference1, 0);
+
+        }
         private static Wp.Paragraph generateTableLineParagraph()
         {
             Wp.Paragraph paragraph = new Wp.Paragraph();
