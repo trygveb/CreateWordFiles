@@ -1,0 +1,36 @@
+﻿.m8_schema {
+    line-height: 1.5;
+    text-align: center;
+    font-size: 1rem;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: 'Comic Sans MS', 'nunito', 'Helvetica', 'Tahoma', 'Geneva', 'Arial', sans-serif;
+}
+
+table.m8_schema {
+    max-width: 400px;
+}
+
+table.m8_schema, th.m8_schema, td.m8_schema {
+    padding: 3px 7px;
+    font-size: 1rem;
+    border: none !important;
+}
+
+.m8_time {
+    width: 30 %;
+}
+
+.m8_level {
+    width: 15 %;
+}
+
+.m8_space {
+    width: 10 %;
+}
+
+.m8_border {
+    border-style: solid;
+    border-color: #E0C512;
+    border-width: 4px;
+}

@@ -17,46 +17,8 @@ namespace CreateWordFiles
 {
     internal class Creator
     {
-        /*  Dance schema HTML example
-<table class="m8_schema">
-<tbody>
-<tr class="m8_schema">
-<th class="m8_schema" colspan="2">Lördag</th>
-<th class="m8_schema m8_space" style="min-width: 50px;"> </th>
-<th class="m8_schema" colspan="2">Söndag</th>
-</tr>
-<tr class="m8_schema">
-<td class="m8_schema m8_time">13:00-16:00</td>
-<td class="m8_schema m8_level">C1</td>
-<td class="m8_schema m8_space"> </td>
-<td class="m8_schema m8_time">10:00-13:00</td>
-<td class="m8_schema m8_level">C3A</td>
-</tr>
-<tr class="m8_schema">
-<td class="m8_schema m8_time">17:00-20:00</td>
-<td class="m8_schema m8_level">C2</td>
-<td class="m8_schema m8_space"> </td>
-<td class="m8_schema m8_time">14:00-17:00</td>
-<td class="m8_schema m8_level">C3B</td>
-</tr>
-</tbody>
-</table>
-<p></p>
-<p class="m8_schema m8_border" style="max-width: 400px;">Segersjö Folkets Hus, Scheelevägen 41 i Tumba</p>
-<p class="m8_schema">Medlem: 100 kr/pass, samtliga pass 350 kr<br />Ej medlem: 120 kr/pass, samtliga pass 400 kr<br />Betala gärna i förväg på PlusGiro 85 56 69-8 (MOTIV8'S)<br />Swisha till 070-422 82 27 (Arne G) eller kontanter ”i dörren” går också bra</p>
-<p  class="m8_schema m8_border"  style="max-width: 550px;">Ta med eget fika! - Vi ordnar hämtning av Pizza och sallad till pausen!</p>
-<p class="m8_schema" >Vi använder rotationsprogram på samtliga nivåer!</p>
-         */
         /*
          CSS example
-.m8_schema {line-height: 1.5;text-align:center;font-size: 1rem; margin-left:auto; margin-right:auto; font-family: "Comic Sans MS", "nunito", "Helvetica", "Tahoma", "Geneva", "Arial", sans-serif;}
-table.m8_schema
-	{max-width:400px;}
-table.m8_schema, th.m8_schema, td.m8_schema {padding:3px 7px; font-size: 1rem;border:none !important;}
-.m8_time {width:30%;}
-.m8_level {width:15%;}
-.m8_space {width:10%;}
-.m8_border {border-style: solid; border-color: #E0C512; border-width: 4px;}
 
          */
         private static Wp.Color wpColorBlackx = new Wp.Color() { Val = "000000" };
@@ -83,8 +45,7 @@ table.m8_schema, th.m8_schema, td.m8_schema {padding:3px 7px; font-size: 1rem;bo
 
             danceDates = createDanceDates(danceDateStart, danceDateEnd, out monthName1, out monthName2);
 
-            //String htmlText = GetHtmlCode(danceDateStart, danceDateEnd, monthName1, monthName2);
-            //File.WriteAllText(Path.Combine(texts["outputFolder"], String.Format("{0}.html", texts["danceName"])), htmlText);
+            htmlStringBuilder.Clear();
 
             try
             {
@@ -101,7 +62,7 @@ table.m8_schema, th.m8_schema, td.m8_schema {padding:3px 7px; font-size: 1rem;bo
                     addImage("Anchor", wordDocument, logoFileName, 128, 10.0, 16.0);
                     Wp.Paragraph paragraph1 = GenerateWelcomeParagraph(myTexts["danceName"].ToUpper(), danceDates);
                     body.AppendChild(paragraph1);
-                   // double scale = 0.7;
+                    // double scale = 0.7;
                     addImage("Inline", wordDocument, myTexts["callerPictureFile"], 275, 6.0, 10.0);
 
                     body.AppendChild(GenerateCallerNameParagraph(myTexts["callerName"]));
@@ -113,19 +74,40 @@ table.m8_schema, th.m8_schema, td.m8_schema {padding:3px 7px; font-size: 1rem;bo
 
 
                     //body.AppendChild(new Wp.Break());
-                    body.AppendChild(GenerateDanceLocationParagraph(danceLocation));
+                    body.AppendChild(GenerateDanceLocationParagraph(danceLocation, 400));
                     body.AppendChild(GenerateFeesParagraph(schemaInfo));
-                    body.AppendChild(GenerateCoffeeParagraph(coffee));
+                    body.AppendChild(GenerateCoffeeParagraph(coffee, 500));
                     body.AppendChild(GenerateRotationParagraph());
 
                     String htmlText = htmlStringBuilder.ToString();
-                    File.WriteAllText(path.Replace("docx","html"), htmlText);
+                    File.WriteAllText(path.Replace("docx", "htm"), htmlText);
+
+                    createDemoHtmlFile(path, htmlText);
                 }
             }
             catch (Exception e)
             {
                 throw e;
             }
+        }
+
+        /// <summary>
+        /// Creates a demo html file with html header and style tag
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="htmlText"></param>
+        private static void createDemoHtmlFile(string path, string htmlText)
+        {
+            String css = File.ReadAllText(@"Resources\motiv8.css");
+            String yyy = String.Format(@"<!DOCTYPE html>
+                    <html>
+                    <head>
+                        <style>
+                        {0}
+                        </style >
+                    </head >
+                    <body> ", css);
+            File.WriteAllText(path.Replace("docx", "html"), yyy + htmlText + "</body></html>");
         }
 
         private static String createDanceDates(DateTime danceDateStart, DateTime danceDateEnd, out string monthName1, out string monthName2)
@@ -138,10 +120,10 @@ table.m8_schema, th.m8_schema, td.m8_schema {padding:3px 7px; font-size: 1rem;bo
             String day2 = DateTimeFormatInfo.CurrentInfo.GetDayName(dayOfWeek2);
             monthName1 = DateTimeFormatInfo.CurrentInfo.GetMonthName(month1);
             monthName2 = DateTimeFormatInfo.CurrentInfo.GetMonthName(month2);
-            String danceDates = String.Format("{0} - {1} {2} {3}", danceDateStart.Day, danceDateEnd.Day, monthName1, danceDateStart.Year);
+            String danceDates = String.Format("{0}-{1} {2} {3}", danceDateStart.Day, danceDateEnd.Day, monthName1, danceDateStart.Year);
             if (month1 != month2)
             {
-                danceDates = String.Format("{0}{1} - {2} {3} {4}", danceDateStart.Day, danceDateEnd.Day, monthName1, monthName2, danceDateStart.Year);
+                danceDates = String.Format("{0}{1}-{2} {3} {4}", danceDateStart.Day, danceDateEnd.Day, monthName1, monthName2, danceDateStart.Year);
             }
             return danceDates;
         }
@@ -202,7 +184,7 @@ table.m8_schema, th.m8_schema, td.m8_schema {padding:3px 7px; font-size: 1rem;bo
             if (schemaInfo.schemaName.StartsWith("weekend"))
             {
                 String line1 = String.Format(myTexts["weekend_member_fees"], myFees.weekends[0], myFees.weekends[1]);
-                htmlStringBuilder.Append("<p style='margin-left:auto; margin-right:auto;text-align:center;'>\n");
+                htmlStringBuilder.Append("<p class='m8_schema'>\n");
                 lines.Add(line1);
                 htmlStringBuilder.Append(line1+"<br>");
                 String line2 = String.Format(myTexts["weekend_non_member_fees"], myFees.weekends[2], myFees.weekends[3]);
@@ -232,30 +214,30 @@ table.m8_schema, th.m8_schema, td.m8_schema {padding:3px 7px; font-size: 1rem;bo
             String[] colors = { "Black", "Black", "Black", "Black" };
             return GenerateParagraph(lines.ToArray(), fontSizes, colors);
         }
-        public static Wp.Paragraph GenerateDanceLocationParagraph(String danceLocation)
+        public static Wp.Paragraph GenerateDanceLocationParagraph(String danceLocation, int maxWidth)
         {
             String[] lines = { danceLocation };
             int[] fontSizes = { 14 };
             String[] colors = { "Black" };
             //224/197/18
             Wp.ParagraphBorders borders = createParagraphBorders(Wp.BorderValues.Double, 12, "E0C512");
-            htmlStringBuilder.Append(String.Format("<p style='margin-left:auto;margin-right:auto;max-width:400px;border-style:solid; border-color:#E0C512;text-align: center;'>{0}</p>",
-                danceLocation));
+            htmlStringBuilder.Append(String.Format("<p  class='m8_schema m8_border'  style='max-width: {0}px;'>{1}</p>",
+                maxWidth, danceLocation));
             return GenerateParagraph(lines, fontSizes, colors, borders);
         }
-        public static Wp.Paragraph GenerateCoffeeParagraph(Boolean coffee)
+        public static Wp.Paragraph GenerateCoffeeParagraph(Boolean coffee, int maxWidth)
         {
-            String text = String.Format("{0} - {1}", myTexts["no_coffee"], myTexts["lunch"]);
+            String text = String.Format("{0}-{1}", myTexts["no_coffee"], myTexts["lunch"]);
             if (coffee)
             {
-                text = String.Format("{0} - {1}", myTexts["coffee"], myTexts["lunch"]);
+                text = String.Format("{0}-{1}", myTexts["coffee"], myTexts["lunch"]);
             }
             String[] lines = { text };
             int[] fontSizes = { 13 };
             String[] colors = { "Black" };
             Wp.ParagraphBorders borders = createParagraphBorders(Wp.BorderValues.Double, 12, "E0C512");
-            htmlStringBuilder.Append(String.Format("<p style='margin-left:auto;margin-right:auto;max-width:500px;border-style:solid; border-color:#E0C512;text-align: center;'>{0}</p>",
-                text));
+            htmlStringBuilder.Append(String.Format("<p  class='m8_schema m8_border' style='max-width: {0}px;'>{1}</p>",
+                maxWidth, text));
 
             return GenerateParagraph(lines, fontSizes, colors,borders);
         }
@@ -265,7 +247,7 @@ table.m8_schema, th.m8_schema, td.m8_schema {padding:3px 7px; font-size: 1rem;bo
             String[] lines = { myTexts["rotation"] };
             int[] fontSizes = { 14 };
             String[] colors = { "Black" };
-            htmlStringBuilder.Append("<p style='margin-left:auto; margin-right:auto;text-align:center;'>\n");
+            htmlStringBuilder.Append("<p  class='m8_schema'>\n");
             htmlStringBuilder.Append(lines[0] + "</p>\n");
             return GenerateParagraph(lines, fontSizes, colors);
         }
@@ -305,7 +287,7 @@ table.m8_schema, th.m8_schema, td.m8_schema {padding:3px 7px; font-size: 1rem;bo
                 }
                 run.Append(runProperties);
                 run.Append(text1);
-                if (i < lines.Length - 1)
+                if (i < lines.Length-1)
                 {
                     run.Append(new Wp.Break());
                 }
@@ -401,7 +383,7 @@ table.m8_schema, th.m8_schema, td.m8_schema {padding:3px 7px; font-size: 1rem;bo
 
         private static void createWeekEndRow(List<DancePass[]> dancePassesDayList, int rowNumber, out string level2, out string timeString2, out string level1, out string timeString1)
         {
-            int i1 = rowNumber - 2;
+            int i1 = rowNumber-2;
             level2 = "";
             timeString2 = "";
             try
@@ -933,47 +915,6 @@ table.m8_schema, th.m8_schema, td.m8_schema {padding:3px 7px; font-size: 1rem;bo
             return _drawing;
         }
 
-        public static String GetHtmlCodeWeekend(DateTime danceDateStart, DateTime danceDateEnd, String monthName1, String monthName2)
-        {
-            var sb = new System.Text.StringBuilder();
-            String xx = "<table>" +
-                "<tr>"+
-                "<th>" + myTexts["Saturday"] + "</th>" +
-                "<th>" + myTexts["Sunday"] + "</th>" +
-                "</tr>"+
-                "</table>";
-            return sb.ToString();
-        }
 
-
-        public static String GetHtmlCode(DateTime danceDateStart, DateTime danceDateEnd, String monthName1, String monthName2)
-        {
-
-            var sb = new System.Text.StringBuilder();
-            sb.Append(String.Format("<p>{0} {1} {2}<br/>{3} - {4}<br/>{5} - {6} </p>", myTexts["Saturday"], danceDateStart.Day, monthName1,
-                myTexts["pass_1_weekend_time"], myTexts["pass_1_weekend_level"], myTexts["pass_2_weekend_time"], myTexts["pass_2_weekend_level"]));
-            sb.Append(String.Format("<p>Söndag {0} {1} <br/>10:00 - 13:00 - C3A <br/> 14:00 - 17:00 - C3B</p>", danceDateEnd.Day, monthName2));
-            sb.Append("<p class='mobile - undersized - lower'>Medlem: <span style='background - color: #ffff00;'>100</span> kr/pass, samtliga pass <span style='background-color: #ffff00;'>350</span> kr<br/>");
-            sb.Append("Ej medlem: <span style='background - color: #ffff00;'>120</span> kr/pass, samtliga pass <span style='background-color: #ffff00;'>400</span> kr<br/>");
-            sb.Append("Betala gärna i förväg på PlusGiro 85 56 69-8 (MOTIV8'S)<br/> Swish till 070-422 82 27 (Arne G) eller kontanter ”i dörren” går också bra.</p>");
-            sb.Append("<p><span style='color: #ff0000;'>OBS! Plats: Segersjö Folkets Hus, Scheelevägen 41 i Tumba</span></p>");
-            sb.Append("<ul>");
-            sb.Append("<li>Vi använder rotationsprogram på samtliga nivåer!</li>");
-            sb.Append("<li>Ta med eget fika!</li>");
-            sb.Append("<li>Vi ordnar hämtning av Pizza och sallad till pausen.</li>");
-            sb.Append("</ul>");
-            sb.Append("<p><em><em>Om du har några symtom som halsont, snuva, feber, hosta eller sjukdomskänsla så ska du stanna hemma.<br />Reservation för att vi inte kan genomföra dansen på grund av restriktioner.</em></em></p>");
-            return sb.ToString();
-        }
-        /*
-
-
-
-
-
-
-
-         
-        */
     }
 }
