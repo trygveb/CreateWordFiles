@@ -59,8 +59,8 @@ namespace CreateWordFiles
                     Wp.Body body = mainPart.Document.AppendChild(new Wp.Body());
 
                     String logoFileName = "https://motiv8s.se/19/images/M8/Logga_Transparent.jpg";
-                    addImage("Anchor", wordDocument, logoFileName, 72, 10.0, 16.0);
-                    addImage("Anchor", wordDocument, logoFileName, 72, 180.0, 16.0);
+                    addImage("Anchor", wordDocument, logoFileName, 84, 10.0, 16.0);
+                    addImage("Anchor", wordDocument, logoFileName, 84, 178.0, 16.0);
                     Wp.Paragraph paragraph1 = GenerateWelcomeParagraph(myTexts["danceName"].ToUpper(), danceDates);
                     body.AppendChild(paragraph1);
                     // double scale = 0.7;
@@ -229,10 +229,10 @@ namespace CreateWordFiles
         }
         public static Wp.Paragraph GenerateCoffeeParagraph(Boolean coffee, int maxWidth)
         {
-            String text = String.Format("{0}-{1}", myTexts["no_coffee"], myTexts["lunch"]);
+            String text = String.Format("{0} - {1}", myTexts["no_coffee"], myTexts["lunch"]);
             if (coffee)
             {
-                text = String.Format("{0}-{1}", myTexts["coffee"], myTexts["lunch"]);
+                text = String.Format("{0} - {1}", myTexts["coffee"], myTexts["lunch"]);
             }
             String[] lines = { text };
             int[] fontSizes = { 13 };

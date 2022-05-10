@@ -141,11 +141,12 @@ namespace CreateWordFiles
 
             String schemaName = this.comboBoxDanceSchema.Text;
 #if DEBUG
-            String fileName = String.Format("{0}_{1}_{2}.docx", schemaName, Utility.map["danceName"], lang);
+            String fileName = String.Format("{0}_{1}_{2}_{3}.docx", this.dateTimePickerStart.Value.ToShortDateString(), lang, schemaName, Utility.map["danceName"] );
+            String path = Path.Combine(Utility.map["outputFolder"]+"/test", fileName);
 #else
-            String fileName = String.Format("{0}_{1}.docx", Utility.map["danceName"], lang);
-#endif
+            String fileName = String.Format("{0}_{1}_{2}.docx", this.dateTimePickerStart.Value.ToShortDateString(), lang, Utility.map["danceName"]);
             String path = Path.Combine(Utility.map["outputFolder"], fileName);
+#endif
             try
             {
                 Creator.CreateWordprocessingDocument(Utility.map, lang, schemaInfo, schemaName, path, fees, radioButtonCoffeeYes.Checked,
