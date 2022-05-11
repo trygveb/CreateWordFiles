@@ -250,6 +250,7 @@
             this.comboBoxDanceSchema.Name = "comboBoxDanceSchema";
             this.comboBoxDanceSchema.Size = new System.Drawing.Size(214, 21);
             this.comboBoxDanceSchema.TabIndex = 22;
+            this.comboBoxDanceSchema.SelectedIndexChanged += new System.EventHandler(this.comboBoxDanceSchema_SelectedIndexChanged);
             // 
             // label7
             // 

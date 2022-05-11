@@ -123,12 +123,16 @@ namespace CreateWordFiles
             string responseText = reader.ReadToEnd();
             return responseText;
         }
-
-        private void setEndDate()
+        private void adjustEndDate()
         {
-            System.TimeSpan ts = new TimeSpan(24, 0, 0);
-            this.dateTimePickerEnd.Value = this.dateTimePickerStart.Value + ts;
+            TimeSpan duration = new TimeSpan(1 * 24, 0, 0);
+            if (this.comboBoxDanceSchema.Text == "festival")
+            {
+                duration = new TimeSpan(3 * 24, 0, 0);
+            }
+            this.dateTimePickerEnd.Value = this.dateTimePickerStart.Value + duration;
         }
+
         private void buttonOk_Click(object sender, EventArgs e)
         {
             var radioButtonLanguage = groupBoxLanguage.Controls.OfType<RadioButton>()
@@ -207,7 +211,7 @@ namespace CreateWordFiles
 
         private void dateTimePickerStart_ValueChanged(object sender, EventArgs e)
         {
-            this.setEndDate();
+            this.adjustEndDate();
         }
 
         private void buttonSelectOutputFolder_Click(object sender, EventArgs e)
@@ -220,10 +224,6 @@ namespace CreateWordFiles
             }
         }
 
-        private void radioButtonFestival_CheckedChanged(object sender, EventArgs e)
-        {
-            this.setEndDate();
-        }
 
         private void buttonCancel_Click(object sender, EventArgs e)
         {
@@ -245,5 +245,11 @@ namespace CreateWordFiles
         {
 
         }
+
+        private void comboBoxDanceSchema_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            adjustEndDate();
+        }
+
     }
 }

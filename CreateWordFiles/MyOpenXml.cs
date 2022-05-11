@@ -83,6 +83,57 @@ namespace CreateWordFiles
 
         }
 
+        /// <summary>
+        /// Creates a  Wp.Paragraph with the given lines, fontsizes and colors. Possibly bordered
+        /// TODO: Font should be given as a paramter. Now Comic Sans MS is hardcoded
+        /// TODO: Better handling of Font colors
+        /// </summary>
+        /// <param name="lines">Array with texts</param>
+        /// <param name="fontSizes">Array with one font size for each line</param>
+        /// <param name="colors">Array with one font color for each line</param>
+        /// <param name="borders"></param>
+        /// <returns></returns>
+        public static Wp.Paragraph GenerateParagraph(string[] lines, int[] fontSizes, String[] colors, Wp.ParagraphBorders borders = null)
+        {
+            Wp.Paragraph paragraph = new Wp.Paragraph();
+
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                String fontSizeTxt = (fontSizes[i] * 2).ToString();
+                String line = lines[i];
+                Wp.FontSize fontSize = new Wp.FontSize { Val = new OXML.StringValue(fontSizeTxt) };  // Size in half points
+                Wp.ParagraphProperties paragraphProperties = new Wp.ParagraphProperties(borders);
+                Wp.Justification justification = new Wp.Justification() { Val = Wp.JustificationValues.Center };
+                paragraphProperties.Append(justification);
+
+                Wp.Run run = new Wp.Run();
+                Wp.RunProperties runProperties = new Wp.RunProperties();
+                Wp.RunFonts runFonts = new Wp.RunFonts { Ascii = "Comic Sans MS", HighAnsi = "Comic Sans MS" };
+                runProperties.Append(runFonts);
+                runProperties.Append(fontSize);
+                Wp.Text text1 = new Wp.Text();
+                text1.Text = line;
+                if (colors[i] == "Red")
+                {
+                    Wp.Color color = new Wp.Color() { Val = "FF0000" };
+                    runProperties.Append(color);
+
+                }
+                run.Append(runProperties);
+                run.Append(text1);
+                if (i < lines.Length - 1)
+                {
+                    run.Append(new Wp.Break());
+                }
+                paragraph.Append(paragraphProperties);
+                paragraph.Append(run);
+
+            }
+            return paragraph;
+        }
+
+
         public static Wp.Drawing GetAnchorPicture(String imagePartId, double x0_mm, double y0_mm, int wPixels, int hPixels)
         {
             long iWidth = (long)Math.Round((decimal)wPixels * 9525);
