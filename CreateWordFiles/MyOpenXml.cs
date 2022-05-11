@@ -133,7 +133,45 @@ namespace CreateWordFiles
             return paragraph;
         }
 
+        public static void CreateTableBorders(Wp.Table table, uint _size)
+        {
+            OXML.UInt32Value size= (OXML.UInt32Value)_size;
 
+            Wp.TableProperties props = new Wp.TableProperties(
+                    new Wp.TableBorders(
+                    new Wp.TopBorder
+                    {
+                        Val = new OXML.EnumValue<Wp.BorderValues>(Wp.BorderValues.Single),
+                        Size = size
+                    },
+                    new Wp.BottomBorder
+                    {
+                        Val = new OXML.EnumValue<Wp.BorderValues>(Wp.BorderValues.Single),
+                        Size = size
+                    },
+                    new Wp.LeftBorder
+                    {
+                        Val = new OXML.EnumValue<Wp.BorderValues>(Wp.BorderValues.Single),
+                        Size = size
+                    },
+                    new Wp.RightBorder
+                    {
+                        Val = new OXML.EnumValue<Wp.BorderValues>(Wp.BorderValues.Single),
+                        Size = size
+                    },
+                    new Wp.InsideHorizontalBorder
+                    {
+                        Val = new OXML.EnumValue<Wp.BorderValues>(Wp.BorderValues.Single),
+                        Size = size
+                    },
+                    new Wp.InsideVerticalBorder
+                    {
+                        Val = new OXML.EnumValue<Wp.BorderValues>(Wp.BorderValues.Single),
+                        Size = size
+                    }));
+
+            table.AppendChild<Wp.TableProperties>(props);
+        }
         public static Wp.Drawing GetAnchorPicture(String imagePartId, double x0_mm, double y0_mm, int wPixels, int hPixels)
         {
             long iWidth = (long)Math.Round((decimal)wPixels * 9525);
