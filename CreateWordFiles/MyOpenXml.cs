@@ -172,6 +172,18 @@ namespace CreateWordFiles
 
             table.AppendChild<Wp.TableProperties>(props);
         }
+        public static void CreateTableMargins(Wp.Table table)
+        {
+            Wp.TableProperties tblProp = new Wp.TableProperties(
+               // new Wp.TableCellSpacing() { Width = "200", Type = Wp.TableWidthUnitValues.Dxa },
+                new Wp.TableCellMarginDefault(
+                    new Wp.TopMargin() { Width = "150", Type = Wp.TableWidthUnitValues.Dxa },
+                    new Wp.StartMargin() { Width = "50", Type = Wp.TableWidthUnitValues.Dxa },
+                    new Wp.BottomMargin() { Width = "5", Type = Wp.TableWidthUnitValues.Dxa },
+                    new Wp.EndMargin() { Width = "50", Type = Wp.TableWidthUnitValues.Dxa })
+                    );
+            table.AppendChild<Wp.TableProperties>(tblProp);
+        }
         public static Wp.Drawing GetAnchorPicture(String imagePartId, double x0_mm, double y0_mm, int wPixels, int hPixels)
         {
             long iWidth = (long)Math.Round((decimal)wPixels * 9525);

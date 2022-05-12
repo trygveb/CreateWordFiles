@@ -52,45 +52,91 @@ namespace CreateWordFiles
                 using (WordprocessingDocument wordDocument =
                     WordprocessingDocument.Create(path, OXML.WordprocessingDocumentType.Document))
                 {
-                    // Add a main document part. 
-                    MainDocumentPart mainPart = wordDocument.AddMainDocumentPart();
-
-                    mainPart.Document = new Wp.Document();
-                    Wp.Body body = mainPart.Document.AppendChild(new Wp.Body());
-
-                    String logoFileName = "https://motiv8s.se/19/images/M8/Logga_Transparent.jpg";
-                    addImage("Anchor", wordDocument, logoFileName, 84, 10.0, 16.0);
-                    addImage("Anchor", wordDocument, logoFileName, 84, 178.0, 16.0);
-                    Wp.Paragraph paragraph1 = GenerateWelcomeParagraph(myTexts["danceName"].ToUpper(), danceDates);
-                    body.AppendChild(paragraph1);
-                    // double scale = 0.7;
-                    addImage("Inline", wordDocument, myTexts["callerPictureFile"], 250, 6.0, 10.0);
-
-                    body.AppendChild(GenerateCallerNameParagraph(myTexts["callerName"]));
-
-                    Wp.Table table = CreateDanceSchemaTable(lang, schemaInfo, schemaName);
-                    Wp.Paragraph tableParagraph = generateTableParagraph(table);
-                    //body.AppendChild(table);
-                    body.AppendChild(tableParagraph);
-
-
-                    //body.AppendChild(new Wp.Break());
-                    body.AppendChild(GenerateDanceLocationParagraph(danceLocation, 400));
-                    body.AppendChild(GenerateFeesParagraph(schemaInfo));
-                    body.AppendChild(GenerateCoffeeParagraph(coffee, 500));
-                    body.AppendChild(GenerateRotationParagraph());
-                    MyOpenXml.ApplyFooter(wordDocument, myTexts["footer"], 10);
-
-                    String htmlText = htmlStringBuilder.ToString();
-                    File.WriteAllText(path.Replace("docx", "htm"), htmlText);
-
-                    createDemoHtmlFile(path, htmlText);
+                    if (schemaName == "festival")
+                    {
+                        createFestivalFlyer(lang, schemaInfo, schemaName, path, coffee, danceLocation, danceDates, wordDocument);
+                    }
+                    else
+                    {
+                        createWeekendFlyer(lang, schemaInfo, schemaName, path, coffee, danceLocation, danceDates, wordDocument);
+                    }
                 }
             }
             catch (Exception e)
             {
                 throw e;
             }
+        }
+
+        private static void createFestivalFlyer(string lang, SchemaInfo schemaInfo, string schemaName, string path, bool coffee, string danceLocation, string danceDates, WordprocessingDocument wordDocument)
+        {
+            MainDocumentPart mainPart = wordDocument.AddMainDocumentPart();
+
+            mainPart.Document = new Wp.Document();
+            Wp.Body body = mainPart.Document.AppendChild(new Wp.Body());
+
+            String logoFileName = "https://motiv8s.se/19/images/M8/Logga_Transparent.jpg";
+            addImage("Anchor", wordDocument, logoFileName, 84, 10.0, 16.0);
+            addImage("Anchor", wordDocument, logoFileName, 84, 178.0, 16.0);
+            Wp.Paragraph paragraph1 = GenerateWelcomeParagraph(myTexts["danceName"].ToUpper(), danceDates);
+            body.AppendChild(paragraph1);
+            // double scale = 0.7;
+            addImage("Inline", wordDocument, myTexts["callerPictureFile"], 250, 6.0, 10.0);
+
+            body.AppendChild(GenerateCallerNameParagraph(myTexts["callerName"]));
+
+            Wp.Table table = CreateDanceSchemaTable(lang, schemaInfo, schemaName);
+            Wp.Paragraph tableParagraph = generateTableParagraph(table);
+            //body.AppendChild(table);
+            body.AppendChild(tableParagraph);
+
+
+            //body.AppendChild(new Wp.Break());
+            body.AppendChild(GenerateDanceLocationParagraph(danceLocation, 400));
+            body.AppendChild(GenerateFeesParagraph(schemaInfo));
+            body.AppendChild(GenerateCoffeeParagraph(coffee, 500));
+            body.AppendChild(GenerateRotationParagraph());
+            MyOpenXml.ApplyFooter(wordDocument, myTexts["footer"], 10);
+
+            String htmlText = htmlStringBuilder.ToString();
+            File.WriteAllText(path.Replace("docx", "htm"), htmlText);
+
+            createDemoHtmlFile(path, htmlText);
+        }
+        private static void createWeekendFlyer(string lang, SchemaInfo schemaInfo, string schemaName, string path, bool coffee, string danceLocation, string danceDates, WordprocessingDocument wordDocument)
+        {
+            MainDocumentPart mainPart = wordDocument.AddMainDocumentPart();
+
+            mainPart.Document = new Wp.Document();
+            Wp.Body body = mainPart.Document.AppendChild(new Wp.Body());
+
+            String logoFileName = "https://motiv8s.se/19/images/M8/Logga_Transparent.jpg";
+            addImage("Anchor", wordDocument, logoFileName, 84, 10.0, 16.0);
+            addImage("Anchor", wordDocument, logoFileName, 84, 178.0, 16.0);
+            Wp.Paragraph paragraph1 = GenerateWelcomeParagraph(myTexts["danceName"].ToUpper(), danceDates);
+            body.AppendChild(paragraph1);
+            // double scale = 0.7;
+            addImage("Inline", wordDocument, myTexts["callerPictureFile"], 250, 6.0, 10.0);
+
+            body.AppendChild(GenerateCallerNameParagraph(myTexts["callerName"]));
+
+            Wp.Table table = CreateDanceSchemaTable(lang, schemaInfo, schemaName);
+            Wp.Paragraph tableParagraph = generateTableParagraph(table);
+            //body.AppendChild(table);
+            body.AppendChild(tableParagraph);
+
+
+            //body.AppendChild(new Wp.Break());
+            body.AppendChild(GenerateDanceLocationParagraph(danceLocation, 400));
+            body.AppendChild(GenerateFeesParagraph(schemaInfo));
+            body.AppendChild(GenerateCoffeeParagraph(coffee, 500));
+            body.AppendChild(GenerateRotationParagraph());
+            MyOpenXml.ApplyFooter(wordDocument, myTexts["footer"], 10);
+
+            String htmlText = htmlStringBuilder.ToString();
+            File.WriteAllText(path.Replace("docx", "htm"), htmlText);
+
+            createDemoHtmlFile(path, htmlText);
         }
 
         /// <summary>
@@ -138,6 +184,11 @@ namespace CreateWordFiles
             spacingBetweenLines.LineRule = Wp.LineSpacingRuleValues.Exact;
             spacingBetweenLines.Line = "270";
             paragraphProperties.Append(spacingBetweenLines);
+
+            Wp.Justification justification = new Wp.Justification() { Val = Wp.JustificationValues.Center };
+            paragraphProperties.Append(justification);
+
+
             paragraph.Append(paragraphProperties);
             return paragraph;
         }
@@ -292,14 +343,14 @@ namespace CreateWordFiles
         {
             Wp.Table table = new Wp.Table();
             MyOpenXml.CreateTableBorders(table,6);
-
+            MyOpenXml.CreateTableMargins(table);
             int dayNumber = 0;
             int passNumber = 1;
             foreach (DancePass[] dancePasses in dancePassesDayList)
             {
                 foreach (DancePass dancePass in dancePasses)
                 {
-                    createFestivalRowForFlyer1(dayNumber, passNumber, dancePass, table, schemaInfo.colWidth);
+                    createFestivalRowForFlyer(dayNumber, passNumber, dancePass, table, schemaInfo.colWidth);
                     // htmlStringBuilder.Append(createFestivalRowHtml(lang, dayNumber, passNumber, dancePass, schemaInfo));
                     passNumber++;
                 }
@@ -312,6 +363,7 @@ namespace CreateWordFiles
                 int cellNumber = 0;
                 foreach (Wp.TableCell cell in row.Descendants<Wp.TableCell>())
                 {
+ 
                     if ((rowNumber == 1 || rowNumber == 4) && cellNumber == 1 )
                     {
                         mergeVertical(cell, Wp.MergedCellValues.Restart);
@@ -355,7 +407,7 @@ namespace CreateWordFiles
             return table;
 
         }
-        private static void createFestivalRowForFlyer1(int dayNumber, int passNumber, DancePass dancePass, Wp.Table table, List<int> colWidth)
+        private static void createFestivalRowForFlyer(int dayNumber, int passNumber, DancePass dancePass, Wp.Table table, List<int> colWidth)
         {
             string weekDay, timeString, level;
             createFestivalRow(dancePass, dayNumber, passNumber, out weekDay, out timeString, out level);
@@ -564,6 +616,9 @@ namespace CreateWordFiles
             {
                 Val = mergeType
             });
+
+            Wp.TableCellVerticalAlignment tcVA = new Wp.TableCellVerticalAlignment() { Val = Wp.TableVerticalAlignmentValues.Center };
+            cellProps.Append(tcVA);
 
             tableCell.Append(cellProps);
 
