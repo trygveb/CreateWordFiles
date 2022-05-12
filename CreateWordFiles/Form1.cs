@@ -37,7 +37,7 @@ namespace CreateWordFiles
             getCallers();
             getDanceSchemas();
             this.comboBoxCaller.SelectedIndex = 0;
-            this.comboBoxDanceSchema.SelectedIndex = 0; 
+            this.comboBoxDanceSchema.SelectedIndex = 4; 
             this.dateTimePickerEnd.Value = this.dateTimePickerStart.Value + new TimeSpan(24, 0, 0);
         }
 

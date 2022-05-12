@@ -23,7 +23,7 @@ namespace CreateWordFiles
         /// <param name="document"></param>
         /// <param name="footerText"></param>
         /// <param name="fontSize">Font size in points</param>
-        public static void ApplyFooter(WordprocessingDocument document, String footerText, int fontSize)
+        public static void SetMarginsAndFooter(WordprocessingDocument document, String footerText, int fontSize, int topMargin=200)
         {
             // Get the main document part.
             MainDocumentPart mainDocPart = document.MainDocumentPart;
@@ -69,7 +69,7 @@ namespace CreateWordFiles
             {
                 sectionProperties1 = new Wp.SectionProperties() { };
 
-                Wp.PageMargin pageMargin = new Wp.PageMargin() { Top = 200, Right =1008U, Bottom = 1008, Left = 1008U, Header = 720U,
+                Wp.PageMargin pageMargin = new Wp.PageMargin() { Top = topMargin, Right =1008U, Bottom = 1008, Left = 1008U, Header = 720U,
                     Footer = 640U, Gutter = 0U };
                 sectionProperties1.Append(pageMargin);
 

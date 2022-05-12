@@ -75,28 +75,25 @@ namespace CreateWordFiles
             mainPart.Document = new Wp.Document();
             Wp.Body body = mainPart.Document.AppendChild(new Wp.Body());
 
-            String logoFileName = "https://motiv8s.se/19/images/M8/Logga_Transparent.jpg";
-            addImage("Anchor", wordDocument, logoFileName, 84, 10.0, 16.0);
-            addImage("Anchor", wordDocument, logoFileName, 84, 178.0, 16.0);
-            Wp.Paragraph paragraph1 = GenerateWelcomeParagraph(myTexts["danceName"].ToUpper(), danceDates);
+            Wp.Paragraph paragraph1 = GenerateWelcomeParagraphFestival1();
             body.AppendChild(paragraph1);
-            // double scale = 0.7;
+            addImage("Inline", wordDocument, myTexts["logo_file_name"], 200, 6.0, 10.0);
+            Wp.Paragraph paragraph2 = GenerateWelcomeParagraphFestival2(myTexts["danceName"].ToUpper());
+            body.AppendChild(paragraph2);
             addImage("Inline", wordDocument, myTexts["callerPictureFile"], 250, 6.0, 10.0);
 
             body.AppendChild(GenerateCallerNameParagraph(myTexts["callerName"]));
 
             Wp.Table table = CreateDanceSchemaTable(lang, schemaInfo, schemaName);
             Wp.Paragraph tableParagraph = generateTableParagraph(table);
-            //body.AppendChild(table);
             body.AppendChild(tableParagraph);
 
 
-            //body.AppendChild(new Wp.Break());
             body.AppendChild(GenerateDanceLocationParagraph(danceLocation, 400));
             body.AppendChild(GenerateFeesParagraph(schemaInfo));
             body.AppendChild(GenerateCoffeeParagraph(coffee, 500));
             body.AppendChild(GenerateRotationParagraph());
-            MyOpenXml.ApplyFooter(wordDocument, myTexts["footer"], 10);
+            MyOpenXml.SetMarginsAndFooter(wordDocument, myTexts["footer"], 10, 1500);
 
             String htmlText = htmlStringBuilder.ToString();
             File.WriteAllText(path.Replace("docx", "htm"), htmlText);
@@ -110,10 +107,10 @@ namespace CreateWordFiles
             mainPart.Document = new Wp.Document();
             Wp.Body body = mainPart.Document.AppendChild(new Wp.Body());
 
-            String logoFileName = "https://motiv8s.se/19/images/M8/Logga_Transparent.jpg";
+            String logoFileName = myTexts["logo_file_name"];
             addImage("Anchor", wordDocument, logoFileName, 84, 10.0, 16.0);
             addImage("Anchor", wordDocument, logoFileName, 84, 178.0, 16.0);
-            Wp.Paragraph paragraph1 = GenerateWelcomeParagraph(myTexts["danceName"].ToUpper(), danceDates);
+            Wp.Paragraph paragraph1 = GenerateWelcomeParagraphWeekend(myTexts["danceName"].ToUpper(), danceDates);
             body.AppendChild(paragraph1);
             // double scale = 0.7;
             addImage("Inline", wordDocument, myTexts["callerPictureFile"], 250, 6.0, 10.0);
@@ -131,7 +128,7 @@ namespace CreateWordFiles
             body.AppendChild(GenerateFeesParagraph(schemaInfo));
             body.AppendChild(GenerateCoffeeParagraph(coffee, 500));
             body.AppendChild(GenerateRotationParagraph());
-            MyOpenXml.ApplyFooter(wordDocument, myTexts["footer"], 10);
+            MyOpenXml.SetMarginsAndFooter(wordDocument, myTexts["footer"], 10);
 
             String htmlText = htmlStringBuilder.ToString();
             File.WriteAllText(path.Replace("docx", "htm"), htmlText);
@@ -207,7 +204,21 @@ namespace CreateWordFiles
             paragraph.Append(run);
             return paragraph;
         }
-        public static Wp.Paragraph GenerateWelcomeParagraph(String danceName, String danceDates)
+        public static Wp.Paragraph GenerateWelcomeParagraphFestival1()
+        {
+            String[] lines = { myTexts["welcome"] + " " + myTexts["to"] };
+            String[] colors = { "Black" };
+            int[] fontSizes = { 20 };
+            return MyOpenXml.GenerateParagraph(lines, fontSizes, colors);
+        }
+        public static Wp.Paragraph GenerateWelcomeParagraphFestival2(String festivalName)
+        {
+            String[] lines = { festivalName };
+            String[] colors = { "Black", };
+            int[] fontSizes = { 30 };
+            return MyOpenXml.GenerateParagraph(lines, fontSizes, colors);
+        }
+        public static Wp.Paragraph GenerateWelcomeParagraphWeekend(String danceName, String danceDates)
         {
             Wp.Paragraph paragraph1 = new Wp.Paragraph();
 
@@ -458,7 +469,7 @@ namespace CreateWordFiles
                 timeString2 = formatTimeInterval(dancePassesDayList[1][i1]);
                 level2 = dancePassesDayList[1][i1].level;
             }
-            catch (Exception e)
+            catch (Exception)
             {
 
             }
