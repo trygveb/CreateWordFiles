@@ -23,7 +23,7 @@ namespace CreateWordFiles
         /// <param name="document"></param>
         /// <param name="footerText"></param>
         /// <param name="fontSize">Font size in points</param>
-        public static void SetMarginsAndFooter(WordprocessingDocument document, String footerText, int fontSize, int topMargin=200)
+        public static void SetMarginsAndFooter(WordprocessingDocument document, String footerText, int fontSize, int topMargin=200, uint leftMargin=1008, uint rigthMargin=1008, int bottomMargin=1008)
         {
             // Get the main document part.
             MainDocumentPart mainDocPart = document.MainDocumentPart;
@@ -69,7 +69,7 @@ namespace CreateWordFiles
             {
                 sectionProperties1 = new Wp.SectionProperties() { };
 
-                Wp.PageMargin pageMargin = new Wp.PageMargin() { Top = topMargin, Right =1008U, Bottom = 1008, Left = 1008U, Header = 720U,
+                Wp.PageMargin pageMargin = new Wp.PageMargin() { Top = topMargin, Right = rigthMargin, Bottom = bottomMargin, Left = leftMargin, Header = 720U,
                     Footer = 640U, Gutter = 0U };
                 sectionProperties1.Append(pageMargin);
 
@@ -96,6 +96,10 @@ namespace CreateWordFiles
         public static Wp.Paragraph GenerateParagraph(string[] lines, int[] fontSizes, String[] colors, Wp.ParagraphBorders borders = null)
         {
             Wp.Paragraph paragraph = new Wp.Paragraph();
+            Wp.ParagraphProperties paragraphProperties = new Wp.ParagraphProperties(borders);
+            Wp.Justification justification = new Wp.Justification() { Val = Wp.JustificationValues.Center };
+            paragraphProperties.Append(justification);
+            paragraph.Append(paragraphProperties);
 
 
             for (int i = 0; i < lines.Length; i++)
@@ -103,9 +107,6 @@ namespace CreateWordFiles
                 String fontSizeTxt = (fontSizes[i] * 2).ToString();
                 String line = lines[i];
                 Wp.FontSize fontSize = new Wp.FontSize { Val = new OXML.StringValue(fontSizeTxt) };  // Size in half points
-                Wp.ParagraphProperties paragraphProperties = new Wp.ParagraphProperties(borders);
-                Wp.Justification justification = new Wp.Justification() { Val = Wp.JustificationValues.Center };
-                paragraphProperties.Append(justification);
 
                 Wp.Run run = new Wp.Run();
                 Wp.RunProperties runProperties = new Wp.RunProperties();
@@ -126,7 +127,6 @@ namespace CreateWordFiles
                 {
                     run.Append(new Wp.Break());
                 }
-                paragraph.Append(paragraphProperties);
                 paragraph.Append(run);
 
             }

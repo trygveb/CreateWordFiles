@@ -37,8 +37,13 @@ namespace CreateWordFiles
             getCallers();
             getDanceSchemas();
             this.comboBoxCaller.SelectedIndex = 0;
-            this.comboBoxDanceSchema.SelectedIndex = 4; 
-            this.dateTimePickerEnd.Value = this.dateTimePickerStart.Value + new TimeSpan(24, 0, 0);
+            this.comboBoxDanceSchema.SelectedIndex = 4;
+            int days = 2;
+            if (this.comboBoxDanceSchema.Text== "festival")
+            {
+                days = 4;
+            }
+            this.dateTimePickerEnd.Value = this.dateTimePickerStart.Value + new TimeSpan((days-1)*24, 0, 0);
         }
 
         private void getCallers()
@@ -194,7 +199,7 @@ namespace CreateWordFiles
         {
             this.callerName= comboBoxCaller.SelectedItem.ToString();
             String[] names = callerName.Split('_');
-            if (names.Length == 2)
+            if (names.Length >= 2)
             {
                 this.callerPictureFile = Utility.callerDictionary[callerName];
                 this.textBoxCallerPicture.Text = callerPictureFile;

@@ -15,6 +15,8 @@ namespace CreateWordFiles
     public class Fees
     {
         public List<int> weekends { get; set; }
+        public List<int> festival { get; set; }
+        public List<int> festival_member { get; set; }
     }
     public class DancePass
     {
