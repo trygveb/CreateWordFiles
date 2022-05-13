@@ -54,11 +54,11 @@ namespace CreateWordFiles
                 {
                     if (schemaName == "festival")
                     {
-                        createFestivalFlyer(lang, schemaInfo, schemaName, path, coffee, danceLocation, danceDates, wordDocument);
+                        createFestivalFlyer(lang, schemaInfo, danceDateStart, schemaName, path, coffee, danceLocation, danceDates, wordDocument);
                     }
                     else
                     {
-                        createWeekendFlyer(lang, schemaInfo, schemaName, path, coffee, danceLocation, danceDates, wordDocument);
+                        createWeekendFlyer(lang, schemaInfo, danceDateStart, schemaName, path, coffee, danceLocation, danceDates, wordDocument);
                     }
                 }
             }
@@ -68,12 +68,14 @@ namespace CreateWordFiles
             }
         }
 
-        private static void createFestivalFlyer(string lang, SchemaInfo schemaInfo, string schemaName, string path, bool coffee, string danceLocation, string danceDates, WordprocessingDocument wordDocument)
+        private static void createFestivalFlyer(string lang, SchemaInfo schemaInfo, DateTime danceDateStart, string schemaName, string path, bool coffee, string danceLocation, string danceDates, WordprocessingDocument wordDocument)
         {
             MainDocumentPart mainPart = wordDocument.AddMainDocumentPart();
 
             mainPart.Document = new Wp.Document();
             Wp.Body body = mainPart.Document.AppendChild(new Wp.Body());
+            //MyOpenXml.SetMarginsAndFooter(wordDocument, myTexts["footer"], 10, 1500, 2000, 2000);
+            MyOpenXml.SetMarginsAndFooter(wordDocument, myTexts["footer"], 10);
 
             Wp.Paragraph paragraph1 = GenerateWelcomeParagraphFestival1();
             body.AppendChild(paragraph1);
@@ -94,22 +96,65 @@ namespace CreateWordFiles
             body.AppendChild(paragraphDanceDates);
             body.AppendChild(GenerateDanceLocationParagraph(danceLocation, 400));
 
+            Wp.Table table1 = new Wp.Table();
+            MyOpenXml.CreateTableBorders(table1, 10);
+            Wp.TableRow tableRow1 = createRow(new string[] { "Test" }, new int[] { 2000 });
+            table1.Append(tableRow1);
+            Wp.Paragraph tableParagraph1 = generateTableParagraph(table1);
+            body.AppendChild(tableParagraph1);
+
+
+            Wp.Paragraph danceFeeParagraph = GenerateFeesParagraph(schemaInfo, danceDateStart);
+            Wp.ParagraphProperties paragraphProperties = new Wp.ParagraphProperties();
+
+            paragraphProperties.PageBreakBefore = new Wp.PageBreakBefore();
+
+            //Wp.SectionProperties sectionProperties = new Wp.SectionProperties();
+            //Wp.SectionType sectionType = new Wp.SectionType() { Val = Wp.SectionMarkValues.NextPage };
+            //sectionProperties.Append(sectionType);
+
+            //Wp.PageMargin pageMargin = new Wp.PageMargin()
+            //{
+            //    Top = 10,
+            //    Right = 1500,
+            //    Bottom = 1500,
+            //    Left = 1500,
+            //    Header = 720U,
+            //    Footer = 640U,
+            //    Gutter = 0U
+            //};
+            //sectionProperties.Append(pageMargin);
+
+            //paragraphProperties.Append(sectionProperties);
+
+            danceFeeParagraph.Append(paragraphProperties);
+
+
+            body.Append(danceFeeParagraph);
+
             Wp.Table table = CreateDanceSchemaTable(lang, schemaInfo, schemaName);
             Wp.Paragraph tableParagraph = generateTableParagraph(table);
+            tableParagraph.ParagraphProperties.PageBreakBefore = new Wp.PageBreakBefore();
             body.AppendChild(tableParagraph);
 
 
-            body.AppendChild(GenerateFeesParagraph(schemaInfo));
             body.AppendChild(GenerateCoffeeParagraph(coffee, 500));
             body.AppendChild(GenerateRotationParagraph());
-            MyOpenXml.SetMarginsAndFooter(wordDocument, myTexts["footer"], 10, 1500, 2000, 2000);
+
+            var sections = mainPart.Document.Descendants<Wp.SectionProperties>();
+            foreach (Wp.SectionProperties sectPr in sections)
+            {
+                Wp.PageMargin myPageMargin = sectPr.Descendants<Wp.PageMargin>().FirstOrDefault();
+                //myPageMargin.Left = myPageMargin.Left / 2;
+            }
+
 
             String htmlText = htmlStringBuilder.ToString();
             File.WriteAllText(path.Replace("docx", "htm"), htmlText);
 
             createDemoHtmlFile(path, htmlText);
         }
-        private static void createWeekendFlyer(string lang, SchemaInfo schemaInfo, string schemaName, string path, bool coffee, string danceLocation, string danceDates, WordprocessingDocument wordDocument)
+        private static void createWeekendFlyer(string lang, SchemaInfo schemaInfo, DateTime danceDateStart, string schemaName, string path, bool coffee, string danceLocation, string danceDates, WordprocessingDocument wordDocument)
         {
             MainDocumentPart mainPart = wordDocument.AddMainDocumentPart();
 
@@ -134,7 +179,7 @@ namespace CreateWordFiles
 
             //body.AppendChild(new Wp.Break());
             body.AppendChild(GenerateDanceLocationParagraph(danceLocation, 400));
-            body.AppendChild(GenerateFeesParagraph(schemaInfo));
+            body.AppendChild(GenerateFeesParagraph(schemaInfo, danceDateStart));
             body.AppendChild(GenerateCoffeeParagraph(coffee, 500));
             body.AppendChild(GenerateRotationParagraph());
             MyOpenXml.SetMarginsAndFooter(wordDocument, myTexts["footer"], 10);
@@ -206,7 +251,6 @@ namespace CreateWordFiles
             Wp.SpacingBetweenLines spacingBetweenLines = new Wp.SpacingBetweenLines();
             spacingBetweenLines.LineRule = Wp.LineSpacingRuleValues.Exact;
             spacingBetweenLines.Line = "200";
-            //paragraphProperties.Append(spacingBetweenLines); It seems like only the first cell gets this
             paragraph.Append(paragraphProperties);
             Wp.Run run = new Wp.Run();
             run.Append(table);
@@ -261,7 +305,7 @@ namespace CreateWordFiles
             return MyOpenXml.GenerateParagraph(lines.ToArray(), fontSizes.ToArray(), colors.ToArray(), borders);
         }
 
-        public static Wp.Paragraph GenerateFeesParagraph(SchemaInfo schemaInfo)
+        public static Wp.Paragraph GenerateFeesParagraph(SchemaInfo schemaInfo, DateTime danceDateStart)
         {
 
             if (schemaInfo.schemaName.StartsWith("weekend"))
@@ -270,13 +314,14 @@ namespace CreateWordFiles
             }
             else
             {
-                return GenerateFestivalFeesLines(schemaInfo);
+                return GenerateFestivalFeesLines(schemaInfo, danceDateStart);
             }
 
         }
-        private static Wp.Paragraph GenerateFestivalFeesLines(SchemaInfo schemaInfo)
+        private static Wp.Paragraph GenerateFestivalFeesLines(SchemaInfo schemaInfo, DateTime danceDateStart)
         {
             List<String> lines = new List<String>();
+            lines.Add("Entré");
             String line1 = String.Format(myTexts["festival_fees"], myFees.festival[0], myFees.festival[1],
             myFees.festival[2], myFees.festival[3],
             myFees.festival[4], myFees.festival[5]);
@@ -284,14 +329,23 @@ namespace CreateWordFiles
             lines.Add(myTexts["festival_fees_text_1"]);
             lines.Add(myTexts["festival_fees_text_2"]);
             lines.Add(myTexts["festival_fees_text_3"]);
-            lines.Add(myTexts["festival_fees_text_4"]);
+            DateTime dueDate1= danceDateStart - new TimeSpan(4 * 24, 0, 0);
+            lines.Add(String.Format(myTexts["festival_fees_text_4"], dueDate1.Day +"/"+dueDate1.Month));
+            
             lines.Add(myTexts["festival_fees_text_5"]);
             lines.Add(myTexts["festival_fees_text_6"]);
-            lines.Add(myTexts["festival_fees_text_7"]);
+
+            DateTime dueDate2 = danceDateStart - new TimeSpan(1 * 24, 0, 0);
+            lines.Add(String.Format(myTexts["festival_fees_text_7"], dueDate2.Day + "/" + dueDate2.Month));
+
             lines.Add(myTexts["festival_fees_text_8"]);
+
             lines.Add(myTexts["festival_fees_text_9"]);
-            int[] fontSizes = { 12, 12, 12, 12, 12, 12, 12, 12, 12, 12 };
-            String[] colors = { "Black", "Black", "Black", "Black", "Black", "Black", "Black", "Black", "Black", "Black" };
+            int[] fontSizes = Enumerable.Repeat(18, 11).ToArray();
+            fontSizes[0] = 24;
+            String[] colors = Enumerable.Repeat("Black", 11).ToArray();
+
+         //   String[] colors = { "Black", "Black", "Black", "Black", "Black", "Black", "Black", "Black", "Black", "Black", "Black" };
 
             return MyOpenXml.GenerateParagraph(lines.ToArray(), fontSizes, colors);
 

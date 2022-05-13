@@ -94,6 +94,7 @@
             this.dateTimePickerStart.Name = "dateTimePickerStart";
             this.dateTimePickerStart.Size = new System.Drawing.Size(138, 20);
             this.dateTimePickerStart.TabIndex = 8;
+            this.dateTimePickerStart.Value = new System.DateTime(2022, 10, 7, 0, 0, 0, 0);
             this.dateTimePickerStart.ValueChanged += new System.EventHandler(this.dateTimePickerStart_ValueChanged);
             // 
             // dateTimePickerEnd
@@ -102,6 +103,7 @@
             this.dateTimePickerEnd.Name = "dateTimePickerEnd";
             this.dateTimePickerEnd.Size = new System.Drawing.Size(138, 20);
             this.dateTimePickerEnd.TabIndex = 10;
+            this.dateTimePickerEnd.Value = new System.DateTime(2022, 10, 10, 0, 0, 0, 0);
             // 
             // groupBox2
             // 
