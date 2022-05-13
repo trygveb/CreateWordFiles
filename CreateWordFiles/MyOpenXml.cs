@@ -93,10 +93,15 @@ namespace CreateWordFiles
         /// <param name="colors">Array with one font color for each line</param>
         /// <param name="borders"></param>
         /// <returns></returns>
-        public static Wp.Paragraph GenerateParagraph(string[] lines, int[] fontSizes, String[] colors, Wp.ParagraphBorders borders = null)
+        public static Wp.Paragraph GenerateParagraph(string[] lines, int[] fontSizes, String[] colors, Boolean pageBreakBefore, Wp.ParagraphBorders borders = null)
         {
             Wp.Paragraph paragraph = new Wp.Paragraph();
             Wp.ParagraphProperties paragraphProperties = new Wp.ParagraphProperties(borders);
+            if (pageBreakBefore)
+            {
+                paragraphProperties.PageBreakBefore = new Wp.PageBreakBefore();
+            }
+
             Wp.Justification justification = new Wp.Justification() { Val = Wp.JustificationValues.Center };
             paragraphProperties.Append(justification);
             paragraph.Append(paragraphProperties);
@@ -133,7 +138,8 @@ namespace CreateWordFiles
             return paragraph;
         }
 
-        public static void CreateTableBorders(Wp.Table table, uint _size)
+        public static void CreateTableBorders(Wp.Table table, uint _size, Wp.BorderValues borderTypeOuter=Wp.BorderValues.Single,
+            Wp.BorderValues borderTypeInner = Wp.BorderValues.None, String color = "E0C512")
         {
             OXML.UInt32Value size= (OXML.UInt32Value)_size;
 
@@ -141,46 +147,61 @@ namespace CreateWordFiles
                     new Wp.TableBorders(
                     new Wp.TopBorder
                     {
-                        Val = new OXML.EnumValue<Wp.BorderValues>(Wp.BorderValues.Single),
-                        Size = size
+                        Val = new OXML.EnumValue<Wp.BorderValues>(borderTypeOuter),
+                        Size = size,
+                        Color= color
                     },
                     new Wp.BottomBorder
                     {
-                        Val = new OXML.EnumValue<Wp.BorderValues>(Wp.BorderValues.Single),
-                        Size = size
+                        Val = new OXML.EnumValue<Wp.BorderValues>(borderTypeOuter),
+                        Size = size,
+                        Color = color
                     },
                     new Wp.LeftBorder
                     {
-                        Val = new OXML.EnumValue<Wp.BorderValues>(Wp.BorderValues.Single),
-                        Size = size
+                        Val = new OXML.EnumValue<Wp.BorderValues>(borderTypeOuter),
+                        Size = size,
+                        Color = color
                     },
                     new Wp.RightBorder
                     {
-                        Val = new OXML.EnumValue<Wp.BorderValues>(Wp.BorderValues.Single),
-                        Size = size
+                        Val = new OXML.EnumValue<Wp.BorderValues>(borderTypeOuter),
+                        Size = size,
+                        Color = color
                     },
                     new Wp.InsideHorizontalBorder
                     {
-                        Val = new OXML.EnumValue<Wp.BorderValues>(Wp.BorderValues.Single),
-                        Size = size
+                        Val = new OXML.EnumValue<Wp.BorderValues>(borderTypeInner),
+                        Size = size,
+                        Color = color
                     },
                     new Wp.InsideVerticalBorder
                     {
-                        Val = new OXML.EnumValue<Wp.BorderValues>(Wp.BorderValues.Single),
-                        Size = size
+                        Val = new OXML.EnumValue<Wp.BorderValues>(borderTypeInner),
+                        Size = size,
+                        Color = color
                     }));
 
             table.AppendChild<Wp.TableProperties>(props);
         }
-        public static void CreateTableMargins(Wp.Table table)
+        /// <summary>
+        /// Sets table margins in Dxa: Twentieths of a Point.
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="topMargin"></param>
+        /// <param name="startMargin"></param>
+        /// <param name="bottomMargin"></param>
+        /// <param name="endMargin"></param>
+        public static void CreateTableMargins(Wp.Table table, int topMargin=150, int startMargin=50, int bottomMargin=5, int endMargin=50)
         {
+            
             Wp.TableProperties tblProp = new Wp.TableProperties(
                // new Wp.TableCellSpacing() { Width = "200", Type = Wp.TableWidthUnitValues.Dxa },
                 new Wp.TableCellMarginDefault(
-                    new Wp.TopMargin() { Width = "150", Type = Wp.TableWidthUnitValues.Dxa },
-                    new Wp.StartMargin() { Width = "50", Type = Wp.TableWidthUnitValues.Dxa },
-                    new Wp.BottomMargin() { Width = "5", Type = Wp.TableWidthUnitValues.Dxa },
-                    new Wp.EndMargin() { Width = "50", Type = Wp.TableWidthUnitValues.Dxa })
+                    new Wp.TopMargin() { Width = topMargin.ToString(), Type = Wp.TableWidthUnitValues.Dxa },
+                    new Wp.StartMargin() { Width = startMargin.ToString(), Type = Wp.TableWidthUnitValues.Dxa },
+                    new Wp.BottomMargin() { Width = bottomMargin.ToString(), Type = Wp.TableWidthUnitValues.Dxa },
+                    new Wp.EndMargin() { Width = endMargin.ToString(), Type = Wp.TableWidthUnitValues.Dxa })
                     );
             table.AppendChild<Wp.TableProperties>(tblProp);
         }
