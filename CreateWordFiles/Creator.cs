@@ -111,6 +111,10 @@ namespace CreateWordFiles
 
             body.AppendChild(GenerateCoffeeParagraph(coffee, 500));
 
+            body.AppendChild(GenerateLastpageParagraph());
+
+            addImage("Inline", wordDocument, myTexts["logo_file_name"], 200, 6.0, 10.0);
+
             var sections = mainPart.Document.Descendants<Wp.SectionProperties>();
             foreach (Wp.SectionProperties sectPr in sections)
             {
@@ -329,22 +333,32 @@ namespace CreateWordFiles
             lines.Add(line1);
             lines.Add(myTexts["festival_fees_text_1"]);
             lines.Add(myTexts["festival_fees_text_2"]);
+            lines.Add(" ");
             lines.Add(myTexts["festival_fees_text_3"]);
-            DateTime dueDate1= danceDateStart - new TimeSpan(4 * 24, 0, 0);
-            lines.Add(String.Format(myTexts["festival_fees_text_4"], dueDate1.Day +"/"+dueDate1.Month));
+            lines.Add(" ");
+            DateTime dueDate1 = danceDateStart - new TimeSpan(4 * 24, 0, 0);
+            String ddMM1 = dueDate1.Day + "/" + dueDate1.Month;
+            lines.Add(String.Format(myTexts["festival_fees_text_4"], ddMM1));
             
             lines.Add(myTexts["festival_fees_text_5"]);
-            lines.Add(myTexts["festival_fees_text_6"]);
+
+            String line6 = String.Format(myTexts["festival_fees_member"],
+                myFees.festival_member[0], myFees.festival_member[1],
+                myFees.festival_member[2], myFees.festival_member[3],
+                myFees.festival_member[4], myFees.festival_member[5]);
+            lines.Add(line6);
 
             DateTime dueDate2 = danceDateStart - new TimeSpan(1 * 24, 0, 0);
-            lines.Add(String.Format(myTexts["festival_fees_text_7"], dueDate2.Day + "/" + dueDate2.Month));
+            lines.Add(String.Format(myTexts["festival_fees_text_6"], dueDate2.Day + "/" + dueDate2.Month));
+
+            lines.Add(" ");
+            lines.Add(String.Format(myTexts["festival_fees_text_7"], ddMM1));
+            lines.Add(" ");
 
             lines.Add(myTexts["festival_fees_text_8"]);
-
-            lines.Add(myTexts["festival_fees_text_9"]);
-            int[] fontSizes = Enumerable.Repeat(18, 11).ToArray();
+            int[] fontSizes = Enumerable.Repeat(18, lines.Count).ToArray();
             fontSizes[0] = 24;
-            String[] colors = Enumerable.Repeat("Black", 11).ToArray();
+            String[] colors = Enumerable.Repeat("Black", lines.Count).ToArray();
             return MyOpenXml.GenerateParagraph(lines.ToArray(), fontSizes, colors, true);
 
         }
@@ -412,6 +426,14 @@ namespace CreateWordFiles
                 maxWidth, text));
 
             return MyOpenXml.GenerateParagraph(lines, fontSizes, colors, false, borders);
+        }
+        public static Wp.Paragraph GenerateLastpageParagraph()
+        {
+            String[] lines = { myTexts["more_info_1"], myTexts["more_info_2"], " ", myTexts["more_info_3"],
+              " ",   myTexts["more_info_4"]," ", " ",  myTexts["more_info_5"] , " ", " " , " ", " " };
+            int[] fontSizes = Enumerable.Repeat(20, lines.Length).ToArray();
+            String[] colors = Enumerable.Repeat("Black", lines.Length).ToArray();
+            return MyOpenXml.GenerateParagraph(lines, fontSizes, colors, true);
         }
 
         public static Wp.Paragraph GenerateRotationParagraph()
