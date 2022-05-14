@@ -91,21 +91,25 @@ namespace CreateWordFiles
 
             Wp.Paragraph paragraphDanceDates = MyOpenXml.GenerateParagraph(new string[] { danceDates }, new int[] { 24 }, new string[] { "Black" }, false);
             body.AppendChild(paragraphDanceDates);
+
             body.AppendChild(GenerateDanceLocationParagraph(danceLocation));
 
 
             Wp.Paragraph danceFeeParagraph = GenerateFeesParagraph(schemaInfo, danceDateStart);
             body.Append(danceFeeParagraph);
 
-            Wp.Table table = CreateDanceSchemaTable(lang, schemaInfo, schemaName, 14);
+            Wp.Paragraph paragraphX = MyOpenXml.GenerateParagraph(new string[] { "PROGRAM" }, new int[] { 24 }, new string[] { "Black" }, true);
+            body.AppendChild(paragraphX);
+
+            Wp.Table table = CreateDanceSchemaTable(lang, schemaInfo, schemaName, 20);
             Wp.Paragraph tableParagraph = generateTableParagraph(table, false);
 
             //tableParagraph.ParagraphProperties.PageBreakBefore = new Wp.PageBreakBefore();
             body.AppendChild(tableParagraph);
 
+            body.AppendChild(GenerateRotationParagraph());
 
             body.AppendChild(GenerateCoffeeParagraph(coffee, 500));
-            body.AppendChild(GenerateRotationParagraph());
 
             var sections = mainPart.Document.Descendants<Wp.SectionProperties>();
             foreach (Wp.SectionProperties sectPr in sections)
@@ -199,7 +203,7 @@ namespace CreateWordFiles
             Wp.ParagraphProperties paragraphProperties = new Wp.ParagraphProperties();
             Wp.SpacingBetweenLines spacingBetweenLines = new Wp.SpacingBetweenLines();
             spacingBetweenLines.LineRule = Wp.LineSpacingRuleValues.Exact;
-            spacingBetweenLines.Line = "350";
+            spacingBetweenLines.Line = "400";
             paragraphProperties.Append(spacingBetweenLines);
 
             Wp.Justification justification = new Wp.Justification() { Val = Wp.JustificationValues.Center };
@@ -216,7 +220,7 @@ namespace CreateWordFiles
             Wp.ParagraphProperties paragraphProperties = new Wp.ParagraphProperties();
             Wp.SpacingBetweenLines spacingBetweenLines = new Wp.SpacingBetweenLines();
             spacingBetweenLines.LineRule = Wp.LineSpacingRuleValues.Exact;
-            spacingBetweenLines.Line = "200";
+            spacingBetweenLines.Line = "400";
             if (pageBreakBefore)
             {
                 paragraphProperties.PageBreakBefore = new Wp.PageBreakBefore();
@@ -444,6 +448,7 @@ namespace CreateWordFiles
             }
             else if (numberOfDistinctDays == 4)
             {
+
                 htmlStringBuilder.Append("<table class='m8_schema'>");
                 Wp.Table table = createFestivalDanceSchemaTable(lang, dancePassesDayList, schemaInfo, fontSize);
                 htmlStringBuilder.Append("</table><br>");
@@ -457,6 +462,9 @@ namespace CreateWordFiles
         public static Wp.Table createFestivalDanceSchemaTable(String lang, List<DancePass[]> dancePassesDayList, SchemaInfo schemaInfo, int fontSize)
         {
             Wp.Table table = new Wp.Table();
+
+           
+
             MyOpenXml.CreateTableBorders(table, 6, Wp.BorderValues.Single, Wp.BorderValues.Single);
             MyOpenXml.CreateTableMargins(table);
             int dayNumber = 0;
