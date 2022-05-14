@@ -75,19 +75,19 @@ namespace CreateWordFiles
             mainPart.Document = new Wp.Document();
             Wp.Body body = mainPart.Document.AppendChild(new Wp.Body());
             //MyOpenXml.SetMarginsAndFooter(wordDocument, myTexts["footer"], 10, 1500, 2000, 2000);
-            MyOpenXml.SetMarginsAndFooter(wordDocument, myTexts["footer"], 10);
+            MyOpenXml.SetMarginsAndFooter(wordDocument, myTexts["footer"], 10, 1000);
 
             Wp.Paragraph paragraph1 = GenerateWelcomeParagraphFestival1();
             body.AppendChild(paragraph1);
             addImage("Inline", wordDocument, myTexts["logo_file_name"], 200, 6.0, 10.0);
             Wp.Paragraph paragraph2 = GenerateWelcomeParagraphFestival2(myTexts["danceName"].ToUpper());
             body.AppendChild(paragraph2);
-            addImage("Inline", wordDocument, myTexts["callerPictureFile"], 250, 6.0, 10.0);
+            addImage("Inline", wordDocument, myTexts["callerPictureFile"], 250, 6.0, 10.0, false);
 
-            Wp.ParagraphBorders borders = createParagraphBorders(Wp.BorderValues.Double, 12, "E0C512");
+            
             String[] atoms = myTexts["callerName"].Split('_');
             String country = atoms[2].ToUpper();
-            body.AppendChild(GenerateCallerNameParagraph(myTexts["callerName"], country, borders));
+            body.AppendChild(GenerateCallerNameParagraph(myTexts["callerName"], country));
 
             Wp.Paragraph paragraphDanceDates = MyOpenXml.GenerateParagraph(new string[] { danceDates }, new int[] { 24 }, new string[] { "Black" }, false);
             body.AppendChild(paragraphDanceDates);
@@ -237,9 +237,9 @@ namespace CreateWordFiles
         }
         public static Wp.Paragraph GenerateWelcomeParagraphFestival2(String festivalName)
         {
-            String[] lines = { festivalName };
-            String[] colors = { "Black", };
-            int[] fontSizes = { 30 };
+            String[] lines = { festivalName, "", "" };
+            String[] colors = { "Black", "Black", "Black" };
+            int[] fontSizes = { 30, 10, 10 };
             return MyOpenXml.GenerateParagraph(lines, fontSizes, colors, false);
         }
         public static Wp.Paragraph GenerateWelcomeParagraphWeekend(String danceName, String danceDates)
@@ -253,7 +253,7 @@ namespace CreateWordFiles
             return MyOpenXml.GenerateParagraph(lines, fontSizes, colors, false);
         }
 
-        public static Wp.Paragraph GenerateCallerNameParagraph(String callerName, String country = null, Wp.ParagraphBorders borders = null)
+        public static Wp.Paragraph GenerateCallerNameParagraph(String callerName, String country = null)
         {
             String[] names = callerName.Split('_');
 
@@ -267,7 +267,7 @@ namespace CreateWordFiles
 
             Wp.Table table1 = new Wp.Table();
             MyOpenXml.CreateTableMargins(table1, 150, 50, 0, 50);
-            MyOpenXml.CreateTableBorders(table1, 20, Wp.BorderValues.Double);
+            //MyOpenXml.CreateTableBorders(table1, 20, Wp.BorderValues.Double);
             Wp.TableRow tableRow1 = createRow(new string[] { callerName }, new int[] { 5000 }, false, 20);
             table1.Append(tableRow1);
             Wp.TableRow tableRow2 = createRow(new string[] { country }, new int[] { 5000 }, false, 20);
@@ -403,7 +403,7 @@ namespace CreateWordFiles
             String[] lines = { text };
             int[] fontSizes = { 13 };
             String[] colors = { "Black" };
-            Wp.ParagraphBorders borders = createParagraphBorders(Wp.BorderValues.Double, 12, "E0C512");
+            Wp.ParagraphBorders borders = MyOpenXml.createParagraphBorders(Wp.BorderValues.Double, 12);
             htmlStringBuilder.Append(String.Format("<p  class='m8_schema m8_border' style='max-width: {0}px;'>{1}</p>",
                 maxWidth, text));
 
@@ -794,64 +794,8 @@ namespace CreateWordFiles
 
         }
 
-        private static OXML.OpenXmlElement[] createBorders(Wp.BorderValues type, OXML.UInt32Value size, String color = "000000")
-        {
-            OXML.OpenXmlElement[] borders = {
-            new Wp.TopBorder()
-                {
-                    Val = new OXML.EnumValue<Wp.BorderValues>(type),
-                    Size = size,
-                    Color= color
-            },
-            new Wp.BottomBorder()
-                {
-                    Val = new OXML.EnumValue<Wp.BorderValues>(type),
-                    Size = size,
-                    Color= color
-
-                },
-            new Wp.LeftBorder()
-                {
-                    Val = new OXML.EnumValue<Wp.BorderValues>(type),
-                    Size = size,
-                    Color= color
-
-                },
-            new Wp.RightBorder()
-                {
-                    Val = new OXML.EnumValue<Wp.BorderValues>(type),
-                    Size = size,
-                    Color= color
-
-                },
-            new Wp.InsideHorizontalBorder()
-                {
-                    Val = new OXML.EnumValue<Wp.BorderValues>(type),
-                    Size = size,
-                    Color= color
-
-                },
-            new Wp.InsideVerticalBorder()
-                {
-                    Val = new OXML.EnumValue<Wp.BorderValues>(type),
-                    Size = size,
-                    Color= color
-
-                }
-            };
-            return borders;
-        }
-        public static Wp.ParagraphBorders createParagraphBorders(Wp.BorderValues type, OXML.UInt32Value size, String color = "000000")
-        {
-            Wp.ParagraphBorders paragraphBorders = new Wp.ParagraphBorders(createBorders(type, size, color));
-            return paragraphBorders;
-        }
-        public static Wp.TableBorders createTableBorders(Wp.BorderValues type, OXML.UInt32Value size)
-        {
-            Wp.TableBorders tableBorders = new Wp.TableBorders(createBorders(type, size));
-            return tableBorders;
-        }
-        public static void addImage(String type, WordprocessingDocument wordprocessingDocument, String fileName, int maxHeight, double x0_mm, double y0_mm)
+          public static void addImage(String type, WordprocessingDocument wordprocessingDocument, String fileName, int maxHeight,
+              double x0_mm, double y0_mm, Boolean border= false)
         {
             MainDocumentPart mainPart = wordprocessingDocument.MainDocumentPart;
             ImagePart imagePart = mainPart.AddImagePart(ImagePartType.Jpeg);
@@ -900,112 +844,19 @@ namespace CreateWordFiles
             }
             else
             {
-                AddInlineImageToBody(wordprocessingDocument, mainPart.GetIdOfPart(imagePart), (int)(scale * iWidth), (int)(scale * iHeight));
+                MyOpenXml.AddInlineImageToBody(wordprocessingDocument, mainPart.GetIdOfPart(imagePart), (int)(scale * iWidth), (int)(scale * iHeight), border, fileName);
             }
         }
         public static void AddAnchorImageToBody(WordprocessingDocument wordprocessingDocument, String relationshipId, int iWidth, int iHeight, double x0_mm, double y0_mm)
         {
             var element = MyOpenXml.GetAnchorPicture(relationshipId, x0_mm, y0_mm, iWidth, iHeight);
             // Append the reference to the body. The element should be in a DocumentFormat.OpenXml.Wordprocessing.Run.
-            wordprocessingDocument.MainDocumentPart.Document.Body.AppendChild(new Wp.Paragraph(new Wp.Run(element)));
+            Wp.Paragraph paragraph = new Wp.Paragraph(new Wp.Run(element));
+
+             wordprocessingDocument.MainDocumentPart.Document.Body.AppendChild(paragraph);
 
         }
 
-        public static void AddInlineImageToBody(WordprocessingDocument wordprocessingDocument, String relationshipId, int iWidth, int iHeight)
-        {
-            // convert the pixels to EMUs this way:
-            iWidth = (int)Math.Round((decimal)iWidth * 9525);
-            iHeight = (int)Math.Round((decimal)iHeight * 9525);
-            // Define the reference of the image.
-            var element =
-                 new Wp.Drawing(
-                     new DW.Inline(
-                         new DW.Extent() { Cx = iWidth, Cy = iHeight },
-                         new DW.EffectExtent()
-                         {
-                             LeftEdge = 0L,
-                             TopEdge = 0L,
-                             RightEdge = 0L,
-                             BottomEdge = 0L
-                         },
-                         new DW.DocProperties()
-                         {
-                             Id = (OXML.UInt32Value)1U,
-                             Name = "Picture 1"
-                         },
-                         new DW.NonVisualGraphicFrameDrawingProperties(
-                             new A.GraphicFrameLocks() { NoChangeAspect = true }),
-                         new A.Graphic(
-                             new A.GraphicData(
-                                 new PIC.Picture(
-                                     new PIC.NonVisualPictureProperties(
-                                         new PIC.NonVisualDrawingProperties()
-                                         {
-                                             Id = (OXML.UInt32Value)0U,
-                                             Name = "M8-logo1.gif"
-                                         },
-                                         new PIC.NonVisualPictureDrawingProperties()),
-                                     new PIC.BlipFill(
-                                         new A.Blip(
-                                             new A.BlipExtensionList(
-                                                 new A.BlipExtension()
-                                                 {
-                                                     Uri =
-                                                       "{28A0092B-C50C-407E-A947-70E740481C1C}"
-                                                 })
-                                         )
-                                         {
-                                             Embed = relationshipId,
-                                             CompressionState =
-                                             A.BlipCompressionValues.Print
-                                         },
-                                         new A.Stretch(
-                                             new A.FillRectangle())),
-                                     new PIC.ShapeProperties(
-                                         new A.Transform2D(
-                                             new A.Offset() { X = 0L, Y = 0L },
-                                             new A.Extents() { Cx = iWidth, Cy = iHeight }),
-                                         new A.PresetGeometry(
-                                             new A.AdjustValueList()
-                                         )
-                                         { Preset = A.ShapeTypeValues.Rectangle }))
-                             )
-                             { Uri = "http://schemas.openxmlformats.org/drawingml/2006/picture" })
-                     )
-                     {
-                         DistanceFromTop = (OXML.UInt32Value)1000U,
-                         DistanceFromBottom = (OXML.UInt32Value)0U,
-                         DistanceFromLeft = (OXML.UInt32Value)0U,
-                         DistanceFromRight = (OXML.UInt32Value)0U,
-                         EditId = "50D07946"
-                     });
-
-            // Append the reference to the body. The element should be in 
-            // a DocumentFormat.OpenXml.Wordprocessing.Run.
-            //wordprocessingDocument.MainDocumentPart.Document.Body.AppendChild(new Wp.Paragraph(new Wp.Run(element)));
-            wordprocessingDocument.MainDocumentPart.Document.Body.AppendChild(
-                new Wp.Paragraph(new Wp.Run(element))
-                {
-                    ParagraphProperties = new Wp.ParagraphProperties()
-                    {
-                        Justification = new Wp.Justification()
-                        {
-                            Val = Wp.JustificationValues.Center
-                        }
-                    }
-                });
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="imagePartId"></param>
-        /// <param name="x0_mm">Logo distance from top of page, cm</param>
-        /// <param name="y0_mm">Logo distance from left edge of page, cm</param>
-        /// <param name="wPixels">width of logo picture</param>
-        /// <param name="hPixels">height of logo picture</param>
-        /// <returns></returns>
-
-
-    }
+    
+       }
 }
