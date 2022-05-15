@@ -128,6 +128,13 @@ namespace CreateWordFiles
             string responseText = reader.ReadToEnd();
             return responseText;
         }
+
+        private void adjustCoffee()
+        {
+            this.radioButtonCoffeeYes.Checked = (this.comboBoxDanceSchema.Text == "festival");
+            this.radioButtonCoffeeNo.Checked = (this.comboBoxDanceSchema.Text != "festival");
+        }
+
         private void adjustEndDate()
         {
             TimeSpan duration = new TimeSpan(1 * 24, 0, 0);
@@ -254,6 +261,7 @@ namespace CreateWordFiles
         private void comboBoxDanceSchema_SelectedIndexChanged(object sender, EventArgs e)
         {
             adjustEndDate();
+            adjustCoffee();
         }
 
     }
