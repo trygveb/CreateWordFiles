@@ -37,7 +37,7 @@ namespace CreateWordFiles
             getCallers();
             getDanceSchemas();
             this.comboBoxCaller.SelectedIndex = 0;
-            this.comboBoxDanceSchema.SelectedIndex = 4;
+            this.comboBoxDanceSchema.SelectedIndex = 1;
             int days = 2;
             if (this.comboBoxDanceSchema.Text== "festival")
             {

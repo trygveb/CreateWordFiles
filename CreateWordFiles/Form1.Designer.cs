@@ -77,7 +77,7 @@
             this.textBoxDanceName.Name = "textBoxDanceName";
             this.textBoxDanceName.Size = new System.Drawing.Size(160, 20);
             this.textBoxDanceName.TabIndex = 1;
-            this.textBoxDanceName.Text = "Oktoberfestivalen";
+            this.textBoxDanceName.Text = "Testdans";
             // 
             // label1
             // 
