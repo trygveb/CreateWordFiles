@@ -38,6 +38,7 @@ namespace CreateWordFiles
             getDanceSchemas();
             this.comboBoxCaller.SelectedIndex = 0;
             this.comboBoxDanceSchema.SelectedIndex = 1;
+            this.comboBoxDanceName.SelectedIndex = 4;
             int days = 2;
             if (this.comboBoxDanceSchema.Text== "festival")
             {
@@ -134,6 +135,13 @@ namespace CreateWordFiles
             this.radioButtonCoffeeYes.Checked = (this.comboBoxDanceSchema.Text == "festival");
             this.radioButtonCoffeeNo.Checked = (this.comboBoxDanceSchema.Text != "festival");
         }
+        private void adjustDanceSchema()
+        {
+            if (comboBoxDanceName.Text.EndsWith("estivalen"))
+            {
+                comboBoxDanceSchema.SelectedIndex = 4;
+            }
+        }
 
         private void adjustEndDate()
         {
@@ -197,7 +205,7 @@ namespace CreateWordFiles
 
             }
             Utility.map["outputFolder"] = this.textBoxOutputFolder.Text;
-            Utility.map["danceName"] = this.textBoxDanceName.Text;
+            Utility.map["danceName"] = this.comboBoxDanceName.Text;
             Utility.map["callerName"] = this.callerName;
             Utility.map["callerPictureFile"]= this.callerPictureFile;
         }
@@ -264,5 +272,9 @@ namespace CreateWordFiles
             adjustCoffee();
         }
 
+        private void comboBoxDanceName_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            adjustDanceSchema();
+        }
     }
 }

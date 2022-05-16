@@ -84,16 +84,16 @@ namespace CreateWordFiles
             body.AppendChild(paragraph2);
             addImage("Inline", wordDocument, myTexts["callerPictureFile"], 250, 6.0, 10.0, false);
 
+            body.AppendChild(GenerateCallerNameParagraph(myTexts["callerName"], true, 20));
 
-            //String[] atoms = myTexts["callerName"].Split('_');
-            //String country = atoms[2].ToUpper();
-            body.AppendChild(GenerateCallerNameParagraph(myTexts["callerName"], true));
-
-            Wp.Paragraph paragraphDanceDates = MyOpenXml.GenerateParagraph(new string[] { danceDates }, new int[] { 24 }, new string[] { "Black" }, false, null);
+            Wp.Paragraph paragraphDanceDates = MyOpenXml.GenerateParagraph(new string[] { danceDates }, new int[] { 24 },
+                new string[] { "Black" }, false, null, 0, 160);
             body.AppendChild(paragraphDanceDates);
 
-            body.AppendChild(GenerateDanceLocationParagraph(danceLocation));
+            body.AppendChild(GenerateDanceLocationParagraph(danceLocation, 20, 400, 10000));
 
+            Wp.Paragraph paragraphEntre = MyOpenXml.GenerateParagraph(new string[] { "Entré" }, new int[] { 24 }, new string[] { "Black" }, true, null, 0, 120, true);
+            body.AppendChild(paragraphEntre);
 
             Wp.Paragraph danceFeeParagraph = GenerateFeesParagraph(schemaInfo, danceDateStart);
             body.Append(danceFeeParagraph);
@@ -249,7 +249,7 @@ namespace CreateWordFiles
             String[] lines = { myTexts["welcome"].ToUpper() + " " + myTexts["to"].ToUpper() };
             String[] colors = { "Black" };
             int[] fontSizes = { 20 };
-            return MyOpenXml.GenerateParagraph(lines, fontSizes, colors, false, null);
+            return MyOpenXml.GenerateParagraph(lines, fontSizes, colors, false, null, 0, 160);
         }
         public static Wp.Paragraph GenerateWelcomeParagraphFestival2(String festivalName)
         {
@@ -267,7 +267,7 @@ namespace CreateWordFiles
             return MyOpenXml.GenerateParagraph(lines, fontSizes, colors, false, null, distanceBefore, distanceAfter);
         }
 
-        public static Wp.Paragraph GenerateCallerNameParagraph(String callerName, Boolean addCountry= false)
+        public static Wp.Paragraph GenerateCallerNameParagraph(String callerName, Boolean addCountry= false, int fontSize=16)
         {
             String[] names = callerName.Split('_');
 
@@ -277,12 +277,12 @@ namespace CreateWordFiles
 
             Wp.Table table1 = new Wp.Table();
             MyOpenXml.CreateTableMargins(table1, 150, 50, 0, 50);
-            Wp.TableRow tableRow1 = createRow(new string[] { callerName }, new int[] { 5000 }, false, 16, 400);
+            Wp.TableRow tableRow1 = createRow(new string[] { callerName }, new int[] { 5000 }, false, fontSize, 400);
             table1.Append(tableRow1);
             if (addCountry)
             {
                 String country = char.ToUpper(names[2][0]) + names[2].Substring(1);
-                Wp.TableRow tableRow2 = createRow(new string[] { country }, new int[] { 5000 }, false, 16, 400);
+                Wp.TableRow tableRow2 = createRow(new string[] { country }, new int[] { 5000 }, false, fontSize, 400);
                 table1.Append(tableRow2);
             }
             Wp.Paragraph tableParagraph1 = generateTableParagraph(table1, false, 0, 0);
@@ -307,11 +307,11 @@ namespace CreateWordFiles
         private static Wp.Paragraph GenerateFestivalFeesLines(SchemaInfo schemaInfo, DateTime danceDateStart)
         {
             List<String> lines = new List<String>();
-            lines.Add("Entré");
             String line1 = String.Format(myTexts["festival_fees"], myFees.festival[0], myFees.festival[1],
             myFees.festival[2], myFees.festival[3],
             myFees.festival[4], myFees.festival[5]);
             lines.Add(line1);
+
             lines.Add(myTexts["festival_fees_text_1"]);
             lines.Add(myTexts["festival_fees_text_2"]);
             lines.Add(" ");
@@ -338,9 +338,9 @@ namespace CreateWordFiles
 
             lines.Add(myTexts["festival_fees_text_8"]);
             int[] fontSizes = Enumerable.Repeat(18, lines.Count).ToArray();
-            fontSizes[0] = 24;
+            
             String[] colors = Enumerable.Repeat("Black", lines.Count).ToArray();
-            return MyOpenXml.GenerateParagraph(lines.ToArray(), fontSizes, colors, true, null);
+            return MyOpenXml.GenerateParagraph(lines.ToArray(), fontSizes, colors, false, null);
 
         }
         private static Wp.Paragraph GenerateWeekendFeesLines(SchemaInfo schemaInfo)
@@ -384,12 +384,12 @@ namespace CreateWordFiles
 
         }
 
-        public static Wp.Paragraph GenerateDanceLocationParagraph(String danceLocation, int fontSize= 20, int lineSpace= 400)
+        public static Wp.Paragraph GenerateDanceLocationParagraph(String danceLocation, int fontSize= 20, int lineSpace= 400, int columnWidth=7500)
         {
             Wp.Table table1 = new Wp.Table();
             MyOpenXml.CreateTableMargins(table1, 150, 50, 0, 50);
             MyOpenXml.CreateTableBorders(table1, 20, Wp.BorderValues.Double);
-            Wp.TableRow tableRow1 = createRow(new string[] { danceLocation }, new int[] { 7500 }, false, fontSize, lineSpace);
+            Wp.TableRow tableRow1 = createRow(new string[] { danceLocation }, new int[] { columnWidth }, false, fontSize, lineSpace);
             table1.Append(tableRow1);
             Wp.Paragraph tableParagraph1 = generateTableParagraph(table1, false, 0, 0);
             return tableParagraph1;

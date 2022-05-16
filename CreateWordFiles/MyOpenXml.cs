@@ -184,7 +184,7 @@ namespace CreateWordFiles
         /// <param name="document"></param>
         /// <param name="footerText"></param>
         /// <param name="fontSize">Font size in points</param>
-        public static void SetMarginsAndFooter(WordprocessingDocument document, String footerText, int fontSize, int topMargin=200, uint leftMargin=1008, uint rigthMargin=1008, int bottomMargin=1008)
+        public static void SetMarginsAndFooter(WordprocessingDocument document, String footerText, int fontSize, int topMargin = 200, uint leftMargin = 1008, uint rigthMargin = 1008, int bottomMargin = 1008)
         {
             // Get the main document part.
             MainDocumentPart mainDocPart = document.MainDocumentPart;
@@ -203,7 +203,7 @@ namespace CreateWordFiles
             Wp.Text text1 = new Wp.Text();
             text1.Text = footerText;
 
-            Wp.FontSize wpFontSize = new Wp.FontSize { Val = (2*fontSize).ToString() };  // Size in half points
+            Wp.FontSize wpFontSize = new Wp.FontSize { Val = (2 * fontSize).ToString() };  // Size in half points
             Wp.RunProperties runProperties = new Wp.RunProperties();
             Wp.RunFonts runFonts = new Wp.RunFonts { Ascii = "Calibri", HighAnsi = "Calibri" };
             runProperties.Append(runFonts);
@@ -230,8 +230,16 @@ namespace CreateWordFiles
             {
                 sectionProperties1 = new Wp.SectionProperties() { };
 
-                Wp.PageMargin pageMargin = new Wp.PageMargin() { Top = topMargin, Right = rigthMargin, Bottom = bottomMargin, Left = leftMargin, Header = 720U,
-                    Footer = 640U, Gutter = 0U };
+                Wp.PageMargin pageMargin = new Wp.PageMargin()
+                {
+                    Top = topMargin,
+                    Right = rigthMargin,
+                    Bottom = bottomMargin,
+                    Left = leftMargin,
+                    Header = 720U,
+                    Footer = 640U,
+                    Gutter = 0U
+                };
                 sectionProperties1.Append(pageMargin);
 
 
@@ -255,7 +263,8 @@ namespace CreateWordFiles
         /// <param name="borders"></param>
         /// <returns></returns>
         public static Wp.Paragraph GenerateParagraph(string[] lines, int[] fontSizes, String[] colors,
-            Boolean pageBreakBefore, Wp.ParagraphBorders borders, int distanceBefore=0, int distanceAfter=0)
+            Boolean pageBreakBefore, Wp.ParagraphBorders borders, int distanceBefore = 0, int distanceAfter = 0,
+            Boolean underlineFirstRow = false)
         {
             Wp.Paragraph paragraph = new Wp.Paragraph();
             Wp.ParagraphProperties paragraphProperties = new Wp.ParagraphProperties(borders);
@@ -287,6 +296,10 @@ namespace CreateWordFiles
                 Wp.RunFonts runFonts = new Wp.RunFonts { Ascii = "Comic Sans MS", HighAnsi = "Comic Sans MS" };
                 runProperties.Append(runFonts);
                 runProperties.Append(fontSize);
+                if (underlineFirstRow && i == 0)
+                {
+                    runProperties.Underline = new Wp.Underline() { Val = Wp.UnderlineValues.Single };
+                }
                 Wp.Text text1 = new Wp.Text();
                 text1.Text = line;
                 if (colors[i] == "Red")
@@ -307,10 +320,10 @@ namespace CreateWordFiles
             return paragraph;
         }
 
-        public static void CreateTableBorders(Wp.Table table, uint _size, Wp.BorderValues borderTypeOuter=Wp.BorderValues.Single,
+        public static void CreateTableBorders(Wp.Table table, uint _size, Wp.BorderValues borderTypeOuter = Wp.BorderValues.Single,
             Wp.BorderValues borderTypeInner = Wp.BorderValues.None, String color = "E0C512")
         {
-            OXML.UInt32Value size= (OXML.UInt32Value)_size;
+            OXML.UInt32Value size = (OXML.UInt32Value)_size;
 
             Wp.TableProperties props = new Wp.TableProperties(
                     new Wp.TableBorders(
@@ -318,7 +331,7 @@ namespace CreateWordFiles
                     {
                         Val = new OXML.EnumValue<Wp.BorderValues>(borderTypeOuter),
                         Size = size,
-                        Color= color
+                        Color = color
                     },
                     new Wp.BottomBorder
                     {
@@ -361,11 +374,11 @@ namespace CreateWordFiles
         /// <param name="startMargin"></param>
         /// <param name="bottomMargin"></param>
         /// <param name="endMargin"></param>
-        public static void CreateTableMargins(Wp.Table table, int topMargin=150, int startMargin=50, int bottomMargin=5, int endMargin=50)
+        public static void CreateTableMargins(Wp.Table table, int topMargin = 150, int startMargin = 50, int bottomMargin = 5, int endMargin = 50)
         {
-            
+
             Wp.TableProperties tblProp = new Wp.TableProperties(
-               // new Wp.TableCellSpacing() { Width = "200", Type = Wp.TableWidthUnitValues.Dxa },
+                // new Wp.TableCellSpacing() { Width = "200", Type = Wp.TableWidthUnitValues.Dxa },
                 new Wp.TableCellMarginDefault(
                     new Wp.TopMargin() { Width = topMargin.ToString(), Type = Wp.TableWidthUnitValues.Dxa },
                     new Wp.StartMargin() { Width = startMargin.ToString(), Type = Wp.TableWidthUnitValues.Dxa },
