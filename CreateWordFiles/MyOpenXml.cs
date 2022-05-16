@@ -254,7 +254,8 @@ namespace CreateWordFiles
         /// <param name="colors">Array with one font color for each line</param>
         /// <param name="borders"></param>
         /// <returns></returns>
-        public static Wp.Paragraph GenerateParagraph(string[] lines, int[] fontSizes, String[] colors, Boolean pageBreakBefore, Wp.ParagraphBorders borders = null)
+        public static Wp.Paragraph GenerateParagraph(string[] lines, int[] fontSizes, String[] colors,
+            Boolean pageBreakBefore, Wp.ParagraphBorders borders, int distanceBefore=0, int distanceAfter=0)
         {
             Wp.Paragraph paragraph = new Wp.Paragraph();
             Wp.ParagraphProperties paragraphProperties = new Wp.ParagraphProperties(borders);
@@ -262,6 +263,13 @@ namespace CreateWordFiles
             {
                 paragraphProperties.PageBreakBefore = new Wp.PageBreakBefore();
             }
+
+            Wp.SpacingBetweenLines spacingBetweenLines = new Wp.SpacingBetweenLines();
+            spacingBetweenLines.LineRule = Wp.LineSpacingRuleValues.Exact;
+            spacingBetweenLines.Before = distanceBefore.ToString();
+            spacingBetweenLines.After = distanceAfter.ToString();
+            paragraphProperties.Append(spacingBetweenLines);
+
 
             Wp.Justification justification = new Wp.Justification() { Val = Wp.JustificationValues.Center };
             paragraphProperties.Append(justification);

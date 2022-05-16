@@ -89,7 +89,7 @@ namespace CreateWordFiles
             //String country = atoms[2].ToUpper();
             body.AppendChild(GenerateCallerNameParagraph(myTexts["callerName"], true));
 
-            Wp.Paragraph paragraphDanceDates = MyOpenXml.GenerateParagraph(new string[] { danceDates }, new int[] { 24 }, new string[] { "Black" }, false);
+            Wp.Paragraph paragraphDanceDates = MyOpenXml.GenerateParagraph(new string[] { danceDates }, new int[] { 24 }, new string[] { "Black" }, false, null);
             body.AppendChild(paragraphDanceDates);
 
             body.AppendChild(GenerateDanceLocationParagraph(danceLocation));
@@ -98,18 +98,18 @@ namespace CreateWordFiles
             Wp.Paragraph danceFeeParagraph = GenerateFeesParagraph(schemaInfo, danceDateStart);
             body.Append(danceFeeParagraph);
 
-            Wp.Paragraph paragraphX = MyOpenXml.GenerateParagraph(new string[] { "PROGRAM" }, new int[] { 24 }, new string[] { "Black" }, true);
+            Wp.Paragraph paragraphX = MyOpenXml.GenerateParagraph(new string[] { "PROGRAM" }, new int[] { 24 }, new string[] { "Black" }, true, null);
             body.AppendChild(paragraphX);
 
             Wp.Table table = CreateDanceSchemaTable(lang, schemaInfo, schemaName, 20, 400);
-            Wp.Paragraph tableParagraph = generateTableParagraph(table, false);
+            Wp.Paragraph tableParagraph = generateTableParagraph(table, false, 0, 0);
 
             //tableParagraph.ParagraphProperties.PageBreakBefore = new Wp.PageBreakBefore();
             body.AppendChild(tableParagraph);
 
-            body.AppendChild(GenerateRotationParagraph());
+            body.AppendChild(GenerateRotationParagraph(0,0));
 
-            body.AppendChild(GenerateCoffeeParagraph(coffee, 300, false, 5000, 16));
+            body.AppendChild(GenerateCoffeeParagraph(coffee, 300, false, 5000, 16, 400, 0, 0));
 
             body.AppendChild(GenerateLastpageParagraph());
 
@@ -138,7 +138,7 @@ namespace CreateWordFiles
             String logoFileName = myTexts["logo_file_name"];
             addImage("Anchor", wordDocument, logoFileName, 84, 10.0, 16.0);
             addImage("Anchor", wordDocument, logoFileName, 84, 178.0, 16.0);
-            Wp.Paragraph paragraph1 = GenerateWelcomeParagraphWeekend(myTexts["danceName"].ToUpper(), danceDates);
+            Wp.Paragraph paragraph1 = GenerateWelcomeParagraphWeekend(myTexts["danceName"].ToUpper(), danceDates, 0, 480);
             body.AppendChild(paragraph1);
             // double scale = 0.7;
             addImage("Inline", wordDocument, myTexts["callerPictureFile"], 250, 6.0, 10.0);
@@ -146,16 +146,14 @@ namespace CreateWordFiles
             body.AppendChild(GenerateCallerNameParagraph(myTexts["callerName"], false));
 
             Wp.Table table = CreateDanceSchemaTable(lang, schemaInfo, schemaName, 14, 350);
-            Wp.Paragraph tableParagraph = generateTableParagraph(table, false);
-            //body.AppendChild(table);
-            body.AppendChild(tableParagraph);
+            //  Wp.Paragraph tableParagraph = generateTableParagraph(table, false);
+            //  body.AppendChild(tableParagraph);
+            body.AppendChild(table);
 
-
-            //body.AppendChild(new Wp.Break());
+            body.AppendChild(GenerateRotationParagraph(60,360));
             body.AppendChild(GenerateDanceLocationParagraph(danceLocation, 14, 270));
             body.AppendChild(GenerateFeesParagraph(schemaInfo, danceDateStart));
-            body.AppendChild(GenerateCoffeeParagraph(coffee, 50, true, 10000, 14));
-            body.AppendChild(GenerateRotationParagraph());
+            body.AppendChild(GenerateCoffeeParagraph(coffee, 50, true, 10000, 14, 270, 0,0));
             MyOpenXml.SetMarginsAndFooter(wordDocument, myTexts["footer"], 10);
 
             String htmlText = htmlStringBuilder.ToString();
@@ -220,19 +218,26 @@ namespace CreateWordFiles
             return paragraph;
         }
 
-        private static Wp.Paragraph generateTableParagraph(Wp.Table table, Boolean pageBreakBefore = false)
+        /// <summary>
+        /// Used to add PageBreakBefore if neccesary
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="pageBreakBefore"></param>
+        /// <returns></returns>
+        private static Wp.Paragraph generateTableParagraph(Wp.Table table, Boolean pageBreakBefore, int distanceBefore, int distanceAfter)
         {
             Wp.Paragraph paragraph = new Wp.Paragraph();
             Wp.ParagraphProperties paragraphProperties = new Wp.ParagraphProperties();
-            //Wp.SpacingBetweenLines spacingBetweenLines = new Wp.SpacingBetweenLines();
-            //spacingBetweenLines.LineRule = Wp.LineSpacingRuleValues.Exact;
-            //spacingBetweenLines.Line = lineSpacing.ToString();
-            if (pageBreakBefore)
+              if (pageBreakBefore)
             {
                 paragraphProperties.PageBreakBefore = new Wp.PageBreakBefore();
             }
+            Wp.SpacingBetweenLines spacingBetweenLines = new Wp.SpacingBetweenLines();
+            spacingBetweenLines.LineRule = Wp.LineSpacingRuleValues.Exact;
+            spacingBetweenLines.Before = distanceBefore.ToString();
+            spacingBetweenLines.After = distanceAfter.ToString();
+            paragraphProperties.Append(spacingBetweenLines);
 
-            //paragraphProperties.Append(spacingBetweenLines);
             paragraph.Append(paragraphProperties);
             Wp.Run run = new Wp.Run();
             run.Append(table);
@@ -244,24 +249,22 @@ namespace CreateWordFiles
             String[] lines = { myTexts["welcome"].ToUpper() + " " + myTexts["to"].ToUpper() };
             String[] colors = { "Black" };
             int[] fontSizes = { 20 };
-            return MyOpenXml.GenerateParagraph(lines, fontSizes, colors, false);
+            return MyOpenXml.GenerateParagraph(lines, fontSizes, colors, false, null);
         }
         public static Wp.Paragraph GenerateWelcomeParagraphFestival2(String festivalName)
         {
             String[] lines = { festivalName, "", "" };
             String[] colors = { "Black", "Black", "Black" };
             int[] fontSizes = { 30, 10, 10 };
-            return MyOpenXml.GenerateParagraph(lines, fontSizes, colors, false);
+            return MyOpenXml.GenerateParagraph(lines, fontSizes, colors, false, null);
         }
-        public static Wp.Paragraph GenerateWelcomeParagraphWeekend(String danceName, String danceDates)
+        public static Wp.Paragraph GenerateWelcomeParagraphWeekend(String danceName, String danceDates,int  distanceBefore, int distanceAfter)
         {
-            Wp.Paragraph paragraph1 = new Wp.Paragraph();
-
-            String[] lines = { myTexts["welcome"], myTexts["to"], danceName, danceDates };
+             String[] lines = { myTexts["welcome"], myTexts["to"], danceName, danceDates };
 
             String[] colors = { "Black", "Black", "Black", "Black" };
             int[] fontSizes = { 20, 12, 32, 20 };
-            return MyOpenXml.GenerateParagraph(lines, fontSizes, colors, false);
+            return MyOpenXml.GenerateParagraph(lines, fontSizes, colors, false, null, distanceBefore, distanceAfter);
         }
 
         public static Wp.Paragraph GenerateCallerNameParagraph(String callerName, Boolean addCountry= false)
@@ -282,7 +285,7 @@ namespace CreateWordFiles
                 Wp.TableRow tableRow2 = createRow(new string[] { country }, new int[] { 5000 }, false, 16, 400);
                 table1.Append(tableRow2);
             }
-            Wp.Paragraph tableParagraph1 = generateTableParagraph(table1, false);
+            Wp.Paragraph tableParagraph1 = generateTableParagraph(table1, false, 0, 0);
             return tableParagraph1;
 
             //return MyOpenXml.GenerateParagraph(lines.ToArray(), fontSizes.ToArray(), colors.ToArray(), borders);
@@ -337,7 +340,7 @@ namespace CreateWordFiles
             int[] fontSizes = Enumerable.Repeat(18, lines.Count).ToArray();
             fontSizes[0] = 24;
             String[] colors = Enumerable.Repeat("Black", lines.Count).ToArray();
-            return MyOpenXml.GenerateParagraph(lines.ToArray(), fontSizes, colors, true);
+            return MyOpenXml.GenerateParagraph(lines.ToArray(), fontSizes, colors, true, null);
 
         }
         private static Wp.Paragraph GenerateWeekendFeesLines(SchemaInfo schemaInfo)
@@ -377,7 +380,7 @@ namespace CreateWordFiles
             int[] fontSizes = Enumerable.Repeat(12, lines.Count).ToArray();
             //String[] colors = { "Black", "Black", "Black", "Black" };
             String[] colors = Enumerable.Repeat("Black", lines.Count).ToArray();
-            return MyOpenXml.GenerateParagraph(lines.ToArray(), fontSizes, colors, false);
+            return MyOpenXml.GenerateParagraph(lines.ToArray(), fontSizes, colors, false, null, 0, 240);
 
         }
 
@@ -386,12 +389,13 @@ namespace CreateWordFiles
             Wp.Table table1 = new Wp.Table();
             MyOpenXml.CreateTableMargins(table1, 150, 50, 0, 50);
             MyOpenXml.CreateTableBorders(table1, 20, Wp.BorderValues.Double);
-            Wp.TableRow tableRow1 = createRow(new string[] { danceLocation }, new int[] { 10000 }, false, fontSize, lineSpace);
+            Wp.TableRow tableRow1 = createRow(new string[] { danceLocation }, new int[] { 7500 }, false, fontSize, lineSpace);
             table1.Append(tableRow1);
-            Wp.Paragraph tableParagraph1 = generateTableParagraph(table1, false);
+            Wp.Paragraph tableParagraph1 = generateTableParagraph(table1, false, 0, 0);
             return tableParagraph1;
         }
-        public static Wp.Paragraph GenerateCoffeeParagraph(Boolean coffee, int margin, Boolean merge, int columnWidth, int fontSize)
+        public static Wp.Paragraph GenerateCoffeeParagraph(Boolean coffee, int margin, Boolean merge, int columnWidth,
+            int fontSize, int lineSpace, int distanceBefore, int distanceAfter)
         {
             Wp.Table table1 = new Wp.Table();
             String text1 = myTexts["no_coffee"];
@@ -405,16 +409,16 @@ namespace CreateWordFiles
             MyOpenXml.CreateTableBorders(table1, 20, Wp.BorderValues.Double);
             if (merge)
             {
-                Wp.TableRow tableRow1 = createRow(new string[] { text1+ myTexts["lunch"] }, new int[] { columnWidth }, false, fontSize, 400);
+                Wp.TableRow tableRow1 = createRow(new string[] { text1 + "  " + myTexts["lunch"] }, new int[] { columnWidth }, false, fontSize, lineSpace);
                 table1.Append(tableRow1);
             }
             else
             {
-                Wp.TableRow tableRow1 = createRow(new string[] { text1 }, new int[] { columnWidth }, false, 16, 400);
-                Wp.TableRow tableRow2 = createRow(new string[] { myTexts["lunch"] }, new int[] { columnWidth }, false, fontSize, 400);
+                Wp.TableRow tableRow1 = createRow(new string[] { text1 }, new int[] { columnWidth }, false, 16, lineSpace);
+                Wp.TableRow tableRow2 = createRow(new string[] { myTexts["lunch"] }, new int[] { columnWidth }, false, fontSize, lineSpace);
                 table1.Append(tableRow2);
             }
-            Wp.Paragraph tableParagraph1 = generateTableParagraph(table1, false);
+            Wp.Paragraph tableParagraph1 = generateTableParagraph(table1, false, distanceBefore, distanceAfter);
             return tableParagraph1;
 
         }
@@ -424,17 +428,17 @@ namespace CreateWordFiles
               " ",   myTexts["more_info_4"]," ", " ",  myTexts["more_info_5"] , " ", " " , " ", " " };
             int[] fontSizes = Enumerable.Repeat(20, lines.Length).ToArray();
             String[] colors = Enumerable.Repeat("Black", lines.Length).ToArray();
-            return MyOpenXml.GenerateParagraph(lines, fontSizes, colors, true);
+            return MyOpenXml.GenerateParagraph(lines, fontSizes, colors, true, null);
         }
 
-        public static Wp.Paragraph GenerateRotationParagraph()
+        public static Wp.Paragraph GenerateRotationParagraph(int before, int after)
         {
             String[] lines = { myTexts["rotation"] };
             int[] fontSizes = { 14 };
             String[] colors = { "Black" };
             htmlStringBuilder.Append("<p  class='m8_schema'>\n");
             htmlStringBuilder.Append(lines[0] + "</p>\n");
-            return MyOpenXml.GenerateParagraph(lines, fontSizes, colors, false);
+            return MyOpenXml.GenerateParagraph(lines, fontSizes, colors, false, null, before, after);
         }
 
         // Insert a table into a word processing document.
@@ -802,15 +806,18 @@ namespace CreateWordFiles
 
 
             tableCell.Append(paragraph);
-            // tableCell.Append(run);
+            Wp.TableCellProperties x = new Wp.TableCellProperties();
+            tableCell.Append(x);
+            Wp.TableCellMargin y=new Wp.TableCellMargin();
+            x.Append(y);
+            y.BottomMargin = new Wp.BottomMargin() { Width = "50" };
+            y.TopMargin = new Wp.TopMargin() { Width = "50" };
+            x.TableCellWidth = new Wp.TableCellWidth() { Type = Wp.TableWidthUnitValues.Dxa, Width = widthStr };
+           // Specify the width property of the table cell.
+           //tableCell.Append(new Wp.TableCellProperties(
+           //     new Wp.TableCellWidth() { Type = Wp.TableWidthUnitValues.Dxa, Width = widthStr }));
 
-            // Specify the width property of the table cell.
-            tableCell.Append(new Wp.TableCellProperties(
-                new Wp.TableCellWidth() { Type = Wp.TableWidthUnitValues.Dxa, Width = widthStr }));
-
-            // Specify the table cell content.
-            //tc1.Append(new Wp.Paragraph(new Wp.Run(new Wp.Text(text))));
-
+ 
             return tableCell;
 
         }
