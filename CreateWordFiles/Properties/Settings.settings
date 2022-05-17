@@ -1,7 +1,12 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
-  <Settings />
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="CreateWordFiles.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Extra_se" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Boka också in Fenruarifetsivalen</Value>
+    </Setting>
+    <Setting Name="Extra_en" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Book the Februari fetsival</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>

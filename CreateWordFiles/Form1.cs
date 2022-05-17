@@ -45,6 +45,7 @@ namespace CreateWordFiles
                 days = 4;
             }
             this.dateTimePickerEnd.Value = this.dateTimePickerStart.Value + new TimeSpan((days-1)*24, 0, 0);
+            textBoxExtra.Text=Properties.Settings.Default.Extra_se;
         }
 
         private void getCallers()
@@ -173,8 +174,10 @@ namespace CreateWordFiles
 #endif
             try
             {
+                Properties.Settings.Default.Extra_se = textBoxExtra.Text;
+                Properties.Settings.Default.Save();
                 Creator.CreateWordprocessingDocument(Utility.map, lang, schemaInfo, schemaName, path, fees, radioButtonCoffeeYes.Checked,
-                (String) this.comboBoxDanceLocation.SelectedValue, this.dateTimePickerStart.Value, this.dateTimePickerEnd.Value);
+                (String) this.comboBoxDanceLocation.SelectedValue, this.dateTimePickerStart.Value, this.dateTimePickerEnd.Value, textBoxExtra.Text);
                 System.Diagnostics.Process.Start(path);
             }
             catch (Exception)
@@ -264,16 +267,7 @@ namespace CreateWordFiles
         }
 
  
-        private void label5_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label6_Click(object sender, EventArgs e)
-        {
-
-        }
-
+  
         private void textBoxCallerPicture_TextChanged(object sender, EventArgs e)
         {
 

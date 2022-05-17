@@ -36,7 +36,8 @@ namespace CreateWordFiles
         /// <param name="danceDateStart"></param>
         /// <param name="danceDateEnd"></param>
         public static void CreateWordprocessingDocument(Dictionary<String, String> texts, String lang, SchemaInfo schemaInfo,
-            String schemaName, String path, Fees fees, Boolean coffee, String danceLocation, DateTime danceDateStart, DateTime danceDateEnd)
+            String schemaName, String path, Fees fees, Boolean coffee, String danceLocation, DateTime danceDateStart,
+            DateTime danceDateEnd, String extra)
         {
             string monthName1, monthName2, danceDates;
 
@@ -54,7 +55,7 @@ namespace CreateWordFiles
                 {
                     if (schemaName == "festival")
                     {
-                        createFestivalFlyer(lang, schemaInfo, danceDateStart, schemaName, path, coffee, danceLocation, danceDates, wordDocument);
+                        createFestivalFlyer(lang, schemaInfo, danceDateStart, schemaName, path, coffee, danceLocation, danceDates, wordDocument, extra);
                     }
                     else
                     {
@@ -68,7 +69,9 @@ namespace CreateWordFiles
             }
         }
 
-        private static void createFestivalFlyer(string lang, SchemaInfo schemaInfo, DateTime danceDateStart, string schemaName, string path, bool coffee, string danceLocation, string danceDates, WordprocessingDocument wordDocument)
+        private static void createFestivalFlyer(string lang, SchemaInfo schemaInfo, DateTime danceDateStart,
+            string schemaName, string path, bool coffee, string danceLocation, string danceDates,
+            WordprocessingDocument wordDocument, String extra)
         {
             MainDocumentPart mainPart = wordDocument.AddMainDocumentPart();
 
@@ -111,7 +114,7 @@ namespace CreateWordFiles
 
             body.AppendChild(GenerateCoffeeParagraph(coffee, 300, false, 5000, 16, 400, 0, 0));
 
-            body.AppendChild(GenerateLastpageParagraph());
+            body.AppendChild(GenerateLastpageParagraph(extra));
 
             addImage("Inline", wordDocument, myTexts["logo_file_name"], 200, 6.0, 10.0);
 
@@ -461,10 +464,10 @@ namespace CreateWordFiles
             return tableParagraph1;
 
         }
-        public static Wp.Paragraph GenerateLastpageParagraph()
+        public static Wp.Paragraph GenerateLastpageParagraph(String extra)
         {
             String[] lines = { myTexts["more_info_1"], myTexts["more_info_2"], " ", myTexts["more_info_3"],
-              " ",   myTexts["more_info_4"]," ", " ",  myTexts["more_info_5"] , " ", " " , " ", " " };
+              " ",   myTexts["more_info_4"]," ", " ",  extra , " ", " " , " ", " " };
             int[] fontSizes = Enumerable.Repeat(20, lines.Length).ToArray();
             String[] colors = Enumerable.Repeat("Black", lines.Length).ToArray();
             return MyOpenXml.GenerateParagraph(lines, fontSizes, colors, true, null);

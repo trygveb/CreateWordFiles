@@ -138,7 +138,6 @@
             this.label5.Size = new System.Drawing.Size(33, 13);
             this.label5.TabIndex = 13;
             this.label5.Text = "Caller";
-            this.label5.Click += new System.EventHandler(this.label5_Click);
             // 
             // comboBoxCaller
             // 
@@ -165,7 +164,6 @@
             this.label6.Size = new System.Drawing.Size(52, 13);
             this.label6.TabIndex = 16;
             this.label6.Text = "Caller bild";
-            this.label6.Click += new System.EventHandler(this.label6_Click);
             // 
             // textBoxOutputFolder
             // 
