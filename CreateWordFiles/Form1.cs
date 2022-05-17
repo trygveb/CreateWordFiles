@@ -54,7 +54,7 @@ namespace CreateWordFiles
             String[] callerPictureFiles = callerList.Split(new char[] { ';' });
             foreach (var callerPictureFile in callerPictureFiles)
             {
-                if (callerPictureFile.Length > 4)
+                if (callerPictureFile.Length > 4 && callerPictureFile != "_spmedia_thumbs")
                 {
                     String callerPictureUrl = Utility.map["caller_pictures_root"] + callerPictureFile;
                     String callerName = callerPictureFile.Substring(0, callerPictureFile.Length - 4);
@@ -204,6 +204,11 @@ namespace CreateWordFiles
                 String[] atoms= line.Split(';');
                 if (atoms[0] == "festival_fees_text")
                 {
+                    if (atoms[2].StartsWith("NL-"))
+                    {
+                        Utility.festivalFeeTexts.Add("0; ");
+                        atoms[2] = atoms[2].Substring(3);
+                    }
                     Utility.festivalFeeTexts.Add(atoms[1]+";"+ atoms[2]);
                 }
                 else

@@ -55,6 +55,8 @@
             this.radioButtonCoffeeNo = new System.Windows.Forms.RadioButton();
             this.radioButtonCoffeeYes = new System.Windows.Forms.RadioButton();
             this.comboBoxDanceName = new System.Windows.Forms.ComboBox();
+            this.textBoxExtra = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
             this.groupBox2.SuspendLayout();
             this.groupBoxLanguage.SuspendLayout();
             this.groupBoxCoffee.SuspendLayout();
@@ -63,7 +65,7 @@
             // buttonOk
             // 
             this.buttonOk.Enabled = false;
-            this.buttonOk.Location = new System.Drawing.Point(308, 333);
+            this.buttonOk.Location = new System.Drawing.Point(308, 391);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(143, 34);
             this.buttonOk.TabIndex = 0;
@@ -103,7 +105,7 @@
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.dateTimePickerEnd);
             this.groupBox2.Controls.Add(this.dateTimePickerStart);
-            this.groupBox2.Location = new System.Drawing.Point(21, 77);
+            this.groupBox2.Location = new System.Drawing.Point(21, 61);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(226, 93);
             this.groupBox2.TabIndex = 11;
@@ -133,9 +135,9 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(24, 215);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(62, 13);
+            this.label5.Size = new System.Drawing.Size(33, 13);
             this.label5.TabIndex = 13;
-            this.label5.Text = "Caller namn";
+            this.label5.Text = "Caller";
             this.label5.Click += new System.EventHandler(this.label5_Click);
             // 
             // comboBoxCaller
@@ -143,7 +145,7 @@
             this.comboBoxCaller.FormattingEnabled = true;
             this.comboBoxCaller.Location = new System.Drawing.Point(21, 231);
             this.comboBoxCaller.Name = "comboBoxCaller";
-            this.comboBoxCaller.Size = new System.Drawing.Size(141, 21);
+            this.comboBoxCaller.Size = new System.Drawing.Size(163, 21);
             this.comboBoxCaller.TabIndex = 14;
             this.comboBoxCaller.SelectedIndexChanged += new System.EventHandler(this.comboBoxCaller_SelectedIndexChanged);
             // 
@@ -169,7 +171,7 @@
             // 
             this.textBoxOutputFolder.Location = new System.Drawing.Point(31, 278);
             this.textBoxOutputFolder.Name = "textBoxOutputFolder";
-            this.textBoxOutputFolder.Size = new System.Drawing.Size(298, 20);
+            this.textBoxOutputFolder.Size = new System.Drawing.Size(268, 20);
             this.textBoxOutputFolder.TabIndex = 17;
             this.textBoxOutputFolder.Text = "D:\\Mina dokument\\Sqd\\Motiv8s\\Flyers";
             // 
@@ -184,7 +186,7 @@
             // 
             // buttonSelectOutputFolder
             // 
-            this.buttonSelectOutputFolder.Location = new System.Drawing.Point(335, 274);
+            this.buttonSelectOutputFolder.Location = new System.Drawing.Point(344, 274);
             this.buttonSelectOutputFolder.Name = "buttonSelectOutputFolder";
             this.buttonSelectOutputFolder.Size = new System.Drawing.Size(107, 27);
             this.buttonSelectOutputFolder.TabIndex = 19;
@@ -194,7 +196,7 @@
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Location = new System.Drawing.Point(27, 333);
+            this.buttonCancel.Location = new System.Drawing.Point(27, 391);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(109, 27);
             this.buttonCancel.TabIndex = 20;
@@ -322,11 +324,29 @@
             this.comboBoxDanceName.TabIndex = 27;
             this.comboBoxDanceName.SelectedIndexChanged += new System.EventHandler(this.comboBoxDanceName_SelectedIndexChanged);
             // 
+            // textBoxExtra
+            // 
+            this.textBoxExtra.Location = new System.Drawing.Point(27, 335);
+            this.textBoxExtra.Name = "textBoxExtra";
+            this.textBoxExtra.Size = new System.Drawing.Size(461, 20);
+            this.textBoxExtra.TabIndex = 28;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(33, 319);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(31, 13);
+            this.label9.TabIndex = 29;
+            this.label9.Text = "Extra";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(510, 391);
+            this.ClientSize = new System.Drawing.Size(510, 437);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.textBoxExtra);
             this.Controls.Add(this.comboBoxDanceName);
             this.Controls.Add(this.groupBoxCoffee);
             this.Controls.Add(this.label8);
@@ -387,6 +407,8 @@
         private System.Windows.Forms.RadioButton radioButtonCoffeeNo;
         private System.Windows.Forms.RadioButton radioButtonCoffeeYes;
         private System.Windows.Forms.ComboBox comboBoxDanceName;
+        private System.Windows.Forms.TextBox textBoxExtra;
+        private System.Windows.Forms.Label label9;
     }
 }
 

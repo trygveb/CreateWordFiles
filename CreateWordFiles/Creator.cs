@@ -75,7 +75,7 @@ namespace CreateWordFiles
             mainPart.Document = new Wp.Document();
             Wp.Body body = mainPart.Document.AppendChild(new Wp.Body());
             //MyOpenXml.SetMarginsAndFooter(wordDocument, myTexts["footer"], 10, 1500, 2000, 2000);
-            MyOpenXml.SetMarginsAndFooter(wordDocument, myTexts["footer"], 10, 1000);
+            MyOpenXml.SetMarginsAndFooter(wordDocument, myTexts["footer"], 14, 1000);
 
             Wp.Paragraph paragraph1 = GenerateWelcomeParagraphFestival1();
             body.AppendChild(paragraph1);
@@ -90,7 +90,7 @@ namespace CreateWordFiles
                 new string[] { "Black" }, false, null, 0, 160);
             body.AppendChild(paragraphDanceDates);
 
-            body.AppendChild(GenerateDanceLocationParagraph(danceLocation, 20, 400, 10000));
+            body.AppendChild(GenerateDanceLocationParagraph(danceLocation, 20, 600, 10000));
 
             Wp.Paragraph paragraphEntre = MyOpenXml.GenerateParagraph(new string[] { "Entré" }, new int[] { 24 }, new string[] { "Black" }, true, null, 0, 120, true);
             body.AppendChild(paragraphEntre);
@@ -151,9 +151,9 @@ namespace CreateWordFiles
             body.AppendChild(table);
 
             body.AppendChild(GenerateRotationParagraph(60,360));
-            body.AppendChild(GenerateDanceLocationParagraph(danceLocation, 14, 270));
+            body.AppendChild(GenerateDanceLocationParagraph(danceLocation, 14, 390));
             body.AppendChild(GenerateFeesParagraph(schemaInfo, danceDateStart));
-            body.AppendChild(GenerateCoffeeParagraph(coffee, 50, true, 10000, 14, 270, 0,0));
+            body.AppendChild(GenerateCoffeeParagraph(coffee, 50, true, 10000, 14, 320, 0,0));
             MyOpenXml.SetMarginsAndFooter(wordDocument, myTexts["footer"], 10);
 
             String htmlText = htmlStringBuilder.ToString();
@@ -344,7 +344,9 @@ namespace CreateWordFiles
             foreach( String text in Utility.festivalFeeTexts)
             {
                 String[]atoms= text.Split(';');
-                int n=  Int32.Parse(atoms[0]);
+                DateTime dueDate1 = danceDateStart - new TimeSpan(4 * 24, 0, 0);
+                String ddMM1 = dueDate1.Day + "/" + dueDate1.Month;
+                int n =  Int32.Parse(atoms[0]);
                 switch (n)
                 {
                     case 1:
@@ -353,14 +355,18 @@ namespace CreateWordFiles
                             myFees.festival[4], myFees.festival[5]));
                         break;
                     case 2:
-                        DateTime dueDate1 = danceDateStart - new TimeSpan(4 * 24, 0, 0);
-                        String ddMM1 = dueDate1.Day + "/" + dueDate1.Month;
                         lines.Add(String.Format(atoms[1], ddMM1));
                         break;
                     case 3:
                         lines.Add(String.Format(atoms[1], myFees.festival_member[0], myFees.festival_member[1],
                             myFees.festival_member[2], myFees.festival_member[3],
                             myFees.festival_member[4], myFees.festival_member[5]));
+                        break;
+                    case 4:
+                        lines.Add(String.Format(atoms[1], danceDateStart.Day + "/" + danceDateStart.Month));
+                        break;
+                    case 5:
+                        lines.Add(String.Format(atoms[1], ddMM1));
                         break;
                     default:
                         lines.Add(atoms[1]);
@@ -420,11 +426,11 @@ namespace CreateWordFiles
         public static Wp.Paragraph GenerateDanceLocationParagraph(String danceLocation, int fontSize= 20, int lineSpace= 400, int columnWidth=7500)
         {
             Wp.Table table1 = new Wp.Table();
-            MyOpenXml.CreateTableMargins(table1, 150, 50, 0, 50);
+            MyOpenXml.CreateTableMargins(table1, 150, 50, 50, 50);
             MyOpenXml.CreateTableBorders(table1, 20, Wp.BorderValues.Double);
             Wp.TableRow tableRow1 = createRow(new string[] { danceLocation }, new int[] { columnWidth }, false, fontSize, lineSpace);
             table1.Append(tableRow1);
-            Wp.Paragraph tableParagraph1 = generateTableParagraph(table1, false, 0, 0);
+            Wp.Paragraph tableParagraph1 = generateTableParagraph(table1, false, 0, 00);
             return tableParagraph1;
         }
         public static Wp.Paragraph GenerateCoffeeParagraph(Boolean coffee, int margin, Boolean merge, int columnWidth,
