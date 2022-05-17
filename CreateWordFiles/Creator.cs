@@ -304,45 +304,78 @@ namespace CreateWordFiles
             }
 
         }
-        private static Wp.Paragraph GenerateFestivalFeesLines(SchemaInfo schemaInfo, DateTime danceDateStart)
+        private static Wp.Paragraph GenerateFestivalFeesLinesOld(SchemaInfo schemaInfo, DateTime danceDateStart)
         {
             List<String> lines = new List<String>();
-            String line1 = String.Format(myTexts["festival_fees"], myFees.festival[0], myFees.festival[1],
+            lines.Add(String.Format(myTexts["festival_fees_text_1"], myFees.festival[0], myFees.festival[1],
             myFees.festival[2], myFees.festival[3],
-            myFees.festival[4], myFees.festival[5]);
-            lines.Add(line1);
+            myFees.festival[4], myFees.festival[5]));
 
-            lines.Add(myTexts["festival_fees_text_1"]);
-            lines.Add(myTexts["festival_fees_text_2"]);
-            lines.Add(" ");
-            lines.Add(myTexts["festival_fees_text_3"]);
-            lines.Add(" ");
             DateTime dueDate1 = danceDateStart - new TimeSpan(4 * 24, 0, 0);
             String ddMM1 = dueDate1.Day + "/" + dueDate1.Month;
-            lines.Add(String.Format(myTexts["festival_fees_text_4"], ddMM1));
+            lines.Add(String.Format(myTexts["festival_fees_text_2"], ddMM1));
+            lines.Add(" ");
 
-            lines.Add(myTexts["festival_fees_text_5"]);
-
-            String line6 = String.Format(myTexts["festival_fees_member"],
+            String line6 = String.Format(myTexts["festival_fees_text_3"],
                 myFees.festival_member[0], myFees.festival_member[1],
                 myFees.festival_member[2], myFees.festival_member[3],
                 myFees.festival_member[4], myFees.festival_member[5]);
             lines.Add(line6);
 
-            DateTime dueDate2 = danceDateStart - new TimeSpan(1 * 24, 0, 0);
-            lines.Add(String.Format(myTexts["festival_fees_text_6"], dueDate2.Day + "/" + dueDate2.Month));
-
-            lines.Add(" ");
-            lines.Add(String.Format(myTexts["festival_fees_text_7"], ddMM1));
             lines.Add(" ");
 
-            lines.Add(myTexts["festival_fees_text_8"]);
+            lines.Add(myTexts["festival_fees_text_4"]);
+
+            DateTime dueDate2 = danceDateStart;
+            lines.Add(String.Format(myTexts["festival_fees_text_5"], dueDate2.Day + "/" + dueDate2.Month, ddMM1));
+
+            lines.Add(" ");
+            lines.Add(myTexts["festival_fees_text_6"]);
+            lines.Add(" ");
             int[] fontSizes = Enumerable.Repeat(18, lines.Count).ToArray();
             
             String[] colors = Enumerable.Repeat("Black", lines.Count).ToArray();
             return MyOpenXml.GenerateParagraph(lines.ToArray(), fontSizes, colors, false, null);
 
         }
+        private static Wp.Paragraph GenerateFestivalFeesLines(SchemaInfo schemaInfo, DateTime danceDateStart)
+        {
+            List<String> lines = new List<String>();
+            foreach( String text in Utility.festivalFeeTexts)
+            {
+                String[]atoms= text.Split(';');
+                int n=  Int32.Parse(atoms[0]);
+                switch (n)
+                {
+                    case 1:
+                        lines.Add(String.Format(atoms[1], myFees.festival[0], myFees.festival[1],
+                            myFees.festival[2], myFees.festival[3],
+                            myFees.festival[4], myFees.festival[5]));
+                        break;
+                    case 2:
+                        DateTime dueDate1 = danceDateStart - new TimeSpan(4 * 24, 0, 0);
+                        String ddMM1 = dueDate1.Day + "/" + dueDate1.Month;
+                        lines.Add(String.Format(atoms[1], ddMM1));
+                        break;
+                    case 3:
+                        lines.Add(String.Format(atoms[1], myFees.festival_member[0], myFees.festival_member[1],
+                            myFees.festival_member[2], myFees.festival_member[3],
+                            myFees.festival_member[4], myFees.festival_member[5]));
+                        break;
+                    default:
+                        lines.Add(atoms[1]);
+                        break;
+                }
+                
+
+            }
+            int[] fontSizes = Enumerable.Repeat(18, lines.Count).ToArray();
+
+            String[] colors = Enumerable.Repeat("Black", lines.Count).ToArray();
+            return MyOpenXml.GenerateParagraph(lines.ToArray(), fontSizes, colors, false, null);
+        }
+
+
         private static Wp.Paragraph GenerateWeekendFeesLines(SchemaInfo schemaInfo)
         {
 
@@ -361,13 +394,13 @@ namespace CreateWordFiles
                     lines.Add(myTexts["one_pass_sunday"]);
                     htmlStringBuilder.Append(myTexts["one_pass_sunday"] + "<br>");
                 }
-                String pgPay = myTexts["pg_pay"];
+                String pgPay = myTexts["weekend_pg_pay"];
                 if (pgPay != "N/A")
                 {
                     lines.Add(pgPay);
                     htmlStringBuilder.Append(pgPay + "<br>");
                 }
-                String swishpay = myTexts["swish_pay"];
+                String swishpay = myTexts["weekend_swish_pay"];
                 if (swishpay != "N/A")
                 {
                     lines.Add(swishpay);

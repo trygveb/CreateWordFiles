@@ -71,7 +71,7 @@ namespace CreateWordFiles.Properties {
         ///weekend_non_member_fees;Non members: SEK {0}/pass, all passes SEK {1}
         ///one_pass_sunday;(sunday counts as 2 passes)
         ///pg_pay;N/A
-        ///swish_pay;N/A
+        ///weekend_swish_pay;N/A
         ///.
         /// </summary>
         internal static string texts_en {
@@ -91,7 +91,7 @@ namespace CreateWordFiles.Properties {
         ///weekend_non_member_fees;Ej medlem: {0} kr/pass, samtliga pass {1} kr
         ///one_pass_sunday;(söndag räknas som 2 pass)
         ///pg_pay;Betala gärna i förväg på PlusGiro 85 56 69-8 (MOTIV8&apos;S)
-        ///swish_pay;Swisha till 070-422 82 27 (Arne G) eller kontanter ”i dörren” går också bra
+        ///weekend_swish_pay;Swisha till 070-422 82 27 (Arne G) eller kontanter ”i dörren” går också bra
         ///.
         /// </summary>
         internal static string texts_se {

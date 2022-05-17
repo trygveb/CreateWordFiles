@@ -198,10 +198,18 @@ namespace CreateWordFiles
             String fileName = String.Format(@"Resources\texts_{0}.csv", lang);
             lines = System.IO.File.ReadAllLines(fileName,  Encoding.Default);
             //Dictionary<String, String> map = new Dictionary<String, String>();
+            int n1 = 0;
             foreach (String line in lines)
             {
                 String[] atoms= line.Split(';');
-                Utility.map[atoms[0]] = atoms[1];
+                if (atoms[0] == "festival_fees_text")
+                {
+                    Utility.festivalFeeTexts.Add(atoms[1]+";"+ atoms[2]);
+                }
+                else
+                {
+                    Utility.map[atoms[0]] = atoms[1];
+                }
 
             }
             Utility.map["outputFolder"] = this.textBoxOutputFolder.Text;

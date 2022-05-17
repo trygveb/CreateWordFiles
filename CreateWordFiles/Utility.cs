@@ -40,6 +40,7 @@ namespace CreateWordFiles
         public static Dictionary<String, String> map = new Dictionary<String, String>();
         public static Dictionary<String, String> danceLocations = new Dictionary<String, String>();
         public static Dictionary<string, string> callerDictionary = new Dictionary<string, string>();
+        public static List<string> festivalFeeTexts=new List<string>();
 
         /// <summary>
         /// Rads a semikolon separated file and adds data to the map Dictionary
