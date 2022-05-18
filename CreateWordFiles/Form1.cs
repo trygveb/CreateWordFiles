@@ -36,9 +36,9 @@ namespace CreateWordFiles
             //}
             getCallers();
             getDanceSchemas();
-            this.comboBoxCaller.SelectedIndex = 0;
+            this.comboBoxCaller.SelectedIndex = 1;
             this.comboBoxDanceSchema.SelectedIndex = 1;
-            this.comboBoxDanceName.SelectedIndex = 4;
+            this.comboBoxDanceName.SelectedIndex = 3;
             int days = 2;
             if (this.comboBoxDanceSchema.Text== "festival")
             {
@@ -207,7 +207,7 @@ namespace CreateWordFiles
                 String[] atoms= line.Split(';');
                 if (atoms[0] == "festival_fees_text")
                 {
-                    if (atoms[2].StartsWith("NL-"))
+                    if (atoms[2].StartsWith("---"))
                     {
                         Utility.festivalFeeTexts.Add("0; ");
                         atoms[2] = atoms[2].Substring(3);

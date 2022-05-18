@@ -95,24 +95,30 @@ namespace CreateWordFiles
 
             body.AppendChild(GenerateDanceLocationParagraph(danceLocation, 20, 600, 10000));
 
-            Wp.Paragraph paragraphEntre = MyOpenXml.GenerateParagraph(new string[] { "Entré" }, new int[] { 24 }, new string[] { "Black" }, true, null, 0, 120, true);
+            Wp.Paragraph paragraphEntre = MyOpenXml.GenerateParagraph(
+                new string[] { "Entré" }, new int[] { 24 }, new string[] { "Black" }, true, null, 0, 120, true);
             body.AppendChild(paragraphEntre);
 
             Wp.Paragraph danceFeeParagraph = GenerateFeesParagraph(schemaInfo, danceDateStart);
             body.Append(danceFeeParagraph);
 
-            Wp.Paragraph paragraphX = MyOpenXml.GenerateParagraph(new string[] { "PROGRAM" }, new int[] { 24 }, new string[] { "Black" }, true, null);
+            body.AppendChild(GenerateBlankLines(1, 0, 0, 14));
+            Wp.Paragraph paragraphX = MyOpenXml.GenerateParagraph(new string[] 
+            { "PROGRAM" }, new int[] { 24}, new string[] { "Black" },  true, null, 0, 120, true);
             body.AppendChild(paragraphX);
+            body.AppendChild(GenerateBlankLines(1, 0, 0, 14));
 
-            Wp.Table table = CreateDanceSchemaTable(lang, schemaInfo, schemaName, 20, 400);
+            Wp.Table table = CreateDanceSchemaTable(lang, schemaInfo, schemaName, 24, 800);
             Wp.Paragraph tableParagraph = generateTableParagraph(table, false, 0, 0);
 
             //tableParagraph.ParagraphProperties.PageBreakBefore = new Wp.PageBreakBefore();
             body.AppendChild(tableParagraph);
 
-            body.AppendChild(GenerateRotationParagraph(0,0));
+            body.AppendChild(GenerateRotationParagraph(100,300, 20));
 
-            body.AppendChild(GenerateCoffeeParagraph(coffee, 300, false, 5000, 16, 400, 0, 0));
+            body.AppendChild(GenerateBlankLines(2, 0, 0, 14));
+
+            body.AppendChild(GenerateCoffeeParagraph(coffee, 300, false, 10000, 20, 400, 0, 0));
 
             body.AppendChild(GenerateLastpageParagraph(extra));
 
@@ -200,6 +206,15 @@ namespace CreateWordFiles
                 danceDates = String.Format("{0}{1}-{2} {3} {4}", danceDateStart.Day, danceDateEnd.Day, monthName1, monthName2, danceDateStart.Year);
             }
             return danceDates;
+        }
+
+        public static Wp.Paragraph GenerateBlankLines(int numberOfLines, int before, int after, int fontSize = 14)
+        {
+            String[] lines = Enumerable.Repeat(" ", numberOfLines).ToArray();
+
+            int[] fontSizes = Enumerable.Repeat(fontSize, numberOfLines).ToArray();
+            String[] colors = Enumerable.Repeat("Black", numberOfLines).ToArray();
+            return MyOpenXml.GenerateParagraph(lines, fontSizes, colors, false, null, before, after);
         }
 
         private static Wp.Paragraph generateTableLineParagraph(int lineSpacing=400)
@@ -307,41 +322,7 @@ namespace CreateWordFiles
             }
 
         }
-        private static Wp.Paragraph GenerateFestivalFeesLinesOld(SchemaInfo schemaInfo, DateTime danceDateStart)
-        {
-            List<String> lines = new List<String>();
-            lines.Add(String.Format(myTexts["festival_fees_text_1"], myFees.festival[0], myFees.festival[1],
-            myFees.festival[2], myFees.festival[3],
-            myFees.festival[4], myFees.festival[5]));
-
-            DateTime dueDate1 = danceDateStart - new TimeSpan(4 * 24, 0, 0);
-            String ddMM1 = dueDate1.Day + "/" + dueDate1.Month;
-            lines.Add(String.Format(myTexts["festival_fees_text_2"], ddMM1));
-            lines.Add(" ");
-
-            String line6 = String.Format(myTexts["festival_fees_text_3"],
-                myFees.festival_member[0], myFees.festival_member[1],
-                myFees.festival_member[2], myFees.festival_member[3],
-                myFees.festival_member[4], myFees.festival_member[5]);
-            lines.Add(line6);
-
-            lines.Add(" ");
-
-            lines.Add(myTexts["festival_fees_text_4"]);
-
-            DateTime dueDate2 = danceDateStart;
-            lines.Add(String.Format(myTexts["festival_fees_text_5"], dueDate2.Day + "/" + dueDate2.Month, ddMM1));
-
-            lines.Add(" ");
-            lines.Add(myTexts["festival_fees_text_6"]);
-            lines.Add(" ");
-            int[] fontSizes = Enumerable.Repeat(18, lines.Count).ToArray();
-            
-            String[] colors = Enumerable.Repeat("Black", lines.Count).ToArray();
-            return MyOpenXml.GenerateParagraph(lines.ToArray(), fontSizes, colors, false, null);
-
-        }
-        private static Wp.Paragraph GenerateFestivalFeesLines(SchemaInfo schemaInfo, DateTime danceDateStart)
+         private static Wp.Paragraph GenerateFestivalFeesLines(SchemaInfo schemaInfo, DateTime danceDateStart)
         {
             List<String> lines = new List<String>();
             foreach( String text in Utility.festivalFeeTexts)
@@ -420,7 +401,6 @@ namespace CreateWordFiles
 
             //int[] fontSizes = { 12, 12, 12, 12 };
             int[] fontSizes = Enumerable.Repeat(12, lines.Count).ToArray();
-            //String[] colors = { "Black", "Black", "Black", "Black" };
             String[] colors = Enumerable.Repeat("Black", lines.Count).ToArray();
             return MyOpenXml.GenerateParagraph(lines.ToArray(), fontSizes, colors, false, null, 0, 240);
 
@@ -456,8 +436,9 @@ namespace CreateWordFiles
             }
             else
             {
-                Wp.TableRow tableRow1 = createRow(new string[] { text1 }, new int[] { columnWidth }, false, 16, lineSpace);
+                Wp.TableRow tableRow1 = createRow(new string[] { text1 }, new int[] { columnWidth }, false, fontSize, lineSpace);
                 Wp.TableRow tableRow2 = createRow(new string[] { myTexts["lunch"] }, new int[] { columnWidth }, false, fontSize, lineSpace);
+                table1.Append(tableRow1);
                 table1.Append(tableRow2);
             }
             Wp.Paragraph tableParagraph1 = generateTableParagraph(table1, false, distanceBefore, distanceAfter);
@@ -473,10 +454,10 @@ namespace CreateWordFiles
             return MyOpenXml.GenerateParagraph(lines, fontSizes, colors, true, null);
         }
 
-        public static Wp.Paragraph GenerateRotationParagraph(int before, int after)
+        public static Wp.Paragraph GenerateRotationParagraph(int before, int after, int fontSize=14)
         {
             String[] lines = { myTexts["rotation"] };
-            int[] fontSizes = { 14 };
+            int[] fontSizes = { fontSize };
             String[] colors = { "Black" };
             htmlStringBuilder.Append("<p  class='m8_schema'>\n");
             htmlStringBuilder.Append(lines[0] + "</p>\n");
@@ -509,7 +490,7 @@ namespace CreateWordFiles
             {
 
                 htmlStringBuilder.Append("<table class='m8_schema'>");
-                Wp.Table table = createFestivalDanceSchemaTable(lang, dancePassesDayList, schemaInfo, fontSize);
+                Wp.Table table = createFestivalDanceSchemaTable(lang, dancePassesDayList, schemaInfo, fontSize, lineSpace);
                 htmlStringBuilder.Append("</table><br>");
                 return table;
             }
@@ -518,7 +499,8 @@ namespace CreateWordFiles
                 return null;
             }
         }
-        public static Wp.Table createFestivalDanceSchemaTable(String lang, List<DancePass[]> dancePassesDayList, SchemaInfo schemaInfo, int fontSize)
+        public static Wp.Table createFestivalDanceSchemaTable(String lang, List<DancePass[]> dancePassesDayList, SchemaInfo schemaInfo,
+            int fontSize, int lineSpace)
         {
             Wp.Table table = new Wp.Table();
             MyOpenXml.CreateTableBorders(table, 6, Wp.BorderValues.Single, Wp.BorderValues.Single);
@@ -529,7 +511,7 @@ namespace CreateWordFiles
             {
                 foreach (DancePass dancePass in dancePasses)
                 {
-                    createFestivalRowForFlyer(dayNumber, passNumber, dancePass, table, schemaInfo.colWidth, fontSize);
+                    createFestivalRowForFlyer(dayNumber, passNumber, dancePass, table, schemaInfo.colWidth, fontSize, lineSpace);
                     // htmlStringBuilder.Append(createFestivalRowHtml(lang, dayNumber, passNumber, dancePass, schemaInfo));
                     passNumber++;
                 }
@@ -587,14 +569,15 @@ namespace CreateWordFiles
             return table;
 
         }
-        private static void createFestivalRowForFlyer(int dayNumber, int passNumber, DancePass dancePass, Wp.Table table, List<int> colWidth, int fontSize)
+        private static void createFestivalRowForFlyer(int dayNumber, int passNumber, DancePass dancePass, Wp.Table table,
+            List<int> colWidth, int fontSize, int lineSpace)
         {
             string weekDay, timeString, level;
             createFestivalRow(dancePass, dayNumber, passNumber, out weekDay, out timeString, out level);
 
             String[] content = { passNumber.ToString(), weekDay, timeString, level };
 
-            table.Append(createRow(content, colWidth.ToArray(), false, fontSize, 400));
+            table.Append(createRow(content, colWidth.ToArray(), false, fontSize, lineSpace));
         }
 
         private static void createWeekEndRowForFlyer(List<DancePass[]> dancePassesDayList, Wp.Table table,
@@ -696,7 +679,7 @@ namespace CreateWordFiles
         //}
         private static String formatTimeInterval(DancePass dancePass)
         {
-            String text = String.Format("{0}-{1}", dancePass.start_time, dancePass.end_time);
+            String text = String.Format("{0} - {1}", dancePass.start_time, dancePass.end_time);
             if (dancePass.end_time.Length > 6) // quick and dirty solution for Årsmöte
             {
                 text = String.Format("{0} {1}", dancePass.start_time, dancePass.end_time);

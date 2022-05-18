@@ -7,18 +7,18 @@ Monday;Måndag
 weekend_member_fees;Medlem: {0} kr/pass, samtliga pass {1} kr
 weekend_non_member_fees;Ej medlem: {0} kr/pass, samtliga pass {1} kr
 one_pass_sunday;(söndag räknas som 2 pass)
-festival_fees_text;1;NL-{0}, {1}, {2}, {3}, {4} resp. {5} SEK
-festival_fees_text;0;för 1 till 6 sessioner.
+festival_fees_text;1;---{0}, {1}, {2}, {3}, {4} resp. {5} SEK
+festival_fees_text;0;för 1 till 6 sessioner*.
 festival_fees_text;0;Priset gäller då samma person går på flera sessioner.
-festival_fees_text;0;NL-Ungdomar halva priset!
-festival_fees_text;2;NL-Medlemmar får rabatt vid förhandsbetalning senast {0}.
-festival_fees_text;3;Priset blir då: {0}, {1}, {2}, {3}, {4} resp. {5} SEK
-festival_fees_text;0;NL-Kontanter ”i dörren” går bra, men betala gärna i förhand på PlusGiro 85 56 69-8 (MOTIV8'S)
+festival_fees_text;0;---Kontanter ”i dörren” går bra, men betala gärna i förhand på PlusGiro 85 56 69-8 (MOTIV8'S)
 festival_fees_text;0;eller Swisha till 070-422 82 27 (Arne G).
 festival_fees_text;0;Ange vilka sessioner som avses (nummer och nivå).
-festival_fees_text;4;NL-Vid återbud före {0} återbetalas hela avgiften. 
-festival_fees_text;5;NL-OBS att dörrpris gäller efter {0} oavsett medlemskap.
-festival_fees_text;0;NL-Session 7 betalas på plats (kontant eller Swish)
+festival_fees_text;2;---Medlemmar får rabatt vid förhandsbetalning senast {0}.
+festival_fees_text;3;Priset blir då: {0}, {1}, {2}, {3}, {4} resp. {5} SEK
+festival_fees_text;0;---*) Session 7 betalas på plats (kontant eller Swish).
+festival_fees_text;5;---Dörrpris gäller efter {0} oavsett medlemskap.
+festival_fees_text;4;Vid återbud före {0} återbetalas hela avgiften. 
+festival_fees_text;0;Ungdomar betalar halva priset.
 weekend_pg_pay;Betala gärna i förväg på PlusGiro 85 56 69-8 (MOTIV8'S)
 weekend_swish_pay;Swisha till 070-422 82 27 (Arne G) eller kontanter ”i dörren” går också bra
 rotation;Vi använder rotationsprogram på samtliga nivåer!
