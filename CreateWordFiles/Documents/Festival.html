@@ -2,20 +2,21 @@
 <html>
 <head>
     <style>
-        p.m8 {
+        p.m8, ul.m8, li.m8, table.m8_festival, table.m8_weekend, p.m8_schema {
+            font-family: "Comic Sans MS", "nunito", "Helvetica", "Tahoma", "Geneva", "Arial", sans-serif;
             margin-left: auto;
             margin-right: auto;
+        }
+
+        p.m8 {
             text-align: center;
             max-width: 600px;
             line-height: 22px;
-            font-family: "Comic Sans MS", "nunito", "Helvetica", "Tahoma", "Geneva", "Arial", sans-serif;
         }
+
         ul.m8, li.m8 {
-            margin-left: auto;
-            margin-right: auto;
             text-align: left;
             max-width: 400px;
-            font-family: "Comic Sans MS", "nunito", "Helvetica", "Tahoma", "Geneva", "Arial", sans-serif;
         }
 
 
@@ -23,16 +24,16 @@
             line-height: 1.5;
             text-align: center;
             font-size: 1rem;
-            margin-left: auto;
-            margin-right: auto;
-            font-family: "Comic Sans MS", "nunito", "Helvetica", "Tahoma", "Geneva", "Arial", sans-serif;
         }
 
         table.m8_festival {
             max-width: 400px;
             border-collapse: collapse;
-            margin-left: auto;
-            margin-right: auto;
+        }
+
+        .m8_weekend {
+            max-width: 400px;
+            border-collapse: collapse;
         }
 
         table.m8_festival, th.m8_festival, td.m8_festival {
@@ -48,27 +49,6 @@
             border: none !important;
         }
 
-
-        .m8_time {
-            width: 40%;
-        }
-
-        .m8_day {
-            width: 30%;
-        }
-
-        .m8_level {
-            width: 20%;
-        }
-
-        .m8_space {
-            width: 10%;
-        }
-
-        .m8_session {
-            width: 10%;
-        }
-
         .m8_border {
             border-style: solid;
             border-color: #E0C512;
@@ -79,7 +59,7 @@
             text-decoration-line: underline;
             font-weight: bold;
             font-size: larger;
-            line-height:2.5;
+            line-height: 2.5;
         }
     </style>
 </head>
@@ -88,10 +68,10 @@
         <span class="m8_headline">PROGRAM</span><br />
         <table class='m8 m8_festival'>
             <tr class='m8_festival'>
-                <th class="m8_festival m8_session">Session</th>
-                <th class="m8_festival m8_day">Dag</th>
-                <th class="m8_festival m8_time">Tid</th>
-                <th class="m8_festival m8_level">Nivå</th>
+                <th class="m8_festival" style="width: 10%;">Session</th>
+                <th class="m8_festival" style="width: 30%;"">Dag</th>
+                <th class="m8_festival" style="width: 40%;">Tid</th>
+                <th class="m8_festival" style="width: 20%;">Nivå</th>
             </tr>
             <tr class='m8_festival'>
                 <td class="m8_festival">1</td>
@@ -147,7 +127,7 @@
         eller Swisha till <span  style="white-space:nowrap">070-422 82 27 (Arne G).</span><br />
         Ange vilka sessioner som avses (nummer och nivå).
         <br /><br />
-        Medlemmar får rabatt vid förhandsbetalning senast 3/10.
+        Medlemmar får rabatt vid förhandsbetalning senast 3/10.<br />
         Priset blir då:
         100, 180, 260, 330, 400 resp. 450 SEK
         <ul class="m8">
@@ -158,7 +138,7 @@
 
     </p>
     <p class="m8">
-        <span class="m8_headline">Plats: Segersjö Folkets Hus, Scheelevägen 41 i Tumba</span>
+        <span class="m8_headline">Plats: Segersjö Folkets Hus, Scheelevägen 41, 147 31 Tumba</span>
         <ul class="m8">
             <li>Kaffeservering finns</li>
             <li>Vi ordnar hämtning av Pizza och sallad till pausen.</li>

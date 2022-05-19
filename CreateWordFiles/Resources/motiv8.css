@@ -1,14 +1,42 @@
-﻿.m8_schema {
+﻿p.m8, ul.m8, li.m8, table.m8_festival, table.m8_weekend, p.m8_schema {
+    font-family: "Comic Sans MS", "nunito", "Helvetica", "Tahoma", "Geneva", "Arial", sans-serif;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+p.m8 {
+    text-align: center;
+    max-width: 600px;
+    line-height: 22px;
+}
+
+ul.m8, li.m8 {
+    text-align: left;
+    max-width: 400px;
+}
+
+
+.m8_schema, m8_festival {
     line-height: 1.5;
     text-align: center;
     font-size: 1rem;
-    margin-left: auto;
-    margin-right: auto;
-    font-family: 'Comic Sans MS', 'nunito', 'Helvetica', 'Tahoma', 'Geneva', 'Arial', sans-serif;
 }
 
-table.m8_schema {
+table.m8_festival {
     max-width: 400px;
+    border-collapse: collapse;
+}
+
+.m8_weekend {
+    max-width: 400px;
+    border-collapse: collapse;
+}
+
+table.m8_festival, th.m8_festival, td.m8_festival {
+    padding: 3px 7px;
+    font-size: 1rem;
+    border: 1px solid black;
+    text-align: center;
 }
 
 table.m8_schema, th.m8_schema, td.m8_schema {
@@ -17,20 +45,16 @@ table.m8_schema, th.m8_schema, td.m8_schema {
     border: none !important;
 }
 
-.m8_time {
-    width: 30 %;
-}
-
-.m8_level {
-    width: 15 %;
-}
-
-.m8_space {
-    width: 10 %;
-}
-
 .m8_border {
     border-style: solid;
     border-color: #E0C512;
     border-width: 4px;
+}
+
+.m8_headline {
+    text-decoration-line: underline;
+    font-weight: bold;
+    font-size: larger;
+    line-height: 2.5;
+    text-align: center;
 }

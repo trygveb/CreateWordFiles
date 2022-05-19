@@ -89,23 +89,22 @@ namespace CreateWordFiles
 
             body.AppendChild(GenerateCallerNameParagraph(myTexts["callerName"], true, 20));
 
-            Wp.Paragraph paragraphDanceDates = MyOpenXml.GenerateParagraph(new string[] { danceDates }, new int[] { 24 },
-                new string[] { "Black" }, false, null, 0, 160);
+            Wp.Paragraph paragraphDanceDates = generateDFanceDatesParagraph(danceDates);
             body.AppendChild(paragraphDanceDates);
 
-            body.AppendChild(GenerateDanceLocationParagraph(danceLocation, 20, 600, 10000));
+            body.AppendChild(GenerateDanceLocationParagraph(danceLocation, 20, 600, 11000));
 
-            Wp.Paragraph paragraphEntre = MyOpenXml.GenerateParagraph(
-                new string[] { "Entré" }, new int[] { 24 }, new string[] { "Black" }, true, null, 0, 120, true);
+            Wp.Paragraph paragraphEntre = generateFeeHeadlineParagraph();
             body.AppendChild(paragraphEntre);
 
             Wp.Paragraph danceFeeParagraph = GenerateFeesParagraph(schemaInfo, danceDateStart, festivalFeesText);
             body.Append(danceFeeParagraph);
 
             body.AppendChild(GenerateBlankLines(1, 0, 0, 14));
-            Wp.Paragraph paragraphX = MyOpenXml.GenerateParagraph(new string[] 
-            { "PROGRAM" }, new int[] { 24}, new string[] { "Black" },  true, null, 0, 120, true);
-            body.AppendChild(paragraphX);
+
+            Wp.Paragraph paragraphProgramTitle = GenerateProgramTitleParagraph();
+            body.AppendChild(paragraphProgramTitle);
+
             body.AppendChild(GenerateBlankLines(1, 0, 0, 14));
 
             Wp.Table table = CreateDanceSchemaTable(lang, schemaInfo, schemaName, 24, 800);
@@ -114,7 +113,7 @@ namespace CreateWordFiles
             //tableParagraph.ParagraphProperties.PageBreakBefore = new Wp.PageBreakBefore();
             body.AppendChild(tableParagraph);
 
-            body.AppendChild(GenerateRotationParagraph(100,300, 20));
+            body.AppendChild(GenerateRotationParagraph(100, 300, 20));
 
             body.AppendChild(GenerateBlankLines(2, 0, 0, 14));
 
@@ -137,6 +136,29 @@ namespace CreateWordFiles
 
             createDemoHtmlFile(path, htmlText);
         }
+
+        private static Wp.Paragraph generateFeeHeadlineParagraph()
+        {
+            htmlStringBuilder.Append("<p class='m8'><span class='m8_headline'>Entré</span></p>\n");
+
+            return MyOpenXml.GenerateParagraph(
+                new string[] { "Entré" }, new int[] { 24 }, new string[] { "Black" }, true, null, 0, 120, true);
+        }
+
+        private static Wp.Paragraph generateDFanceDatesParagraph(string danceDates)
+        {
+            htmlStringBuilder.Append(String.Format("<p class='m8'>{0}</p>\n", danceDates));
+            return MyOpenXml.GenerateParagraph(new string[] { danceDates }, new int[] { 24 },
+                new string[] { "Black" }, false, null, 0, 160);
+        }
+
+        private static Wp.Paragraph GenerateProgramTitleParagraph()
+        {
+            htmlStringBuilder.Append("<p class='m8'><span class='m8_headline'>PROGRAM</span></p>\n");
+            return MyOpenXml.GenerateParagraph(new string[]
+            { "PROGRAM" }, new int[] { 24 }, new string[] { "Black" }, true, null, 0, 120, true);
+        }
+
         private static void createWeekendFlyer(string lang, SchemaInfo schemaInfo, DateTime danceDateStart, string schemaName, 
             string path, bool coffee, string danceLocation, string danceDates, WordprocessingDocument wordDocument, List<String> festivalFeesText)
         {
@@ -415,6 +437,7 @@ namespace CreateWordFiles
             Wp.TableRow tableRow1 = createRow(new string[] { danceLocation }, new int[] { columnWidth }, false, fontSize, lineSpace);
             table1.Append(tableRow1);
             Wp.Paragraph tableParagraph1 = generateTableParagraph(table1, false, 0, 00);
+            htmlStringBuilder.Append(String.Format("<p class='m8_schema m8_border' style='max-width: 450px;'>{0}</p>", danceLocation));
             return tableParagraph1;
         }
         public static Wp.Paragraph GenerateCoffeeParagraph(Boolean coffee, int margin, Boolean merge, int columnWidth,
