@@ -37,7 +37,7 @@ namespace CreateWordFiles
         /// <param name="danceDateEnd"></param>
         public static void CreateWordprocessingDocument(Dictionary<String, String> texts, String lang, SchemaInfo schemaInfo,
             String schemaName, String path, Fees fees, Boolean coffee, String danceLocation, DateTime danceDateStart,
-            DateTime danceDateEnd, String extra)
+            DateTime danceDateEnd, String extra, List<String> festivalFeesText)
         {
             string monthName1, monthName2, danceDates;
 
@@ -55,11 +55,11 @@ namespace CreateWordFiles
                 {
                     if (schemaName == "festival")
                     {
-                        createFestivalFlyer(lang, schemaInfo, danceDateStart, schemaName, path, coffee, danceLocation, danceDates, wordDocument, extra);
+                        createFestivalFlyer(lang, schemaInfo, danceDateStart, schemaName, path, coffee, danceLocation, danceDates, wordDocument, extra, festivalFeesText);
                     }
                     else
                     {
-                        createWeekendFlyer(lang, schemaInfo, danceDateStart, schemaName, path, coffee, danceLocation, danceDates, wordDocument);
+                        createWeekendFlyer(lang, schemaInfo, danceDateStart, schemaName, path, coffee, danceLocation, danceDates, wordDocument, festivalFeesText);
                     }
                 }
             }
@@ -71,7 +71,7 @@ namespace CreateWordFiles
 
         private static void createFestivalFlyer(string lang, SchemaInfo schemaInfo, DateTime danceDateStart,
             string schemaName, string path, bool coffee, string danceLocation, string danceDates,
-            WordprocessingDocument wordDocument, String extra)
+            WordprocessingDocument wordDocument, String extra, List<String> festivalFeesText)
         {
             MainDocumentPart mainPart = wordDocument.AddMainDocumentPart();
 
@@ -99,7 +99,7 @@ namespace CreateWordFiles
                 new string[] { "Entré" }, new int[] { 24 }, new string[] { "Black" }, true, null, 0, 120, true);
             body.AppendChild(paragraphEntre);
 
-            Wp.Paragraph danceFeeParagraph = GenerateFeesParagraph(schemaInfo, danceDateStart);
+            Wp.Paragraph danceFeeParagraph = GenerateFeesParagraph(schemaInfo, danceDateStart, festivalFeesText);
             body.Append(danceFeeParagraph);
 
             body.AppendChild(GenerateBlankLines(1, 0, 0, 14));
@@ -137,7 +137,8 @@ namespace CreateWordFiles
 
             createDemoHtmlFile(path, htmlText);
         }
-        private static void createWeekendFlyer(string lang, SchemaInfo schemaInfo, DateTime danceDateStart, string schemaName, string path, bool coffee, string danceLocation, string danceDates, WordprocessingDocument wordDocument)
+        private static void createWeekendFlyer(string lang, SchemaInfo schemaInfo, DateTime danceDateStart, string schemaName, 
+            string path, bool coffee, string danceLocation, string danceDates, WordprocessingDocument wordDocument, List<String> festivalFeesText)
         {
             MainDocumentPart mainPart = wordDocument.AddMainDocumentPart();
 
@@ -161,7 +162,7 @@ namespace CreateWordFiles
 
             body.AppendChild(GenerateRotationParagraph(60,360));
             body.AppendChild(GenerateDanceLocationParagraph(danceLocation, 14, 390));
-            body.AppendChild(GenerateFeesParagraph(schemaInfo, danceDateStart));
+            body.AppendChild(GenerateFeesParagraph(schemaInfo, danceDateStart, festivalFeesText));
             body.AppendChild(GenerateCoffeeParagraph(coffee, 50, true, 10000, 14, 320, 0,0));
             MyOpenXml.SetMarginsAndFooter(wordDocument, myTexts["footer"], 10);
 
@@ -309,7 +310,7 @@ namespace CreateWordFiles
             //return MyOpenXml.GenerateParagraph(lines.ToArray(), fontSizes.ToArray(), colors.ToArray(), borders);
         }
 
-         public static Wp.Paragraph GenerateFeesParagraph(SchemaInfo schemaInfo, DateTime danceDateStart)
+         public static Wp.Paragraph GenerateFeesParagraph(SchemaInfo schemaInfo, DateTime danceDateStart, List<String>  festivalFeesText)
         {
 
             if (schemaInfo.schemaName.StartsWith("weekend"))
@@ -318,14 +319,14 @@ namespace CreateWordFiles
             }
             else
             {
-                return GenerateFestivalFeesLines(schemaInfo, danceDateStart);
+                return GenerateFestivalFeesLines(schemaInfo, danceDateStart, festivalFeesText);
             }
 
         }
-         private static Wp.Paragraph GenerateFestivalFeesLines(SchemaInfo schemaInfo, DateTime danceDateStart)
+         private static Wp.Paragraph GenerateFestivalFeesLines(SchemaInfo schemaInfo, DateTime danceDateStart, List<string> festivalFeeTexts)
         {
             List<String> lines = new List<String>();
-            foreach( String text in Utility.festivalFeeTexts)
+            foreach( String text in festivalFeeTexts)
             {
                 String[]atoms= text.Split(';');
                 DateTime dueDate1 = danceDateStart - new TimeSpan(4 * 24, 0, 0);

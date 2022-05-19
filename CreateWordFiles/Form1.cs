@@ -16,6 +16,8 @@ namespace CreateWordFiles
         //private String callerPicturesRoot;
         String callerName= "";
         String callerPictureFile = "";
+      
+
         public Form1()
         {
             InitializeComponent();
@@ -159,7 +161,7 @@ namespace CreateWordFiles
             var radioButtonLanguage = groupBoxLanguage.Controls.OfType<RadioButton>()
                    .Where(r => r.Checked).FirstOrDefault();
             String lang = (String)radioButtonLanguage.Tag;
-            this.getTexts(lang);
+            List<String> festivalFeesText= this.getTexts(lang);
             SchemaInfo schemaInfo = this.getSchemaInfo();
 
             Fees fees= getFees();
@@ -177,7 +179,8 @@ namespace CreateWordFiles
                 Properties.Settings.Default.Extra_se = textBoxExtra.Text;
                 Properties.Settings.Default.Save();
                 Creator.CreateWordprocessingDocument(Utility.map, lang, schemaInfo, schemaName, path, fees, radioButtonCoffeeYes.Checked,
-                (String) this.comboBoxDanceLocation.SelectedValue, this.dateTimePickerStart.Value, this.dateTimePickerEnd.Value, textBoxExtra.Text);
+                (String) this.comboBoxDanceLocation.SelectedValue, this.dateTimePickerStart.Value, this.dateTimePickerEnd.Value,
+                textBoxExtra.Text, festivalFeesText);
                 System.Diagnostics.Process.Start(path);
             }
             catch (Exception)
@@ -195,9 +198,10 @@ namespace CreateWordFiles
             return fees;
         }
 
-        private void getTexts(String lang)
+        private List<String> getTexts(String lang)
         {
             String[] lines;
+            List<String> festivalFeesTexts = new List<String>();
             String fileName = String.Format(@"Resources\texts_{0}.csv", lang);
             lines = System.IO.File.ReadAllLines(fileName,  Encoding.Default);
             //Dictionary<String, String> map = new Dictionary<String, String>();
@@ -209,10 +213,10 @@ namespace CreateWordFiles
                 {
                     if (atoms[2].StartsWith("---"))
                     {
-                        Utility.festivalFeeTexts.Add("0; ");
+                        festivalFeesTexts.Add("0; ");
                         atoms[2] = atoms[2].Substring(3);
                     }
-                    Utility.festivalFeeTexts.Add(atoms[1]+";"+ atoms[2]);
+                    festivalFeesTexts.Add(atoms[1]+";"+ atoms[2]);
                 }
                 else
                 {
@@ -224,6 +228,7 @@ namespace CreateWordFiles
             Utility.map["danceName"] = this.comboBoxDanceName.Text;
             Utility.map["callerName"] = this.callerName;
             Utility.map["callerPictureFile"]= this.callerPictureFile;
+            return festivalFeesTexts;
         }
 
         private void comboBoxCaller_SelectedIndexChanged(object sender, EventArgs e)

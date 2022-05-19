@@ -110,6 +110,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Documents\Festival.html" />
     <Content Include="Documents\WeekendDance.html" />
     <Content Include="Resources\motiv8.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
