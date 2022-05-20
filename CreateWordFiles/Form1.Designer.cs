@@ -57,9 +57,13 @@
             this.comboBoxDanceName = new System.Windows.Forms.ComboBox();
             this.textBoxExtra = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.radioButtonHtml = new System.Windows.Forms.RadioButton();
+            this.radioButtonFlyer = new System.Windows.Forms.RadioButton();
             this.groupBox2.SuspendLayout();
             this.groupBoxLanguage.SuspendLayout();
             this.groupBoxCoffee.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonOk
@@ -69,7 +73,7 @@
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(143, 34);
             this.buttonOk.TabIndex = 0;
-            this.buttonOk.Text = "Skapa flyer";
+            this.buttonOk.Text = "Skapa Html";
             this.buttonOk.UseVisualStyleBackColor = true;
             this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
             // 
@@ -338,11 +342,48 @@
             this.label9.TabIndex = 29;
             this.label9.Text = "Extra";
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.radioButtonHtml);
+            this.groupBox1.Controls.Add(this.radioButtonFlyer);
+            this.groupBox1.Location = new System.Drawing.Point(40, 160);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(183, 49);
+            this.groupBox1.TabIndex = 30;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Produkt";
+            // 
+            // radioButtonHtml
+            // 
+            this.radioButtonHtml.AutoSize = true;
+            this.radioButtonHtml.Checked = true;
+            this.radioButtonHtml.Location = new System.Drawing.Point(84, 19);
+            this.radioButtonHtml.Name = "radioButtonHtml";
+            this.radioButtonHtml.Size = new System.Drawing.Size(46, 17);
+            this.radioButtonHtml.TabIndex = 1;
+            this.radioButtonHtml.TabStop = true;
+            this.radioButtonHtml.Tag = "en";
+            this.radioButtonHtml.Text = "Html";
+            this.radioButtonHtml.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonWord
+            // 
+            this.radioButtonFlyer.AutoSize = true;
+            this.radioButtonFlyer.Location = new System.Drawing.Point(11, 19);
+            this.radioButtonFlyer.Name = "radioButtonWord";
+            this.radioButtonFlyer.Size = new System.Drawing.Size(47, 17);
+            this.radioButtonFlyer.TabIndex = 0;
+            this.radioButtonFlyer.Tag = "se";
+            this.radioButtonFlyer.Text = "Flyer";
+            this.radioButtonFlyer.UseVisualStyleBackColor = true;
+            this.radioButtonFlyer.CheckedChanged += new System.EventHandler(this.radioButtonWord_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(510, 437);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.textBoxExtra);
             this.Controls.Add(this.comboBoxDanceName);
@@ -371,6 +412,8 @@
             this.groupBoxLanguage.PerformLayout();
             this.groupBoxCoffee.ResumeLayout(false);
             this.groupBoxCoffee.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -407,6 +450,9 @@
         private System.Windows.Forms.ComboBox comboBoxDanceName;
         private System.Windows.Forms.TextBox textBoxExtra;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.RadioButton radioButtonHtml;
+        private System.Windows.Forms.RadioButton radioButtonFlyer;
     }
 }
 

@@ -181,10 +181,20 @@ namespace CreateWordFiles
                 Properties.Settings.Default.Selected_dance = this.comboBoxDanceName.SelectedIndex;
 
                 Properties.Settings.Default.Save();
-                Creator.CreateWordprocessingDocument(Utility.map, lang, schemaInfo, schemaName, path, fees, radioButtonCoffeeYes.Checked,
-                (String) this.comboBoxDanceLocation.SelectedValue, this.dateTimePickerStart.Value, this.dateTimePickerEnd.Value,
-                textBoxExtra.Text, festivalFeesText);
-                System.Diagnostics.Process.Start(path);
+                if (radioButtonHtml.Checked)
+                {
+                    Creator.createHtml(Utility.map, lang, schemaInfo, schemaName, path, fees, radioButtonCoffeeYes.Checked,
+                    (String)this.comboBoxDanceLocation.SelectedValue, this.dateTimePickerStart.Value, this.dateTimePickerEnd.Value,
+                    textBoxExtra.Text, festivalFeesText);
+                    MessageBox.Show("Klar!");
+                }
+                else
+                {
+                    Creator.CreateWordprocessingDocument(Utility.map, lang, schemaInfo, schemaName, path, fees, radioButtonCoffeeYes.Checked,
+                    (String)this.comboBoxDanceLocation.SelectedValue, this.dateTimePickerStart.Value, this.dateTimePickerEnd.Value,
+                    textBoxExtra.Text, festivalFeesText);
+                    System.Diagnostics.Process.Start(path);
+                }
             }
             catch (Exception)
             {
@@ -208,7 +218,7 @@ namespace CreateWordFiles
             String fileName = String.Format(@"Resources\texts_{0}.csv", lang);
             lines = System.IO.File.ReadAllLines(fileName,  Encoding.Default);
             //Dictionary<String, String> map = new Dictionary<String, String>();
-            int n1 = 0;
+           
             foreach (String line in lines)
             {
                 String[] atoms= line.Split(';');
@@ -216,7 +226,13 @@ namespace CreateWordFiles
                 {
                     if (atoms[3].StartsWith("---"))
                     {
-                        festivalFeesTexts.Add(";0; ");
+                        if (radioButtonFlyer.Checked)
+                        {
+                            festivalFeesTexts.Add(";0;");
+                        } else
+                        {
+                            festivalFeesTexts.Add(";0;-");
+                        }
                         atoms[3] = atoms[3].Substring(3);
                     }
                     festivalFeesTexts.Add(atoms[1] + ";" + atoms[2] + ";" + atoms[3]);
@@ -290,6 +306,17 @@ namespace CreateWordFiles
         private void comboBoxDanceName_SelectedIndexChanged(object sender, EventArgs e)
         {
             adjustDanceSchema();
+        }
+
+        private void radioButtonWord_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButtonFlyer.Checked)
+            {
+                buttonOk.Text = "Skapa Flyer";
+            } else
+            {
+                buttonOk.Text = "Skapa Html";
+            }
         }
     }
 }
