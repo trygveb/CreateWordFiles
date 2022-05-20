@@ -8,5 +8,14 @@
     <Setting Name="Extra_en" Type="System.String" Scope="User">
       <Value Profile="(Default)">Book the Februari fetsival</Value>
     </Setting>
+    <Setting Name="Selected_caller" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="Selected_schema" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="Selected_dance" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

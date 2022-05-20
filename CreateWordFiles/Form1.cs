@@ -32,15 +32,13 @@ namespace CreateWordFiles
             comboBoxDanceLocation.DataSource = new BindingSource(Utility.danceLocations, null);
             comboBoxDanceLocation.DisplayMember = "Key";
             comboBoxDanceLocation.ValueMember = "Value";
-            //foreach (KeyValuePair<string, string> location in Utility.danceLocations)
-            //{
-            //    comboBoxDanceLocation.Items.Add(location);
-            //}
             getCallers();
             getDanceSchemas();
-            this.comboBoxCaller.SelectedIndex = 1;
-            this.comboBoxDanceSchema.SelectedIndex = 1;
-            this.comboBoxDanceName.SelectedIndex = 3;
+        
+            this.comboBoxCaller.SelectedIndex = Properties.Settings.Default.Selected_caller;
+            this.comboBoxDanceSchema.SelectedIndex = Properties.Settings.Default.Selected_schema;
+            this.comboBoxDanceName.SelectedIndex = Properties.Settings.Default.Selected_dance; ;
+
             int days = 2;
             if (this.comboBoxDanceSchema.Text== "festival")
             {
@@ -66,6 +64,7 @@ namespace CreateWordFiles
                     Utility.callerDictionary.Add(callerName, callerPictureUrl);
                 }
             }
+            this.comboBoxCaller.Sorted = true;
         }
 
         private SchemaInfo getSchemaInfo()
@@ -177,6 +176,10 @@ namespace CreateWordFiles
             try
             {
                 Properties.Settings.Default.Extra_se = textBoxExtra.Text;
+                Properties.Settings.Default.Selected_caller = comboBoxCaller.SelectedIndex;
+                Properties.Settings.Default.Selected_schema = comboBoxDanceSchema.SelectedIndex;
+                Properties.Settings.Default.Selected_dance = this.comboBoxDanceName.SelectedIndex;
+
                 Properties.Settings.Default.Save();
                 Creator.CreateWordprocessingDocument(Utility.map, lang, schemaInfo, schemaName, path, fees, radioButtonCoffeeYes.Checked,
                 (String) this.comboBoxDanceLocation.SelectedValue, this.dateTimePickerStart.Value, this.dateTimePickerEnd.Value,
@@ -211,12 +214,12 @@ namespace CreateWordFiles
                 String[] atoms= line.Split(';');
                 if (atoms[0] == "festival_fees_text")
                 {
-                    if (atoms[2].StartsWith("---"))
+                    if (atoms[3].StartsWith("---"))
                     {
-                        festivalFeesTexts.Add("0; ");
-                        atoms[2] = atoms[2].Substring(3);
+                        festivalFeesTexts.Add(";0; ");
+                        atoms[3] = atoms[3].Substring(3);
                     }
-                    festivalFeesTexts.Add(atoms[1]+";"+ atoms[2]);
+                    festivalFeesTexts.Add(atoms[1] + ";" + atoms[2] + ";" + atoms[3]);
                 }
                 else
                 {

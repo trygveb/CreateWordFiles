@@ -262,10 +262,34 @@ namespace CreateWordFiles
         /// <param name="colors">Array with one font color for each line</param>
         /// <param name="borders"></param>
         /// <returns></returns>
+
+        public void test()
+        {
+
+        }
+        /// <summary>
+        /// Creates a  Wp.Paragraph with the given lines, fontsizes and colors. Possibly bordered
+        /// TODO: Font should be given as a paramter. Now Comic Sans MS is hardcoded
+        /// TODO: Better handling of Font colors
+        /// TODO: bullet list css style, now hard coded, should be a parameter
+        /// </summary>
+        /// <param name="lines"></param>
+        /// <param name="fontSizes"></param>
+        /// <param name="colors"></param>
+        /// <param name="pageBreakBefore"></param>
+        /// <param name="borders"></param>
+        /// <param name="distanceBefore"></param>
+        /// <param name="distanceAfter"></param>
+        /// <param name="underlineFirstRow"></param>
+        /// <param name="bulletStart">The paragraph may have zero or one bullet lists </param>
+        /// <param name="bulletLength"></param>
+        /// <returns></returns>
         public static Wp.Paragraph GenerateParagraph(string[] lines, int[] fontSizes, String[] colors,
             Boolean pageBreakBefore, Wp.ParagraphBorders borders, int distanceBefore = 0, int distanceAfter = 0,
-            Boolean underlineFirstRow = false)
+            Boolean underlineFirstRow = false, int bulletStart = -1, int bulletLength = 0, Boolean createHtml = true)
         {
+            Creator.htmlStringBuilder.Append("<p class='m8'>\n");
+
             Wp.Paragraph paragraph = new Wp.Paragraph();
             Wp.ParagraphProperties paragraphProperties = new Wp.ParagraphProperties(borders);
             if (pageBreakBefore)
@@ -283,10 +307,18 @@ namespace CreateWordFiles
             Wp.Justification justification = new Wp.Justification() { Val = Wp.JustificationValues.Center };
             paragraphProperties.Append(justification);
             paragraph.Append(paragraphProperties);
-
+            Boolean bullet = false;
 
             for (int i = 0; i < lines.Length; i++)
             {
+                if (bulletStart == i)
+                {
+                    if (createHtml)
+                    {
+                        Creator.htmlStringBuilder.Append("<ul class='m8'>\n   <li>\n");
+                    }
+                    bullet = true;
+                }
                 String fontSizeTxt = (fontSizes[i] * 2).ToString();
                 String line = lines[i];
                 Wp.FontSize fontSize = new Wp.FontSize { Val = new OXML.StringValue(fontSizeTxt) };  // Size in half points
@@ -299,7 +331,35 @@ namespace CreateWordFiles
                 if (underlineFirstRow && i == 0)
                 {
                     runProperties.Underline = new Wp.Underline() { Val = Wp.UnderlineValues.Single };
+                    if (createHtml)
+                    {
+                        Creator.htmlStringBuilder.Append(String.Format("<span style='font-size:larger; font-weight:bold; text-decoration:underline;'>{0}</span>\n", line));
+                    }
                 }
+                else if (createHtml)
+                {
+                    Creator.htmlStringBuilder.Append(String.Format("{0}</br>\n", line));
+                }
+                if (bullet)
+                {
+                    if (createHtml)
+                    {
+                        Creator.htmlStringBuilder.Append("   </li>\n");
+                    }
+                    if (i == bulletStart + bulletLength || i == lines.Length - 1)
+                    {
+                        if (createHtml)
+                        {
+                            Creator.htmlStringBuilder.Append("</ul>\n");
+                        }
+                    }
+                    bullet = false;
+                }
+                else if (createHtml)
+                {
+                    Creator.htmlStringBuilder.Append("   <li>\n");
+                }
+
                 Wp.Text text1 = new Wp.Text();
                 text1.Text = line;
                 if (colors[i] == "Red")
@@ -317,6 +377,8 @@ namespace CreateWordFiles
                 paragraph.Append(run);
 
             }
+            Creator.htmlStringBuilder.Append("</p>\n");
+
             return paragraph;
         }
 

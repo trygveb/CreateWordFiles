@@ -46,5 +46,41 @@ namespace CreateWordFiles.Properties {
                 this["Extra_en"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public int Selected_caller {
+            get {
+                return ((int)(this["Selected_caller"]));
+            }
+            set {
+                this["Selected_caller"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public int Selected_schema {
+            get {
+                return ((int)(this["Selected_schema"]));
+            }
+            set {
+                this["Selected_schema"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public int Selected_dance {
+            get {
+                return ((int)(this["Selected_dance"]));
+            }
+            set {
+                this["Selected_dance"] = value;
+            }
+        }
     }
 }
