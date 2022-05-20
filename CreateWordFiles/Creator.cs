@@ -114,10 +114,18 @@ namespace CreateWordFiles
 
             body.AppendChild(GenerateRotationParagraph(100, 300, 20));
 
-            body.AppendChild(GenerateBlankLines(2, 0, 0, 14));
+            body.AppendChild(GenerateBlankLines(2, 0, 0, 14, false));
 
             body.AppendChild(GenerateCoffeeParagraph(coffee, 300, false, 10000, 20, 400, 0, 0));
+            htmlStringBuilder.Append("<p class='m8 m8_border'>\n");
+            String text1 = myTexts["no_coffee"];
+            if (coffee)
+            {
+                text1 = myTexts["coffee"];
+            }
 
+            htmlStringBuilder.Append(text1 + " - " + myTexts["lunch"]);
+            htmlStringBuilder.Append("</p'>\n");
             body.AppendChild(GenerateLastpageParagraph(extra));
 
             addImage("Inline", wordDocument, myTexts["logo_file_name"], 200, 6.0, 10.0);
@@ -350,7 +358,8 @@ namespace CreateWordFiles
                 if (atoms[0] == "b" && !bullet)
                 {
                     bulletStart=i1;
-                    bullet=true;
+                    bulletLength=1;
+                    bullet =true;
                 }
                 else if (atoms[0] == "b")
                 {
@@ -408,11 +417,7 @@ namespace CreateWordFiles
             int[] fontSizes = Enumerable.Repeat(18, lines.Count).ToArray();
 
             String[] colors = Enumerable.Repeat("Black", lines.Count).ToArray();
-            //GenerateParagraph(string[] lines, int[] fontSizes, String[] colors,
-            //Boolean pageBreakBefore, Wp.ParagraphBorders borders, int distanceBefore = 0, int distanceAfter = 0,
-           // Boolean underlineFirstRow = false)
             Wp.Paragraph paragraph= MyOpenXml.GenerateParagraph(lines.ToArray(), fontSizes, colors, false, null, 0, 0, true, bulletStart, bulletLength);
-            //htmlStringBuilder.Append("</p>\n");
             return paragraph;
         }
 
@@ -472,6 +477,7 @@ namespace CreateWordFiles
             int fontSize, int lineSpace, int distanceBefore, int distanceAfter)
         {
             Wp.Table table1 = new Wp.Table();
+           //htmlStringBuilder.Append("<table class='m8_schema'>\n");
             String text1 = myTexts["no_coffee"];
             if (coffee)
             {
@@ -483,16 +489,17 @@ namespace CreateWordFiles
             MyOpenXml.CreateTableBorders(table1, 20, Wp.BorderValues.Double);
             if (merge)
             {
-                Wp.TableRow tableRow1 = createRow(new string[] { text1 + "  " + myTexts["lunch"] }, new int[] { columnWidth }, false, fontSize, lineSpace);
+                Wp.TableRow tableRow1 = createRow(new string[] { text1 + "  " + myTexts["lunch"] }, new int[] { columnWidth }, false, fontSize, lineSpace, false);
                 table1.Append(tableRow1);
             }
             else
             {
-                Wp.TableRow tableRow1 = createRow(new string[] { text1 }, new int[] { columnWidth }, false, fontSize, lineSpace);
-                Wp.TableRow tableRow2 = createRow(new string[] { myTexts["lunch"] }, new int[] { columnWidth }, false, fontSize, lineSpace);
+                Wp.TableRow tableRow1 = createRow(new string[] { text1 }, new int[] { columnWidth }, false, fontSize, lineSpace, false);
+                Wp.TableRow tableRow2 = createRow(new string[] { myTexts["lunch"] }, new int[] { columnWidth }, false, fontSize, lineSpace, false);
                 table1.Append(tableRow1);
                 table1.Append(tableRow2);
             }
+            //htmlStringBuilder.Append("</table'>\n");
             Wp.Paragraph tableParagraph1 = generateTableParagraph(table1, false, distanceBefore, distanceAfter);
             return tableParagraph1;
 
@@ -816,7 +823,7 @@ namespace CreateWordFiles
             List<Wp.TableCell> tableCells = new List<Wp.TableCell>();
             if (createHtml)
             {
-                Creator.htmlStringBuilder.Append("<tr class='m8_festival'>\n");
+                htmlStringBuilder.Append("<tr class='m8_festival'>\n");
             }
             for (int i = 0; i < content.Length; i++)
             {

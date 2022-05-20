@@ -352,12 +352,13 @@ namespace CreateWordFiles
                         {
                             Creator.htmlStringBuilder.Append("</ul>\n");
                         }
+                        bullet = false;
                     }
-                    bullet = false;
-                }
-                else if (createHtml)
-                {
-                    Creator.htmlStringBuilder.Append("   <li>\n");
+                    else if (createHtml)
+                    {
+                        Creator.htmlStringBuilder.Append("   <li>\n");
+                    }
+
                 }
 
                 Wp.Text text1 = new Wp.Text();
