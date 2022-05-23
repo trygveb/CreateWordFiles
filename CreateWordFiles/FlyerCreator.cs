@@ -9,13 +9,13 @@ using System.Text;
 using OXML = DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using Wp = DocumentFormat.OpenXml.Wordprocessing;
-using A = DocumentFormat.OpenXml.Drawing;
-using DW = DocumentFormat.OpenXml.Drawing.Wordprocessing;
-using PIC = DocumentFormat.OpenXml.Drawing.Pictures;
+//using A = DocumentFormat.OpenXml.Drawing;
+//using DW = DocumentFormat.OpenXml.Drawing.Wordprocessing;
+//using PIC = DocumentFormat.OpenXml.Drawing.Pictures;
 
 namespace CreateWordFiles
 {
-    internal class Creator
+    internal class FlyerCreator
     {
         /*
          CSS example
@@ -24,7 +24,7 @@ namespace CreateWordFiles
         private static Wp.Color wpColorBlackx = new Wp.Color() { Val = "000000" };
         private static Wp.Color wpColorRedx = new Wp.Color() { Val = "FF0000" };
         private static Dictionary<String, String> myTexts;
-        private static List<DancePass[]> dancePassesDayList = new List<DancePass[]>();
+       
         private static Fees myFees;
         public static StringBuilder htmlStringBuilder = new StringBuilder();
 
@@ -70,43 +70,7 @@ namespace CreateWordFiles
         }
 
 
-        public static void createHtml(Dictionary<String, String> texts, String lang, SchemaInfo schemaInfo,
-            String schemaName, String path, Fees fees, Boolean coffee, String danceLocation, DateTime danceDateStart,
-            DateTime danceDateEnd, String extra, List<String> festivalFeesText)
-        {
-            myTexts = texts;
-            myFees = fees;
-
-            htmlStringBuilder.Clear();
-            htmlStringBuilder.Append(String.Format("<p class='m8_schema m8_border' style='max-width: 450px;'>{0}</p><br>", danceLocation));
-
-            htmlStringBuilder.Append(String.Format("<p class='m8'>\n"));
-            htmlStringBuilder.Append(String.Format("<span style='font-size:larger; font-weight:bold; text-decoration:underline;'>PROGRAM</span>\n"));
-            htmlStringBuilder.Append(String.Format("</p>\n"));
-            CreateDanceSchemaHtmlTable(lang, schemaInfo, schemaName, 12, 200);
-            htmlStringBuilder.Append(String.Format("<p class='m8'>{0}</p><br>\n", myTexts["rotation"]));
-
-            htmlStringBuilder.Append(String.Format("<p class='m8'>\n"));
-            htmlStringBuilder.Append(String.Format("<span style='font-size:larger; font-weight:bold; text-decoration:underline;'>ENTRÉ</span>\n"));
-            htmlStringBuilder.Append(String.Format("</p>\n"));
-
-            GenerateFestivalFeesHtml(schemaInfo, danceDateStart, festivalFeesText);
-
-            String text1 = myTexts["no_coffee"];
-            if (coffee)
-            {
-                text1 = myTexts["coffee"];
-            }
-            htmlStringBuilder.Append(String.Format("<br><p class='m8_schema m8_border' style='max-width: 450px;'>{0}</p><br>",
-                text1 + " - " + myTexts["lunch"]));
-
-
-            String htmlText = htmlStringBuilder.ToString();
-            File.WriteAllText(path.Replace("docx", "htm"), htmlText);
-
-            createDemoHtmlFile(path, htmlText);
-        }
-        private static void createFestivalFlyer(string lang, SchemaInfo schemaInfo, DateTime danceDateStart,
+               private static void createFestivalFlyer(string lang, SchemaInfo schemaInfo, DateTime danceDateStart,
             string schemaName, string path, bool coffee, string danceLocation, string danceDates,
             WordprocessingDocument wordDocument, String extra, List<String> festivalFeesText)
         {
@@ -115,7 +79,9 @@ namespace CreateWordFiles
             mainPart.Document = new Wp.Document();
             Wp.Body body = mainPart.Document.AppendChild(new Wp.Body());
             //MyOpenXml.SetMarginsAndFooter(wordDocument, myTexts["footer"], 10, 1500, 2000, 2000);
-            MyOpenXml.SetMarginsAndFooter(wordDocument, myTexts["footer"], 14, 1000);
+
+            MyOpenXml.SetMarginsAndFooter(wordDocument, 
+                String.Format(myTexts["footer"], DateTime.UtcNow.ToString("yyyy-MM-dd")), 11, 1000);
 
             Wp.Paragraph paragraph1 = GenerateWelcomeParagraphFestival1();
             body.AppendChild(paragraph1);
@@ -123,7 +89,7 @@ namespace CreateWordFiles
             Wp.Paragraph paragraph2 = GenerateWelcomeParagraphFestival2(myTexts["danceName"].ToUpper());
             body.AppendChild(paragraph2);
             addImage("Inline", wordDocument, myTexts["callerPictureFile"], 250, 6.0, 10.0, false);
-
+            
             body.AppendChild(GenerateCallerNameParagraph(myTexts["callerName"], true, 20));
 
             Wp.Paragraph paragraphDanceDates = generateDanceDatesParagraph(danceDates);
@@ -166,6 +132,7 @@ namespace CreateWordFiles
             body.AppendChild(GenerateLastpageParagraph(extra));
 
             addImage("Inline", wordDocument, myTexts["logo_file_name"], 200, 6.0, 10.0);
+            addImage("Anchor", wordDocument, myTexts["saasdc_logo_file_name"], 100, 180.0, 220.0, false);
 
             var sections = mainPart.Document.Descendants<Wp.SectionProperties>();
             foreach (Wp.SectionProperties sectPr in sections)
@@ -175,11 +142,7 @@ namespace CreateWordFiles
             }
 
 
-            String htmlText = htmlStringBuilder.ToString();
-            File.WriteAllText(path.Replace("docx", "htm"), htmlText);
-
-            createDemoHtmlFile(path, htmlText);
-        }
+         }
 
         private static Wp.Paragraph generateFeeHeadlineParagraph()
         {
@@ -232,30 +195,12 @@ namespace CreateWordFiles
             body.AppendChild(GenerateCoffeeParagraph(coffee, 50, true, 10000, 14, 320, 0, 0));
             MyOpenXml.SetMarginsAndFooter(wordDocument, myTexts["footer"], 10);
 
-            String htmlText = htmlStringBuilder.ToString();
-            File.WriteAllText(path.Replace("docx", "htm"), htmlText);
+            //String htmlText = htmlStringBuilder.ToString();
+            //File.WriteAllText(path.Replace("docx", "htm"), htmlText);
 
-            createDemoHtmlFile(path, htmlText);
+            //createDemoHtmlFile(path, htmlText);
         }
 
-        /// <summary>
-        /// Creates a demo html file with html header and style tag
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="htmlText"></param>
-        private static void createDemoHtmlFile(string path, string htmlText)
-        {
-            String css = File.ReadAllText(@"Resources\motiv8.css");
-            String yyy = String.Format(@"<!DOCTYPE html>
-                    <html>
-                    <head>
-                        <style>
-                        {0}
-                        </style >
-                    </head >
-                    <body> ", css);
-            File.WriteAllText(path.Replace("docx", "html"), yyy + htmlText + "</body></html>");
-        }
 
         private static String createDanceDates(DateTime danceDateStart, DateTime danceDateEnd, out string monthName1, out string monthName2)
         {
@@ -380,122 +325,25 @@ namespace CreateWordFiles
             //return MyOpenXml.GenerateParagraph(lines.ToArray(), fontSizes.ToArray(), colors.ToArray(), borders);
         }
 
-        private static void GenerateFestivalFeesHtml(SchemaInfo schemaInfo, DateTime danceDateStart, List<string> festivalFeeTexts)
-        {
-            List<String> lines = new List<String>();
-
-            // festivalFeeTexts may have zero or one bullet lists
-            int bulletStart= -1, bulletLength=0;
-            findBullets(festivalFeeTexts, out bulletStart, out bulletLength);
-            generateFestivalFeeLines(danceDateStart, festivalFeeTexts, lines);
-            Boolean bullet = false;
-            for (int i1=0; i1<lines.Count; i1++)
-            {
-                String line = lines[i1];
-                if (i1== bulletStart)
-                {
-                    htmlStringBuilder.Append(String.Format("<ul  class='m8'>\n"));
-                    bullet = true;
-                }
-                if (bullet)
-                {
-                    htmlStringBuilder.Append(String.Format("<li class='m8'>{0}</li>\n", line));
-                    if (i1 == bulletStart + bulletLength)
-                    {
-                        bullet = false;
-                        htmlStringBuilder.Append(String.Format("</ul>\n", line));
-                    }
-                }
-                else
-                {
-                    htmlStringBuilder.Append(String.Format("<p class='m8'>{0}</p>\n", line));
-                }
-            }
-        }
-
+  
         private static Wp.Paragraph GenerateFestivalFeesParagraph(SchemaInfo schemaInfo, DateTime danceDateStart, List<string> festivalFeeTexts)
         {
             List<String> lines = new List<String>();
 
             // festivalFeeTexts may have zero or one bullet lists
             int bulletStart, bulletLength;
-            findBullets(festivalFeeTexts, out bulletStart, out bulletLength);
-            generateFestivalFeeLines(danceDateStart, festivalFeeTexts, lines);
+            Utility.findBullets(festivalFeeTexts, out bulletStart, out bulletLength);
+            Utility.generateFestivalFeeLines(danceDateStart, festivalFeeTexts, myFees, lines);
 
             int[] fontSizes = Enumerable.Repeat(18, lines.Count).ToArray();
 
             String[] colors = Enumerable.Repeat("Black", lines.Count).ToArray();
-            Wp.Paragraph paragraph = MyOpenXml.GenerateParagraph(lines.ToArray(), fontSizes, colors, false, null, 0, 0, true, bulletStart, bulletLength);
+            Wp.Paragraph paragraph = MyOpenXml.GenerateParagraph(lines.ToArray(), fontSizes, colors, false, null, 0, 0, false, bulletStart, bulletLength);
             return paragraph;
         }
 
-        private static void generateFestivalFeeLines(DateTime danceDateStart, List<string> festivalFeeTexts, List<string> lines)
-        {
-            for (int i1 = 0; i1 < festivalFeeTexts.Count; i1++)
-            {
-                String text = festivalFeeTexts[i1];
-
-                String[] atoms = text.Split(';');
-                DateTime dueDate1 = danceDateStart - new TimeSpan(4 * 24, 0, 0);
-                String ddMM1 = dueDate1.Day + "/" + dueDate1.Month;
-                int n = Int32.Parse(atoms[1]);
-                switch (n)
-                {
-                    case 1:
-                        String txt1 = String.Format(atoms[2], myFees.festival[0], myFees.festival[1],
-                            myFees.festival[2], myFees.festival[3],
-                            myFees.festival[4], myFees.festival[5]);
-                        lines.Add(txt1);
-                        break;
-                    case 2:
-                        String txt2 = String.Format(atoms[2], ddMM1);
-                        lines.Add(txt2);
-                        break;
-                    case 3:
-                        String txt3 = String.Format(atoms[2], myFees.festival_member[0], myFees.festival_member[1],
-                            myFees.festival_member[2], myFees.festival_member[3],
-                            myFees.festival_member[4], myFees.festival_member[5]);
-                        lines.Add(txt3);
-                        break;
-                    case 4:
-                        String txt4 = String.Format(atoms[2], ddMM1);
-                        lines.Add(txt4);
-                        break;
-                    case 5:
-                        String txt5 = String.Format(atoms[2], danceDateStart.Day + "/" + danceDateStart.Month);
-                        lines.Add(txt5);
-                        break;
-                    default:
-                        lines.Add(atoms[2]);
-                        break;
-                }
-
-
-            }
-        }
-
-        private static void findBullets(List<string> festivalFeeTexts, out int bulletStart, out int bulletLength)
-        {
-            bulletStart = -1;
-            bulletLength = 0;
-            Boolean bullet = false;
-            for (int i1 = 0; i1 < festivalFeeTexts.Count; i1++)
-            {
-                String text = festivalFeeTexts[i1];
-                String[] atoms = text.Split(';');
-                if (atoms[0] == "b" && !bullet)
-                {
-                    bulletStart = i1;
-                    bulletLength = 1;
-                    bullet = true;
-                }
-                else if (atoms[0] == "b")
-                {
-                    bulletLength++;
-                }
-            }
-        }
-
+  
+ 
         private static Wp.Paragraph GenerateWeekendFeesLines(SchemaInfo schemaInfo)
         {
 
@@ -597,32 +445,15 @@ namespace CreateWordFiles
             return MyOpenXml.GenerateParagraph(lines, fontSizes, colors, false, null, before, after);
         }
 
-        public static void CreateDanceSchemaHtmlTable(String lang, SchemaInfo schemaInfo, String schemaName, int fontSize, int lineSpace)
-        {
-            int numberOfDistinctDays = createDancePassesDaylist(schemaInfo);
-
-            if (numberOfDistinctDays == 2)
-            {
-                htmlStringBuilder.Append("<table class='m8_schema'>");
-                // Wp.Table table = createWeekendDanceSchemaTable(lang, dancePassesDayList, schemaInfo, fontSize, lineSpace);
-                htmlStringBuilder.Append("</table>");
-            }
-            else if (numberOfDistinctDays == 4)
-            {
-               createFestivalDanceSchemaHtmlTable(lang, dancePassesDayList, schemaInfo);
-               htmlStringBuilder.Append("</table>");
-            }
-
-        }
-
+  
         public static Wp.Table CreateDanceSchemaTable(String lang, SchemaInfo schemaInfo, String schemaName, int fontSize, int lineSpace)
         {
-            int numberOfDistinctDays = createDancePassesDaylist(schemaInfo);
+            int numberOfDistinctDays = Utility.createDancePassesDaylist(schemaInfo);
 
             if (numberOfDistinctDays == 2)
             {
                 htmlStringBuilder.Append("<table class='m8_schema'>");
-                Wp.Table table = createWeekendDanceSchemaTable(lang, dancePassesDayList, schemaInfo, fontSize, lineSpace);
+                Wp.Table table = createWeekendDanceSchemaTable(lang, Utility.dancePassesDayList, schemaInfo, fontSize, lineSpace);
                 htmlStringBuilder.Append("</table><br>");
                 return table;
             }
@@ -630,7 +461,7 @@ namespace CreateWordFiles
             {
 
                 htmlStringBuilder.Append("<table class='m8_festival'>");
-                Wp.Table table = createFestivalDanceFlyerSchemaTable(lang, dancePassesDayList, schemaInfo, fontSize, lineSpace);
+                Wp.Table table = createFestivalDanceFlyerSchemaTable(lang, Utility.dancePassesDayList, schemaInfo, fontSize, lineSpace);
                 htmlStringBuilder.Append("</table><br>");
                 return table;
             }
@@ -640,42 +471,7 @@ namespace CreateWordFiles
             }
         }
 
-        private static int createDancePassesDaylist(SchemaInfo schemaInfo)
-        {
-            List<DancePass> dancePasses = schemaInfo.danceSchema;
-
-            var n = dancePasses.Select(o => new { Day = o.day }).Distinct();
-            int numberOfDistinctDays = n.Count();
-
-            dancePassesDayList.Clear();
-
-            for (int i = 1; i <= numberOfDistinctDays; i++)
-            {
-                dancePassesDayList.Add(getDancePassesForDay(dancePasses, i));
-            }
-
-            return numberOfDistinctDays;
-        }
-        public static void createFestivalDanceSchemaHtmlTable(String lang, List<DancePass[]> dancePassesDayList, SchemaInfo schemaInfo)
-        {
-            htmlStringBuilder.Append("<table class='m8_festival'>");
-
-            int dayNumber = 0;
-            int passNumber = 1;
-
-            foreach (DancePass[] dancePasses in dancePassesDayList)
-            {
-                foreach (DancePass dancePass in dancePasses)
-                {
-                    createFestivalProgramRowForHtml(dayNumber, passNumber, dancePass, schemaInfo.colWidth);
-                    passNumber++;
-                }
-                dayNumber++;
-
-            }
-        }
-
-        public static Wp.Table createFestivalDanceFlyerSchemaTable(String lang, List<DancePass[]> dancePassesDayList, SchemaInfo schemaInfo,
+         public static Wp.Table createFestivalDanceFlyerSchemaTable(String lang, List<DancePass[]> dancePassesDayList, SchemaInfo schemaInfo,
                 int fontSize, int lineSpace)
         {
             Wp.Table table = new Wp.Table();
@@ -745,51 +541,12 @@ namespace CreateWordFiles
             return table;
 
         }
-        private static void createFestivalProgramRowForHtml(int dayNumber, int passNumber, DancePass dancePass,  List<int> colWidth)
-        {
-            string weekDay, timeString, level;
-            createFestivalRow(dancePass, dayNumber, passNumber, out weekDay, out timeString, out level);
-
-            String[] content = { passNumber.ToString(), weekDay, timeString, level };
-            htmlStringBuilder.Append("<tr class='m8_festival'>\n");
-            for (int i = 0; i < content.Length; i++)
-            {
-                if (dayNumber == 1) // Saturday
-                {
-                    if (passNumber == 2 && i == 1)  // First pass on Saturday, second column should span 3 rows
-                    {
-                        htmlStringBuilder.Append(String.Format("<td rowspan='3' class='m8_festival'>{0}</td>", content[i]));
-                    }
-                    else if (i != 1)  // For other passes on Saturday, skip second column
-                    {
-                        htmlStringBuilder.Append(String.Format("<td class='m8_festival'>{0}</td>", content[i]));
-                    }
-                }
-                else if (dayNumber == 2) // Sunday
-                {
-                    if (passNumber == 5 && i == 1)  // First pass on Sunday, second column should span 2 rows
-                    {
-                        htmlStringBuilder.Append(String.Format("<td rowspan='2' class='m8_festival'>{0}</td>", content[i]));
-                    }
-                    else if (i != 1)  // For other passes on Sunday, skip second column
-                    {
-                        htmlStringBuilder.Append(String.Format("<td class='m8_festival'>{0}</td>", content[i]));
-                    }
-                }
-                else
-                {
-                    htmlStringBuilder.Append(String.Format("<td class='m8_festival'>{0}</td>", content[i]));
-                }
-            }
-            htmlStringBuilder.Append("</tr>\n");
-
-        }
-
+  
         private static void createFestivalRowForFlyer(int dayNumber, int passNumber, DancePass dancePass, Wp.Table table,
             List<int> colWidth, int fontSize, int lineSpace)
         {
             string weekDay, timeString, level;
-            createFestivalRow(dancePass, dayNumber, passNumber, out weekDay, out timeString, out level);
+            Utility.createFestivalRow(dancePass, dayNumber, passNumber, out weekDay, out timeString, out level);
 
             String[] content = { passNumber.ToString(), weekDay, timeString, level };
 
@@ -810,24 +567,7 @@ namespace CreateWordFiles
 
             table.Append(createRow(content, colWidth.ToArray(), merge, fontSize, lineSpace));
         }
-        private static void createFestivalRow(DancePass dancePass, int dayNumber, int passNumber, out string weekDay, out string timeString, out string level)
-        {
-
-            level = "";
-            timeString = "";
-            String[] weekDays = { "Fredag", "Lördag", "Söndag", "Måndag", "Tisdag" };
-            weekDay = weekDays[dayNumber];
-            try
-            {
-                timeString = formatTimeInterval(dancePass);
-                level = dancePass.level;
-            }
-            catch (Exception)
-            {
-
-            }
-        }
-
+ 
         private static void createWeekEndRow(List<DancePass[]> dancePassesDayList, int rowNumber, out string level2, out string timeString2, out string level1, out string timeString1)
         {
             int i1 = rowNumber - 2;
@@ -835,7 +575,7 @@ namespace CreateWordFiles
             timeString2 = "";
             try
             {
-                timeString2 = formatTimeInterval(dancePassesDayList[1][i1]);
+                timeString2 = Utility.formatTimeInterval(dancePassesDayList[1][i1]);
                 level2 = dancePassesDayList[1][i1].level;
             }
             catch (Exception)
@@ -846,7 +586,7 @@ namespace CreateWordFiles
             timeString1 = "";
             try
             {
-                timeString1 = formatTimeInterval(dancePassesDayList[0][i1]);
+                timeString1 = Utility.formatTimeInterval(dancePassesDayList[0][i1]);
                 level1 = dancePassesDayList[0][i1].level;
             }
             catch (Exception)
@@ -893,25 +633,6 @@ namespace CreateWordFiles
         //    //}
         //    return formatTimeInterval(dancePasses[row]);
         //}
-        private static String formatTimeInterval(DancePass dancePass)
-        {
-            String text = String.Format("{0} - {1}", dancePass.start_time, dancePass.end_time);
-            if (dancePass.end_time.Length > 6) // quick and dirty solution for Årsmöte
-            {
-                text = String.Format("{0} {1}", dancePass.start_time, dancePass.end_time);
-            }
-            return text;
-        }
-
-        private static DancePass[] getDancePassesForDay(List<DancePass> dancePasses, int day)
-        {
-            IEnumerable<DancePass> dayOnePasses = from dancePass in dancePasses
-                                                  where dancePass.day == day
-                                                  orderby dancePass.pass_no ascending
-                                                  select dancePass;
-            var dayOnePassesArray = dayOnePasses.ToArray();
-            return dayOnePassesArray;
-        }
 
         /// <summary>
         /// 
@@ -987,7 +708,7 @@ namespace CreateWordFiles
                 Wp.TableCell tableCell = createACell(content[i], colWidth[i], false, fontSize, lineSpace);
                 if (createHtml)
                 {
-                    Creator.htmlStringBuilder.Append(String.Format("<td class='m8_festival'>{0}</td>", content[i]));
+                    FlyerCreator.htmlStringBuilder.Append(String.Format("<td class='m8_festival'>{0}</td>", content[i]));
                 }
                 tableCells.Add(tableCell);
                 row.Append(tableCell);
@@ -998,7 +719,7 @@ namespace CreateWordFiles
             }
             if (createHtml)
             {
-                Creator.htmlStringBuilder.Append("</tr>\n");
+                FlyerCreator.htmlStringBuilder.Append("</tr>\n");
             }
             return row;
 

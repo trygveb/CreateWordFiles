@@ -167,8 +167,8 @@ namespace CreateWordFiles
 
             String schemaName = this.comboBoxDanceSchema.Text;
 #if DEBUG
-            String fileName = String.Format("{0}_{1}_{2}_{3}.docx", this.dateTimePickerStart.Value.ToShortDateString(), lang, schemaName, Utility.map["danceName"] );
-            String path = Path.Combine(Utility.map["outputFolder"]+"/test", fileName);
+            String fileName = String.Format("{0}_{1}_{2}_{3}.docx", this.dateTimePickerStart.Value.ToShortDateString(), lang, schemaName, Utility.map["danceName"]);
+            String path = Path.Combine(Utility.map["outputFolder"] + "/test", fileName);
 #else
             String fileName = String.Format("{0}_{1}_{2}.docx", this.dateTimePickerStart.Value.ToShortDateString(), lang, Utility.map["danceName"]);
             String path = Path.Combine(Utility.map["outputFolder"], fileName);
@@ -183,14 +183,14 @@ namespace CreateWordFiles
                 Properties.Settings.Default.Save();
                 if (radioButtonHtml.Checked)
                 {
-                    Creator.createHtml(Utility.map, lang, schemaInfo, schemaName, path, fees, radioButtonCoffeeYes.Checked,
+                    HtmlCreator.createHtml(Utility.map, lang, schemaInfo, schemaName, path, fees, radioButtonCoffeeYes.Checked,
                     (String)this.comboBoxDanceLocation.SelectedValue, this.dateTimePickerStart.Value, this.dateTimePickerEnd.Value,
                     textBoxExtra.Text, festivalFeesText);
                     MessageBox.Show("Klar!");
                 }
                 else
                 {
-                    Creator.CreateWordprocessingDocument(Utility.map, lang, schemaInfo, schemaName, path, fees, radioButtonCoffeeYes.Checked,
+                    FlyerCreator.CreateWordprocessingDocument(Utility.map, lang, schemaInfo, schemaName, path, fees, radioButtonCoffeeYes.Checked,
                     (String)this.comboBoxDanceLocation.SelectedValue, this.dateTimePickerStart.Value, this.dateTimePickerEnd.Value,
                     textBoxExtra.Text, festivalFeesText);
                     System.Diagnostics.Process.Start(path);

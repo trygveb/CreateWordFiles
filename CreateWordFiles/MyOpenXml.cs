@@ -288,7 +288,7 @@ namespace CreateWordFiles
             Boolean pageBreakBefore, Wp.ParagraphBorders borders, int distanceBefore = 0, int distanceAfter = 0,
             Boolean underlineFirstRow = false, int bulletStart = -1, int bulletLength = 0, Boolean createHtml = true)
         {
-            Creator.htmlStringBuilder.Append("<p class='m8'>\n");
+            FlyerCreator.htmlStringBuilder.Append("<p class='m8'>\n");
 
             Wp.Paragraph paragraph = new Wp.Paragraph();
             Wp.ParagraphProperties paragraphProperties = new Wp.ParagraphProperties(borders);
@@ -315,7 +315,7 @@ namespace CreateWordFiles
                 {
                     if (createHtml)
                     {
-                        Creator.htmlStringBuilder.Append("<ul class='m8'>\n   <li>\n");
+                        FlyerCreator.htmlStringBuilder.Append("<ul class='m8'>\n   <li>\n");
                     }
                     bullet = true;
                 }
@@ -333,30 +333,30 @@ namespace CreateWordFiles
                     runProperties.Underline = new Wp.Underline() { Val = Wp.UnderlineValues.Single };
                     if (createHtml)
                     {
-                        Creator.htmlStringBuilder.Append(String.Format("<span style='font-size:larger; font-weight:bold; text-decoration:underline;'>{0}</span>\n", line));
+                        FlyerCreator.htmlStringBuilder.Append(String.Format("<span style='font-size:larger; font-weight:bold; text-decoration:underline;'>{0}</span>\n", line));
                     }
                 }
                 else if (createHtml)
                 {
-                    Creator.htmlStringBuilder.Append(String.Format("{0}</br>\n", line));
+                    FlyerCreator.htmlStringBuilder.Append(String.Format("{0}</br>\n", line));
                 }
                 if (bullet)
                 {
                     if (createHtml)
                     {
-                        Creator.htmlStringBuilder.Append("   </li>\n");
+                        FlyerCreator.htmlStringBuilder.Append("   </li>\n");
                     }
                     if (i == bulletStart + bulletLength || i == lines.Length - 1)
                     {
                         if (createHtml)
                         {
-                            Creator.htmlStringBuilder.Append("</ul>\n");
+                            FlyerCreator.htmlStringBuilder.Append("</ul>\n");
                         }
                         bullet = false;
                     }
                     else if (createHtml)
                     {
-                        Creator.htmlStringBuilder.Append("   <li>\n");
+                        FlyerCreator.htmlStringBuilder.Append("   <li>\n");
                     }
 
                 }
@@ -378,7 +378,7 @@ namespace CreateWordFiles
                 paragraph.Append(run);
 
             }
-            Creator.htmlStringBuilder.Append("</p>\n");
+            FlyerCreator.htmlStringBuilder.Append("</p>\n");
 
             return paragraph;
         }

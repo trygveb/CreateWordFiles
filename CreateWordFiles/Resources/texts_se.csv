@@ -7,11 +7,12 @@ Monday;Måndag
 weekend_member_fees;Medlem: {0} kr/pass, samtliga pass {1} kr
 weekend_non_member_fees;Ej medlem: {0} kr/pass, samtliga pass {1} kr
 one_pass_sunday;(söndag räknas som 2 pass)
-festival_fees_text;;1;---{0}, {1}, {2}, {3}, {4} resp. {5} SEK
+festival_fees_text;;1;{0}, {1}, {2}, {3}, {4} resp. {5} SEK
 festival_fees_text;;0;för 1 till 6 sessioner*.
+festival_fees_text;;0;Priset gäller då samma person går på flera sessioner.
 festival_fees_text;;0;*) Session 7 betalas på plats (kontant eller Swish).
-festival_fees_text;;0;---Priset gäller då samma person går på flera sessioner.
-festival_fees_text;;0;---Kontanter ”i dörren” går bra, men betala gärna i förhand på PlusGiro 85 56 69-8 (MOTIV8'S)
+festival_fees_text;;0;---Kontanter ”i dörren” går bra, men betala gärna i förhand på
+festival_fees_text;;0;PlusGiro 85 56 69-8 (MOTIV8'S)
 festival_fees_text;;0;eller Swisha till 070-422 82 27 (Arne G).
 festival_fees_text;;0;Ange vilka sessioner som avses (nummer och nivå).
 festival_fees_text;;2;---Medlemmar får rabatt vid förhandsbetalning senast {0}.
@@ -25,7 +26,7 @@ rotation;Vi använder rotationsprogram på samtliga nivåer!
 lunch;Vi ordnar hämtning av Pizza och sallad till pausen!
 coffee;Kaffeservering finns!
 no_coffee;Ta med eget fika!
-footer;Ändringar utanför vår kontroll kan ske. Håll därför utkik på hemsidan www.motiv8s.se!
+footer;Ändringar utanför vår kontroll kan ske. Håll därför utkik på hemsidan www.motiv8s.se! Flyer skapad:{0}
 usa;USA
 sweden;Sverige
 canada;Kanada
