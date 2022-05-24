@@ -6,54 +6,61 @@ using System.Threading.Tasks;
 
 namespace CreateWordFiles
 {
-    public class SchemaInfo
-    {
-        public String schemaName { get; set; }
-        public List<DancePass> danceSchema { get; set; }
-        public List<int> colWidth { get; set; }
-    }
-    public class Fees
-    {
-        public List<int> weekends { get; set; }
-        public List<int> festival { get; set; }
-        public List<int> festival_member { get; set; }
-    }
     public class DancePass
     {
-        public int pass_no { get; set; }
         public int day { get; set; }
-        public String start_time { get; set; }
         public String end_time { get; set; }
         public String level { get; set; }
-    }
-    public class Motiv8Urls
-    {
-        public String dance_schemas { get; set; }
-        public String caller_pictures_root { get; set; }
+        public int pass_no { get; set; }
+        public String start_time { get; set; }
     }
 
+    public class Fees
+    {
+        public List<int> festival { get; set; }
+        public List<int> festival_member { get; set; }
+        public List<int> weekends { get; set; }
+    }
+
+    public class Motiv8Urls
+    {
+        public String caller_pictures_root { get; set; }
+        public String dance_schemas { get; set; }
+    }
+
+    public class SchemaInfo
+    {
+        public List<int> colWidth { get; set; }
+        public List<DancePass> danceSchema { get; set; }
+        public String schemaName { get; set; }
+    }
     public class Utility
     {
+        public static Dictionary<string, string> callerDictionary = new Dictionary<string, string>();
+
+        public static Dictionary<String, String> danceLocations = new Dictionary<String, String>();
+
+        public static List<DancePass[]> dancePassesDayList = new List<DancePass[]>();
+
         /// <summary>
         /// Dictionary holding urls and texts in different languages
         /// </summary>
         public static Dictionary<String, String> map = new Dictionary<String, String>();
-        public static Dictionary<String, String> danceLocations = new Dictionary<String, String>();
-        public static Dictionary<string, string> callerDictionary = new Dictionary<string, string>();
-        public static List<DancePass[]> dancePassesDayList = new List<DancePass[]>();
-        /// <summary>
-        /// Rads a semikolon separated file and adds data to the map Dictionary
-        /// </summary>
-        /// <param name="fileName"></param>
-        public static void readToDictionary(String fileName, Dictionary<String, String> dictionary)
+        public static int createDancePassesDaylist(SchemaInfo schemaInfo)
         {
-            String[] lines = System.IO.File.ReadAllLines(fileName, Encoding.Default);
-            foreach (String line in lines)
+            List<DancePass> dancePasses = schemaInfo.danceSchema;
+
+            var n = dancePasses.Select(o => new { Day = o.day }).Distinct();
+            int numberOfDistinctDays = n.Count();
+
+            dancePassesDayList.Clear();
+
+            for (int i = 1; i <= numberOfDistinctDays; i++)
             {
-                String[] atoms = line.Split(';');
-                dictionary[atoms[0]] = atoms[1];
+                dancePassesDayList.Add(getDancePassesForDay(dancePasses, i));
             }
 
+            return numberOfDistinctDays;
         }
 
         public static void createFestivalRow(DancePass dancePass, int dayNumber, int passNumber, out string weekDay, out string timeString, out string level)
@@ -73,14 +80,32 @@ namespace CreateWordFiles
 
             }
         }
-        public static String formatTimeInterval(DancePass dancePass)
+
+        public static void createWeekEndRow(List<DancePass[]> dancePassesDayList, int rowNumber, out string level2, out string timeString2, out string level1, out string timeString1)
         {
-            String text = String.Format("{0} - {1}", dancePass.start_time, dancePass.end_time);
-            if (dancePass.end_time.Length > 6) // quick and dirty solution for Årsmöte
+            int i1 = rowNumber - 2;
+            level2 = "";
+            timeString2 = "";
+            try
             {
-                text = String.Format("{0} {1}", dancePass.start_time, dancePass.end_time);
+                timeString2 = Utility.formatTimeInterval(dancePassesDayList[1][i1]);
+                level2 = dancePassesDayList[1][i1].level;
             }
-            return text;
+            catch (Exception)
+            {
+
+            }
+            level1 = "";
+            timeString1 = "";
+            try
+            {
+                timeString1 = Utility.formatTimeInterval(dancePassesDayList[0][i1]);
+                level1 = dancePassesDayList[0][i1].level;
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         public static void findBullets(List<string> festivalFeeTexts, out int bulletStart, out int bulletLength)
@@ -104,6 +129,17 @@ namespace CreateWordFiles
                 }
             }
         }
+
+        public static String formatTimeInterval(DancePass dancePass)
+        {
+            String text = String.Format("{0} - {1}", dancePass.start_time, dancePass.end_time);
+            if (dancePass.end_time.Length > 6) // quick and dirty solution for Årsmöte
+            {
+                text = String.Format("{0} {1}", dancePass.start_time, dancePass.end_time);
+            }
+            return text;
+        }
+
         public static void generateFestivalFeeLines(DateTime danceDateStart, List<string> festivalFeeTexts, Fees myFees, List<string> lines)
         {
             for (int i1 = 0; i1 < festivalFeeTexts.Count; i1++)
@@ -148,22 +184,6 @@ namespace CreateWordFiles
 
             }
         }
-        public static int createDancePassesDaylist(SchemaInfo schemaInfo)
-        {
-            List<DancePass> dancePasses = schemaInfo.danceSchema;
-
-            var n = dancePasses.Select(o => new { Day = o.day }).Distinct();
-            int numberOfDistinctDays = n.Count();
-
-            dancePassesDayList.Clear();
-
-            for (int i = 1; i <= numberOfDistinctDays; i++)
-            {
-                dancePassesDayList.Add(getDancePassesForDay(dancePasses, i));
-            }
-
-            return numberOfDistinctDays;
-        }
 
         public static DancePass[] getDancePassesForDay(List<DancePass> dancePasses, int day)
         {
@@ -175,7 +195,20 @@ namespace CreateWordFiles
             return dayOnePassesArray;
         }
 
+        /// <summary>
+        /// Rads a semikolon separated file and adds data to the map Dictionary
+        /// </summary>
+        /// <param name="fileName"></param>
+        public static void readToDictionary(String fileName, Dictionary<String, String> dictionary)
+        {
+            String[] lines = System.IO.File.ReadAllLines(fileName, Encoding.Default);
+            foreach (String line in lines)
+            {
+                String[] atoms = line.Split(';');
+                dictionary[atoms[0]] = atoms[1];
+            }
 
+        }
     }
 
 }

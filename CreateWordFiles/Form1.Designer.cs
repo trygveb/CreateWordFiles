@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.buttonOk = new System.Windows.Forms.Button();
+            this.buttonHtml = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.dateTimePickerStart = new System.Windows.Forms.DateTimePicker();
             this.dateTimePickerEnd = new System.Windows.Forms.DateTimePicker();
@@ -57,25 +57,22 @@
             this.comboBoxDanceName = new System.Windows.Forms.ComboBox();
             this.textBoxExtra = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.radioButtonHtml = new System.Windows.Forms.RadioButton();
-            this.radioButtonFlyer = new System.Windows.Forms.RadioButton();
+            this.buttonFlyer = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             this.groupBoxLanguage.SuspendLayout();
             this.groupBoxCoffee.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // buttonOk
+            // buttonHtml
             // 
-            this.buttonOk.Enabled = false;
-            this.buttonOk.Location = new System.Drawing.Point(308, 391);
-            this.buttonOk.Name = "buttonOk";
-            this.buttonOk.Size = new System.Drawing.Size(143, 34);
-            this.buttonOk.TabIndex = 0;
-            this.buttonOk.Text = "Skapa Html";
-            this.buttonOk.UseVisualStyleBackColor = true;
-            this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
+            this.buttonHtml.Enabled = false;
+            this.buttonHtml.Location = new System.Drawing.Point(358, 391);
+            this.buttonHtml.Name = "buttonHtml";
+            this.buttonHtml.Size = new System.Drawing.Size(114, 34);
+            this.buttonHtml.TabIndex = 0;
+            this.buttonHtml.Text = "Skapa Html";
+            this.buttonHtml.UseVisualStyleBackColor = true;
+            this.buttonHtml.Click += new System.EventHandler(this.buttonHtml_Click);
             // 
             // label1
             // 
@@ -324,7 +321,6 @@
             this.comboBoxDanceName.Name = "comboBoxDanceName";
             this.comboBoxDanceName.Size = new System.Drawing.Size(214, 21);
             this.comboBoxDanceName.TabIndex = 27;
-            this.comboBoxDanceName.SelectedIndexChanged += new System.EventHandler(this.comboBoxDanceName_SelectedIndexChanged);
             // 
             // textBoxExtra
             // 
@@ -342,48 +338,22 @@
             this.label9.TabIndex = 29;
             this.label9.Text = "Extra";
             // 
-            // groupBox1
+            // buttonFlyer
             // 
-            this.groupBox1.Controls.Add(this.radioButtonHtml);
-            this.groupBox1.Controls.Add(this.radioButtonFlyer);
-            this.groupBox1.Location = new System.Drawing.Point(40, 160);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(183, 49);
-            this.groupBox1.TabIndex = 30;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Produkt";
-            // 
-            // radioButtonHtml
-            // 
-            this.radioButtonHtml.AutoSize = true;
-            this.radioButtonHtml.Checked = true;
-            this.radioButtonHtml.Location = new System.Drawing.Point(84, 19);
-            this.radioButtonHtml.Name = "radioButtonHtml";
-            this.radioButtonHtml.Size = new System.Drawing.Size(46, 17);
-            this.radioButtonHtml.TabIndex = 1;
-            this.radioButtonHtml.TabStop = true;
-            this.radioButtonHtml.Tag = "en";
-            this.radioButtonHtml.Text = "Html";
-            this.radioButtonHtml.UseVisualStyleBackColor = true;
-            // 
-            // radioButtonWord
-            // 
-            this.radioButtonFlyer.AutoSize = true;
-            this.radioButtonFlyer.Location = new System.Drawing.Point(11, 19);
-            this.radioButtonFlyer.Name = "radioButtonWord";
-            this.radioButtonFlyer.Size = new System.Drawing.Size(47, 17);
-            this.radioButtonFlyer.TabIndex = 0;
-            this.radioButtonFlyer.Tag = "se";
-            this.radioButtonFlyer.Text = "Flyer";
-            this.radioButtonFlyer.UseVisualStyleBackColor = true;
-            this.radioButtonFlyer.CheckedChanged += new System.EventHandler(this.radioButtonWord_CheckedChanged);
+            this.buttonFlyer.Location = new System.Drawing.Point(200, 391);
+            this.buttonFlyer.Name = "buttonFlyer";
+            this.buttonFlyer.Size = new System.Drawing.Size(112, 34);
+            this.buttonFlyer.TabIndex = 30;
+            this.buttonFlyer.Text = "Skapa Flyer";
+            this.buttonFlyer.UseVisualStyleBackColor = true;
+            this.buttonFlyer.Click += new System.EventHandler(this.buttonFlyer_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(510, 437);
-            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.buttonFlyer);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.textBoxExtra);
             this.Controls.Add(this.comboBoxDanceName);
@@ -403,7 +373,7 @@
             this.Controls.Add(this.label5);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.buttonOk);
+            this.Controls.Add(this.buttonHtml);
             this.Name = "Form1";
             this.Text = "Form1";
             this.groupBox2.ResumeLayout(false);
@@ -412,8 +382,6 @@
             this.groupBoxLanguage.PerformLayout();
             this.groupBoxCoffee.ResumeLayout(false);
             this.groupBoxCoffee.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -421,7 +389,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Button buttonOk;
+        private System.Windows.Forms.Button buttonHtml;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.DateTimePicker dateTimePickerStart;
         private System.Windows.Forms.DateTimePicker dateTimePickerEnd;
@@ -450,9 +418,7 @@
         private System.Windows.Forms.ComboBox comboBoxDanceName;
         private System.Windows.Forms.TextBox textBoxExtra;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.RadioButton radioButtonHtml;
-        private System.Windows.Forms.RadioButton radioButtonFlyer;
+        private System.Windows.Forms.Button buttonFlyer;
     }
 }
 

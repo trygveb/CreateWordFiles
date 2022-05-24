@@ -286,9 +286,9 @@ namespace CreateWordFiles
         /// <returns></returns>
         public static Wp.Paragraph GenerateParagraph(string[] lines, int[] fontSizes, String[] colors,
             Boolean pageBreakBefore, Wp.ParagraphBorders borders, int distanceBefore = 0, int distanceAfter = 0,
-            Boolean underlineFirstRow = false, int bulletStart = -1, int bulletLength = 0, Boolean createHtml = true)
+            Boolean underlineFirstRow = false, int bulletStart = -1, int bulletLength = 0)
         {
-            FlyerCreator.htmlStringBuilder.Append("<p class='m8'>\n");
+            //FlyerCreator.htmlStringBuilder.Append("<p class='m8'>\n");
 
             Wp.Paragraph paragraph = new Wp.Paragraph();
             Wp.ParagraphProperties paragraphProperties = new Wp.ParagraphProperties(borders);
@@ -313,10 +313,10 @@ namespace CreateWordFiles
             {
                 if (bulletStart == i)
                 {
-                    if (createHtml)
-                    {
-                        FlyerCreator.htmlStringBuilder.Append("<ul class='m8'>\n   <li>\n");
-                    }
+                    //if (createHtml)
+                    //{
+                    //    FlyerCreator.htmlStringBuilder.Append("<ul class='m8'>\n   <li>\n");
+                    //}
                     bullet = true;
                 }
                 String fontSizeTxt = (fontSizes[i] * 2).ToString();
@@ -331,33 +331,33 @@ namespace CreateWordFiles
                 if (underlineFirstRow && i == 0)
                 {
                     runProperties.Underline = new Wp.Underline() { Val = Wp.UnderlineValues.Single };
-                    if (createHtml)
-                    {
-                        FlyerCreator.htmlStringBuilder.Append(String.Format("<span style='font-size:larger; font-weight:bold; text-decoration:underline;'>{0}</span>\n", line));
-                    }
+                    //if (createHtml)
+                    //{
+                    //    FlyerCreator.htmlStringBuilder.Append(String.Format("<span style='font-size:larger; font-weight:bold; text-decoration:underline;'>{0}</span>\n", line));
+                    //}
                 }
-                else if (createHtml)
-                {
-                    FlyerCreator.htmlStringBuilder.Append(String.Format("{0}</br>\n", line));
-                }
+                //else if (createHtml)
+                //{
+                //    FlyerCreator.htmlStringBuilder.Append(String.Format("{0}</br>\n", line));
+                //}
                 if (bullet)
                 {
-                    if (createHtml)
-                    {
-                        FlyerCreator.htmlStringBuilder.Append("   </li>\n");
-                    }
+                    //if (createHtml)
+                    //{
+                    //    FlyerCreator.htmlStringBuilder.Append("   </li>\n");
+                    //}
                     if (i == bulletStart + bulletLength || i == lines.Length - 1)
                     {
-                        if (createHtml)
-                        {
-                            FlyerCreator.htmlStringBuilder.Append("</ul>\n");
-                        }
+                        //if (createHtml)
+                        //{
+                        //    FlyerCreator.htmlStringBuilder.Append("</ul>\n");
+                        //}
                         bullet = false;
                     }
-                    else if (createHtml)
-                    {
-                        FlyerCreator.htmlStringBuilder.Append("   <li>\n");
-                    }
+                    //else if (createHtml)
+                    //{
+                    //    FlyerCreator.htmlStringBuilder.Append("   <li>\n");
+                    //}
 
                 }
 
@@ -378,7 +378,7 @@ namespace CreateWordFiles
                 paragraph.Append(run);
 
             }
-            FlyerCreator.htmlStringBuilder.Append("</p>\n");
+            //FlyerCreator.htmlStringBuilder.Append("</p>\n");
 
             return paragraph;
         }

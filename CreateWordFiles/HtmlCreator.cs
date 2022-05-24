@@ -11,97 +11,68 @@ namespace CreateWordFiles
 {
     internal class HtmlCreator
     {
-         private static Dictionary<String, String> myTexts;
-        private static List<DancePass[]> dancePassesDayList = new List<DancePass[]>();
-        private static Fees myFees;
         public static StringBuilder htmlStringBuilder = new StringBuilder();
-
-        public static void createHtml(Dictionary<String, String> texts, String lang, SchemaInfo schemaInfo,
-           String schemaName, String path, Fees fees, Boolean coffee, String danceLocation, DateTime danceDateStart,
-           DateTime danceDateEnd, String extra, List<String> festivalFeesText)
-        {
-            myTexts = texts;
-            myFees = fees;
-
-            htmlStringBuilder.Clear();
-            htmlStringBuilder.Append(String.Format("<p class='m8_schema m8_border' style='max-width: 450px;'>{0}</p><br>", danceLocation));
-
-            htmlStringBuilder.Append(String.Format("<p class='m8'>\n"));
-            htmlStringBuilder.Append(String.Format("<span style='font-size:larger; font-weight:bold; text-decoration:underline;'>PROGRAM</span>\n"));
-            htmlStringBuilder.Append(String.Format("</p>\n"));
-            CreateDanceSchemaHtmlTable(lang, schemaInfo, schemaName, 12, 200);
-            htmlStringBuilder.Append(String.Format("<p class='m8'>{0}</p><br>\n", myTexts["rotation"]));
-
-            htmlStringBuilder.Append(String.Format("<p class='m8'>\n"));
-            htmlStringBuilder.Append(String.Format("<span style='font-size:larger; font-weight:bold; text-decoration:underline;'>ENTRÉ</span>\n"));
-            htmlStringBuilder.Append(String.Format("</p>\n"));
-
-            GenerateFestivalFeesHtml(schemaInfo, danceDateStart, festivalFeesText);
-
-            String text1 = myTexts["no_coffee"];
-            if (coffee)
-            {
-                text1 = myTexts["coffee"];
-            }
-            htmlStringBuilder.Append(String.Format("<br><p class='m8_schema m8_border' style='max-width: 450px;'>{0}</p><br>",
-                text1 + " - " + myTexts["lunch"]));
-
-
-            String htmlText = htmlStringBuilder.ToString();
-            File.WriteAllText(path.Replace("docx", "htm"), htmlText);
-
-            createDemoHtmlFile(path, htmlText);
-        }
-        public static void CreateDanceSchemaHtmlTable(String lang, SchemaInfo schemaInfo, String schemaName, int fontSize, int lineSpace)
+//        private static List<DancePass[]> dancePassesDayList = new List<DancePass[]>();
+        private static Fees myFees;
+        private static Dictionary<String, String> myTexts;
+        public static void CreateDanceSchemaHtmlTable(String lang, SchemaInfo schemaInfo, int fontSize, int lineSpace)
         {
             int numberOfDistinctDays = Utility.createDancePassesDaylist(schemaInfo);
 
             if (numberOfDistinctDays == 2)
             {
                 htmlStringBuilder.Append("<table class='m8_schema'>");
-                // Wp.Table table = createWeekendDanceSchemaTable(lang, dancePassesDayList, schemaInfo, fontSize, lineSpace);
+                createWeekendDanceSchemaTable(lang, Utility.dancePassesDayList, schemaInfo, fontSize, lineSpace);
                 htmlStringBuilder.Append("</table>");
             }
             else if (numberOfDistinctDays == 4)
             {
-                createFestivalDanceSchemaHtmlTable(lang, dancePassesDayList, schemaInfo);
+                CreateFestivalDanceSchemaHtmlTable(lang, Utility.dancePassesDayList, schemaInfo);
                 htmlStringBuilder.Append("</table>");
             }
 
         }
-        private static void GenerateFestivalFeesHtml(SchemaInfo schemaInfo, DateTime danceDateStart, List<string> festivalFeeTexts)
-        {
-            List<String> lines = new List<String>();
 
-            // festivalFeeTexts may have zero or one bullet lists
-            int bulletStart = -1, bulletLength = 0;
-            Utility.findBullets(festivalFeeTexts, out bulletStart, out bulletLength);
-            Utility.generateFestivalFeeLines(danceDateStart, festivalFeeTexts, myFees,  lines);
-            Boolean bullet = false;
-            for (int i1 = 0; i1 < lines.Count; i1++)
+        public static void CreateFestivalDanceSchemaHtmlTable(String lang, List<DancePass[]> dancePassesDayList, SchemaInfo schemaInfo)
+        {
+            htmlStringBuilder.Append("<table class='m8_festival'>");
+
+            int dayNumber = 0;
+            int passNumber = 1;
+
+            foreach (DancePass[] dancePasses in dancePassesDayList)
             {
-                String line = lines[i1];
-                if (i1 == bulletStart)
+                foreach (DancePass dancePass in dancePasses)
                 {
-                    htmlStringBuilder.Append(String.Format("<ul  class='m8'>\n"));
-                    bullet = true;
+                    createFestivalProgramRowForHtml(dayNumber, passNumber, dancePass, schemaInfo.colWidth);
+                    passNumber++;
                 }
-                if (bullet)
-                {
-                    htmlStringBuilder.Append(String.Format("<li class='m8'>{0}</li>\n", line));
-                    if (i1 == bulletStart + bulletLength)
-                    {
-                        bullet = false;
-                        htmlStringBuilder.Append(String.Format("</ul>\n", line));
-                    }
-                }
-                else
-                {
-                    htmlStringBuilder.Append(String.Format("<p class='m8'>{0}</p>\n", line));
-                }
+                dayNumber++;
+
             }
-            htmlStringBuilder.Append(String.Format("</ul>\n"));
         }
+
+        public static void CreateHtml(Dictionary<String, String> texts, String lang, SchemaInfo schemaInfo,
+                            String path, Fees fees, Boolean coffee, String danceLocation, DateTime danceDateStart,
+           DateTime danceDateEnd, String extra, List<String> festivalFeesText)
+        {
+            myTexts = texts;
+            myFees = fees;
+            if (schemaInfo.schemaName.Contains("festival"))
+            {
+                createFestivalHtml(lang, schemaInfo, coffee, danceLocation, danceDateStart, festivalFeesText);
+
+            }
+            else
+            {
+                createWeekendHtml(lang, schemaInfo, coffee, danceLocation, danceDateStart);
+            }
+            String htmlText = htmlStringBuilder.ToString();
+            File.WriteAllText(path.Replace("docx", "htm"), htmlText);
+
+            createDemoHtmlFile(path, htmlText);
+        }
+
         /// <summary>
         /// Creates a demo html file with html header and style tag
         /// </summary>
@@ -121,25 +92,31 @@ namespace CreateWordFiles
             File.WriteAllText(path.Replace("docx", "html"), yyy + htmlText + "</body></html>");
         }
 
-        public static void createFestivalDanceSchemaHtmlTable(String lang, List<DancePass[]> dancePassesDayList, SchemaInfo schemaInfo)
+        private static void createFestivalHtml(string lang, SchemaInfo schemaInfo, bool coffee, string danceLocation, DateTime danceDateStart, List<string> festivalFeesText)
         {
-            htmlStringBuilder.Append("<table class='m8_festival'>");
+            htmlStringBuilder.Clear();
+            htmlStringBuilder.Append(String.Format("<p class='m8_schema m8_border' style='max-width: 450px;'>{0}</p><br>", danceLocation));
 
-            int dayNumber = 0;
-            int passNumber = 1;
+            htmlStringBuilder.Append(String.Format("<p class='m8'>\n"));
+            htmlStringBuilder.Append(String.Format("<span style='font-size:larger; font-weight:bold; text-decoration:underline;'>PROGRAM</span>\n"));
+            htmlStringBuilder.Append(String.Format("</p>\n"));
+            CreateDanceSchemaHtmlTable(lang, schemaInfo, 12, 200);
+            htmlStringBuilder.Append(String.Format("<p class='m8'>{0}</p><br>\n", myTexts["rotation"]));
 
-            foreach (DancePass[] dancePasses in dancePassesDayList)
+            htmlStringBuilder.Append(String.Format("<p class='m8'>\n"));
+            htmlStringBuilder.Append(String.Format("<span style='font-size:larger; font-weight:bold; text-decoration:underline;'>ENTRÉ</span>\n"));
+            htmlStringBuilder.Append(String.Format("</p>\n"));
+
+            generateFestivalFeesHtml(schemaInfo, danceDateStart, festivalFeesText);
+
+            String text1 = myTexts["no_coffee"];
+            if (coffee)
             {
-                foreach (DancePass dancePass in dancePasses)
-                {
-                    createFestivalProgramRowForHtml(dayNumber, passNumber, dancePass, schemaInfo.colWidth);
-                    passNumber++;
-                }
-                dayNumber++;
-
+                text1 = myTexts["coffee"];
             }
+            htmlStringBuilder.Append(String.Format("<br><p class='m8_schema m8_border' style='max-width: 450px;'>{0}</p><br>",
+                text1 + " - " + myTexts["lunch"]));
         }
-
         private static void createFestivalProgramRowForHtml(int dayNumber, int passNumber, DancePass dancePass, List<int> colWidth)
         {
             string weekDay, timeString, level;
@@ -179,7 +156,106 @@ namespace CreateWordFiles
             htmlStringBuilder.Append("</tr>\n");
 
         }
+        private static void createWeekendDanceSchemaTable(String lang, List<DancePass[]> dancePassesDayList, SchemaInfo schemaInfo,
+            int fontSize, int lineSpace)
+        {
+
+            htmlStringBuilder.Append("<tr class='m8_schema'>" +
+               "<th colspan=2 class='m8_schema'>" + myTexts["Saturday"] + "</th>" +
+               "<th class='m8_schema m8_space' style='min-width:50px;'></th>" +
+                "<th colspan=2 class='m8_schema'>" + myTexts["Sunday"] + "</th>" +
+                "</tr>\n");
+
+            htmlStringBuilder.Append(createWeekEndRowHtml(lang, dancePassesDayList, 2, schemaInfo));
+
+            htmlStringBuilder.Append(createWeekEndRowHtml(lang, dancePassesDayList, 3, schemaInfo, schemaInfo.schemaName == "weekend_meeting"));
+
+            if (dancePassesDayList[0].Length > 2 || dancePassesDayList[1].Length > 2)
+            {
+                htmlStringBuilder.Append(createWeekEndRowHtml(lang, dancePassesDayList, 4, schemaInfo));
+            }
+
+            //  return table;
+
+        }
+
+        private static void createWeekendHtml(string lang, SchemaInfo schemaInfo, bool coffee, string danceLocation, DateTime danceDateStart)
+        {
+            CreateDanceSchemaHtmlTable(lang, schemaInfo, 12, 200);
+            generateWeekendFeesLines(schemaInfo);
+        }
+        private static String createWeekEndRowHtml(String lang, List<DancePass[]> dancePassesDayList, int rowNumber, SchemaInfo schemaInfo, Boolean merge = false)
+        {
+            string level2, timeString2, level1, timeString1;
+            Utility.createWeekEndRow(dancePassesDayList, rowNumber, out level2, out timeString2, out level1, out timeString1);
 
 
+            String row = String.Format("<tr class='m8_schema'><td class='m8_schema m8_time'>{0}</td><td class='m8_schema m8_level'>{1}</td><td class='m8_schema m8_space'> </td><td class='m8_schema m8_time'>{2}</td><td class='m8_schema m8_level'>{3}</td></tr>",
+                timeString1, level1, timeString2, level2);
+            return row;
+
+        }
+
+        private static void generateFestivalFeesHtml(SchemaInfo schemaInfo, DateTime danceDateStart, List<string> festivalFeeTexts)
+        {
+            List<String> lines = new List<String>();
+
+            // festivalFeeTexts may have zero or one bullet lists
+            int bulletStart = -1, bulletLength = 0;
+            Utility.findBullets(festivalFeeTexts, out bulletStart, out bulletLength);
+            Utility.generateFestivalFeeLines(danceDateStart, festivalFeeTexts, myFees,  lines);
+            Boolean bullet = false;
+            for (int i1 = 0; i1 < lines.Count; i1++)
+            {
+                String line = lines[i1];
+                if (i1 == bulletStart)
+                {
+                    htmlStringBuilder.Append(String.Format("<ul  class='m8'>\n"));
+                    bullet = true;
+                }
+                if (bullet)
+                {
+                    htmlStringBuilder.Append(String.Format("<li class='m8'>{0}</li>\n", line));
+                    if (i1 == bulletStart + bulletLength)
+                    {
+                        bullet = false;
+                        htmlStringBuilder.Append(String.Format("</ul>\n", line));
+                    }
+                }
+                else
+                {
+                    htmlStringBuilder.Append(String.Format("<p class='m8'>{0}</p>\n", line));
+                }
+            }
+            htmlStringBuilder.Append(String.Format("</ul>\n"));
+        }
+        private static void generateWeekendFeesLines(SchemaInfo schemaInfo)
+        {
+
+            List<String> lines = new List<String>();
+            if (schemaInfo.schemaName.StartsWith("weekend"))
+            {
+                String line1 = String.Format(myTexts["weekend_member_fees"], myFees.weekends[0], myFees.weekends[1]);
+                htmlStringBuilder.Append("<p class='m8_schema'>\n");
+                htmlStringBuilder.Append(line1 + "<br>");
+                String line2 = String.Format(myTexts["weekend_non_member_fees"], myFees.weekends[2], myFees.weekends[3]);
+                htmlStringBuilder.Append(line2 + "<br>");
+                if (schemaInfo.schemaName == "weekend_january")
+                {
+                    htmlStringBuilder.Append(myTexts["one_pass_sunday"] + "<br>");
+                }
+                String pgPay = myTexts["weekend_pg_pay"];
+                if (pgPay != "N/A")
+                {
+                    htmlStringBuilder.Append(pgPay + "<br>");
+                }
+                String swishpay = myTexts["weekend_swish_pay"];
+                if (swishpay != "N/A")
+                {
+                    htmlStringBuilder.Append(swishpay + "<br>");
+                }
+            }
+            htmlStringBuilder.Append("</p>");
+        }
     }
 }
