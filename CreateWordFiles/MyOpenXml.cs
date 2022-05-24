@@ -308,19 +308,16 @@ namespace CreateWordFiles
             paragraphProperties.Append(justification);
             paragraph.Append(paragraphProperties);
             Boolean bullet = false;
-
+            List<string> fruitList = new List<string>();
             for (int i = 0; i < lines.Length; i++)
             {
+                String line = lines[i];
                 if (bulletStart == i)
                 {
-                    //if (createHtml)
-                    //{
-                    //    FlyerCreator.htmlStringBuilder.Append("<ul class='m8'>\n   <li>\n");
-                    //}
+                    fruitList.Add(line);
                     bullet = true;
                 }
                 String fontSizeTxt = (fontSizes[i] * 2).ToString();
-                String line = lines[i];
                 Wp.FontSize fontSize = new Wp.FontSize { Val = new OXML.StringValue(fontSizeTxt) };  // Size in half points
 
                 Wp.Run run = new Wp.Run();
@@ -342,16 +339,10 @@ namespace CreateWordFiles
                 //}
                 if (bullet)
                 {
-                    //if (createHtml)
-                    //{
-                    //    FlyerCreator.htmlStringBuilder.Append("   </li>\n");
-                    //}
+                    fruitList.Add(line);
                     if (i == bulletStart + bulletLength || i == lines.Length - 1)
                     {
-                        //if (createHtml)
-                        //{
-                        //    FlyerCreator.htmlStringBuilder.Append("</ul>\n");
-                        //}
+                       // MyOpenXml.AddBulletList(fruitList, mainPart, body, 18);
                         bullet = false;
                     }
                     //else if (createHtml)
@@ -588,5 +579,104 @@ namespace CreateWordFiles
 
             return _drawing;
         }
+
+        public static void AddBulletList(List<string> sentences, MainDocumentPart mainPart, Wp.Body body, int fontSize)
+        {
+            var runList = ListOfStringToRunList(sentences, fontSize);
+
+            AddBulletList(runList, mainPart, body);
+        }
+        private static List<Wp.Run> ListOfStringToRunList(List<string> sentences, int fontSize)
+        {
+            var runList = new List<Wp.Run>();
+            foreach (string item in sentences)
+            {
+                var newRun = new Wp.Run();
+                Wp.RunProperties runProperties = new Wp.RunProperties();
+                Wp.FontSize wpFontSize = new Wp.FontSize { Val = (2 * fontSize).ToString() };  // Size in half points
+                runProperties.Append(wpFontSize);
+                Wp.RunFonts runFonts = new Wp.RunFonts { Ascii = "Comic Sans MS" };
+                runProperties.Append(runFonts);
+                newRun.Append(runProperties);
+                newRun.AppendChild(new Wp.Text(item));
+                runList.Add(newRun);
+            }
+
+            return runList;
+        }
+
+
+        public static void AddBulletList(List<Wp.Run> runList, MainDocumentPart mainPart, Wp.Body body)
+        {
+            //Introduce bulleted numbering in case it will be needed at some point
+             NumberingDefinitionsPart numberingPart = mainPart.NumberingDefinitionsPart;
+            if (numberingPart == null)
+            {
+                numberingPart = mainPart.AddNewPart<NumberingDefinitionsPart>("NumberingDefinitionsPart001");
+                Wp.Numbering element = new Wp.Numbering();
+                element.Save(numberingPart);
+            }
+
+            // Insert an AbstractNum into the numbering part numbering list.  The order seems to matter or it will not pass the 
+            // Open XML SDK Productity Tools validation test.  AbstractNum comes first and then NumberingInstance and we want to
+            // insert this AFTER the last AbstractNum and BEFORE the first NumberingInstance or we will get a validation error.
+            var abstractNumberId = numberingPart.Numbering.Elements<Wp.AbstractNum>().Count() + 1;
+            var abstractLevel = new Wp.Level(new Wp.NumberingFormat() { Val = Wp.NumberFormatValues.Bullet }, new Wp.LevelText() { Val = "·" }) { LevelIndex = 0 };
+            var abstractNum1 = new Wp.AbstractNum(abstractLevel) { AbstractNumberId = abstractNumberId };
+
+            if (abstractNumberId == 1)
+            {
+                numberingPart.Numbering.Append(abstractNum1);
+            }
+            else
+            {
+                Wp.AbstractNum lastAbstractNum = numberingPart.Numbering.Elements<Wp.AbstractNum>().Last();
+                numberingPart.Numbering.InsertAfter(abstractNum1, lastAbstractNum);
+            }
+
+            // Insert an NumberingInstance into the numbering part numbering list.  The order seems to matter or it will not pass the 
+            // Open XML SDK Productity Tools validation test.  AbstractNum comes first and then NumberingInstance and we want to
+            // insert this AFTER the last NumberingInstance and AFTER all the AbstractNum entries or we will get a validation error.
+            var numberId = numberingPart.Numbering.Elements<Wp.NumberingInstance>().Count() + 1;
+            Wp.NumberingInstance numberingInstance1 = new Wp.NumberingInstance() { NumberID = numberId };
+            Wp.AbstractNumId abstractNumId1 = new Wp.AbstractNumId() { Val = abstractNumberId };
+            numberingInstance1.Append(abstractNumId1);
+
+            if (numberId == 1)
+            {
+                numberingPart.Numbering.Append(numberingInstance1);
+            }
+            else
+            {
+                var lastNumberingInstance = numberingPart.Numbering.Elements<Wp.NumberingInstance>().Last();
+                numberingPart.Numbering.InsertAfter(numberingInstance1, lastNumberingInstance);
+            }
+
+            
+
+            foreach (Wp.Run runItem in runList)
+            {
+                // Create items for paragraph properties
+                var numberingProperties = new Wp.NumberingProperties(new Wp.NumberingLevelReference() { Val = 0 }, new Wp.NumberingId() { Val = numberId });
+                var spacingBetweenLines1 = new Wp.SpacingBetweenLines() { After = "0" };  // Get rid of space between bullets
+                var indentation = new Wp.Indentation() { Left = "720", Hanging = "360" };  // correct indentation 
+
+                Wp.ParagraphMarkRunProperties paragraphMarkRunProperties1 = new Wp.ParagraphMarkRunProperties();
+                Wp.RunFonts runFonts1 = new Wp.RunFonts() { Ascii = "Symbol", HighAnsi = "Symbol" };
+                paragraphMarkRunProperties1.Append(runFonts1);
+
+                // create paragraph properties
+                var paragraphProperties = new Wp.ParagraphProperties(numberingProperties, spacingBetweenLines1, indentation, paragraphMarkRunProperties1);
+
+                // Create paragraph 
+                var newPara = new Wp.Paragraph(paragraphProperties);
+
+                // Add run to the paragraph
+                newPara.AppendChild(runItem);
+                // Add one bullet item to the body
+               body.AppendChild(newPara);
+            }
+        }
+
     }
 }

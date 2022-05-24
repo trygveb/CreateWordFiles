@@ -1,14 +1,14 @@
-﻿using System;
-using System.IO;
+﻿using DocumentFormat.OpenXml.Packaging;
+using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
-using System.Collections.Generic;
-using System.Net.Cache;
+using System.IO;
 using System.Linq;
-using System.Text;
+using System.Net.Cache;
 using OXML = DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Packaging;
 using Wp = DocumentFormat.OpenXml.Wordprocessing;
+
 //using A = DocumentFormat.OpenXml.Drawing;
 //using DW = DocumentFormat.OpenXml.Drawing.Wordprocessing;
 //using PIC = DocumentFormat.OpenXml.Drawing.Pictures;
@@ -34,7 +34,6 @@ namespace CreateWordFiles
             Wp.Paragraph paragraph = new Wp.Paragraph(new Wp.Run(element));
 
             wordprocessingDocument.MainDocumentPart.Document.Body.AppendChild(paragraph);
-
         }
 
         public static void AddImage(String type, WordprocessingDocument wordprocessingDocument, String fileName, int maxHeight,
@@ -46,13 +45,12 @@ namespace CreateWordFiles
             int iWidth = 0;
             int iHeight = 0;
 
-
             // Set a default policy level for the "http:" and "https" schemes.
             HttpRequestCachePolicy policy = new HttpRequestCachePolicy(HttpRequestCacheLevel.Default);
             System.Net.HttpWebRequest.DefaultCachePolicy = policy;
             // Create the request.
             //WebRequest request = WebRequest.Create(uri);
-            // Define a cache policy for this request only. 
+            // Define a cache policy for this request only.
             HttpRequestCachePolicy noCachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore);
 
             double scale = 1;
@@ -104,7 +102,6 @@ namespace CreateWordFiles
             }
             else if (numberOfDistinctDays == 4)
             {
-
                 //htmlStringBuilder.Append("<table class='m8_festival'>");
                 Wp.Table table = CreateFestivalDanceFlyerSchemaTable(lang, Utility.dancePassesDayList, schemaInfo, fontSize, lineSpace);
                 //htmlStringBuilder.Append("</table><br>");
@@ -141,7 +138,6 @@ namespace CreateWordFiles
                 int cellNumber = 0;
                 foreach (Wp.TableCell cell in row.Descendants<Wp.TableCell>())
                 {
-
                     if ((rowNumber == 1 || rowNumber == 4) && cellNumber == 1)
                     {
                         mergeVertical(cell, Wp.MergedCellValues.Restart);
@@ -156,7 +152,6 @@ namespace CreateWordFiles
             }
 
             return table;
-
         }
 
         public static Wp.Table CreateWeekendDanceSchemaTable(String lang, List<DancePass[]> dancePassesDayList, SchemaInfo schemaInfo, int fontSize, int lineSpace)
@@ -177,11 +172,10 @@ namespace CreateWordFiles
             }
 
             return table;
-
         }
 
         /// <summary>
-        /// Only weekend dances supported 
+        /// Only weekend dances supported
         /// </summary>
         /// <param name="filepath"></param>
         /// <param name="danceName"></param>
@@ -220,7 +214,6 @@ namespace CreateWordFiles
                 throw e;
             }
         }
-
 
         public static Wp.Paragraph GenerateBlankLines(int numberOfLines, int before, int after, int fontSize = 14)
         {
@@ -288,7 +281,6 @@ namespace CreateWordFiles
             //htmlStringBuilder.Append("</table'>\n");
             Wp.Paragraph tableParagraph1 = generateTableParagraph(table1, false, distanceBefore, distanceAfter);
             return tableParagraph1;
-
         }
 
         public static Wp.Paragraph GenerateDanceLocationParagraph(String danceLocation, int fontSize = 20, int lineSpace = 400, int columnWidth = 7500)
@@ -348,7 +340,7 @@ namespace CreateWordFiles
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="text"></param>
         /// <param name="width">dxa= point/20</param>
@@ -381,8 +373,6 @@ namespace CreateWordFiles
 
             paragraph.Append(run);
 
-
-
             tableCell.Append(paragraph);
             Wp.TableCellProperties x = new Wp.TableCellProperties();
             tableCell.Append(x);
@@ -395,9 +385,7 @@ namespace CreateWordFiles
             //tableCell.Append(new Wp.TableCellProperties(
             //     new Wp.TableCellWidth() { Type = Wp.TableWidthUnitValues.Dxa, Width = widthStr }));
 
-
             return tableCell;
-
         }
 
         private static String createDanceDates(DateTime danceDateStart, DateTime danceDateEnd, out string monthName1, out string monthName2)
@@ -433,6 +421,8 @@ namespace CreateWordFiles
 
             Wp.Paragraph paragraph1 = GenerateWelcomeParagraphFestival1();
             body.AppendChild(paragraph1);
+
+
             AddImage("Inline", wordDocument, myTexts["logo_file_name"], 200, 6.0, 10.0);
             Wp.Paragraph paragraph2 = GenerateWelcomeParagraphFestival2(myTexts["danceName"].ToUpper());
             body.AppendChild(paragraph2);
@@ -449,6 +439,9 @@ namespace CreateWordFiles
             body.AppendChild(paragraphEntre);
 
             body.Append(generateFestivalFeesParagraph(schemaInfo, danceDateStart, festivalFeesText));
+
+            List<string> fruitList = new List<string>() { "Apple", "Banana", "Carrot" };
+            MyOpenXml.AddBulletList(fruitList, mainPart, body, 18);
 
             body.AppendChild(GenerateBlankLines(1, 0, 0, 14));
 
@@ -492,8 +485,6 @@ namespace CreateWordFiles
                 Wp.PageMargin myPageMargin = sectPr.Descendants<Wp.PageMargin>().FirstOrDefault();
                 //myPageMargin.Left = myPageMargin.Left / 2;
             }
-
-
         }
 
         private static void createFestivalRowForFlyer(int dayNumber, int passNumber, DancePass dancePass, Wp.Table table,
@@ -531,7 +522,6 @@ namespace CreateWordFiles
         /// <returns></returns>
         private static Wp.TableRow createRow(String[] content, int[] colWidth, bool merge, int fontSize, int lineSpace)
         {
-
             Wp.TableRow row = new Wp.TableRow();
             var rowProps = new Wp.TableRowProperties();
             rowProps.Append(new Wp.TableJustification { Val = Wp.TableRowAlignmentValues.Center });
@@ -561,11 +551,10 @@ namespace CreateWordFiles
             //    FlyerCreator.htmlStringBuilder.Append("</tr>\n");
             //}
             return row;
-
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="content"></param>
         /// <param name="colWidth">dxa = point/20</param>
@@ -575,7 +564,6 @@ namespace CreateWordFiles
         {
             Wp.TableRow row = new Wp.TableRow();
             var rowProps = new Wp.TableRowProperties();
-
 
             rowProps.Append(new Wp.TableJustification { Val = Wp.TableRowAlignmentValues.Center });
 
@@ -587,12 +575,10 @@ namespace CreateWordFiles
                 row.Append(tableCell[i]);
             }
 
-
             mergeCells(tableCell[0], tableCell[1]);
             mergeCells(tableCell[3], tableCell[4]);
 
             return row;
-
         }
 
         private static void createWeekendFlyer(string lang, SchemaInfo schemaInfo, DateTime danceDateStart, string schemaName,
@@ -665,6 +651,7 @@ namespace CreateWordFiles
             return MyOpenXml.GenerateParagraph(
                 new string[] { "Entré" }, new int[] { 24 }, new string[] { "Black" }, true, null, 0, 120, true);
         }
+
         private static Wp.Paragraph generateFestivalFeesParagraph(SchemaInfo schemaInfo, DateTime danceDateStart, List<string> festivalFeeTexts)
         {
             List<String> lines = new List<String>();
@@ -686,6 +673,7 @@ namespace CreateWordFiles
             return MyOpenXml.GenerateParagraph(new string[]
             { "PROGRAM" }, new int[] { 24 }, new string[] { "Black" }, true, null, 0, 120, true);
         }
+
         private static Wp.Paragraph generateTableLineParagraph(int lineSpacing = 400)
         {
             Wp.Paragraph paragraph = new Wp.Paragraph();
@@ -699,7 +687,6 @@ namespace CreateWordFiles
 
             Wp.Justification justification = new Wp.Justification() { Val = Wp.JustificationValues.Center };
             paragraphProperties.Append(justification);
-
 
             paragraph.Append(paragraphProperties);
             return paragraph;
@@ -731,9 +718,9 @@ namespace CreateWordFiles
             paragraph.Append(run);
             return paragraph;
         }
+
         private static Wp.Paragraph generateWeekendFeesLines(SchemaInfo schemaInfo)
         {
-
             List<String> lines = new List<String>();
             if (schemaInfo.schemaName.StartsWith("weekend"))
             {
@@ -761,8 +748,8 @@ namespace CreateWordFiles
             int[] fontSizes = Enumerable.Repeat(12, lines.Count).ToArray();
             String[] colors = Enumerable.Repeat("Black", lines.Count).ToArray();
             return MyOpenXml.GenerateParagraph(lines.ToArray(), fontSizes, colors, false, null, 0, 240);
-
         }
+
         //private static String formatTimeInterval(DancePass[] dancePasses, int row)
         //{
         //    //String text = String.Format("{0}-{1}", dancePasses[row].start_time, dancePasses[row].end_time);
@@ -788,10 +775,10 @@ namespace CreateWordFiles
 
             tc1.Append(cellOneProperties);
             tc2.Append(cellTwoProperties);
-
         }
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="tableCell"></param>
         /// <param name="mergeType">Wp.MergedCellValues.Restart or Wp.MergedCellValues.Continue</param>
@@ -807,7 +794,6 @@ namespace CreateWordFiles
             cellProps.Append(tcVA);
 
             tableCell.Append(cellProps);
-
         }
     }
 }
