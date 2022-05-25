@@ -328,28 +328,15 @@ namespace CreateWordFiles
                 if (underlineFirstRow && i == 0)
                 {
                     runProperties.Underline = new Wp.Underline() { Val = Wp.UnderlineValues.Single };
-                    //if (createHtml)
-                    //{
-                    //    FlyerCreator.htmlStringBuilder.Append(String.Format("<span style='font-size:larger; font-weight:bold; text-decoration:underline;'>{0}</span>\n", line));
-                    //}
                 }
-                //else if (createHtml)
-                //{
-                //    FlyerCreator.htmlStringBuilder.Append(String.Format("{0}</br>\n", line));
-                //}
                 if (bullet)
                 {
                     fruitList.Add(line);
                     if (i == bulletStart + bulletLength || i == lines.Length - 1)
                     {
-                       // MyOpenXml.AddBulletList(fruitList, mainPart, body, 18);
+                        //MyOpenXml.AddBulletList(fruitList, mainPart, body, 18);
                         bullet = false;
                     }
-                    //else if (createHtml)
-                    //{
-                    //    FlyerCreator.htmlStringBuilder.Append("   <li>\n");
-                    //}
-
                 }
 
                 Wp.Text text1 = new Wp.Text();

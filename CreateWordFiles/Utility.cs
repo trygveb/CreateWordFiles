@@ -108,24 +108,21 @@ namespace CreateWordFiles
             }
         }
 
-        public static void findBullets(List<string> festivalFeeTexts, out int bulletStart, out int bulletLength)
+        public static void findBullets(List<string> festivalFeeTexts, out List<string> festivalFeeTextsWithBullets, out List<string> festivalFeeTextsWithoutBullets)
         {
-            bulletStart = -1;
-            bulletLength = 0;
-            Boolean bullet = false;
+            festivalFeeTextsWithBullets = new List<string>();
+            festivalFeeTextsWithoutBullets = new List<string>();
             for (int i1 = 0; i1 < festivalFeeTexts.Count; i1++)
             {
                 String text = festivalFeeTexts[i1];
                 String[] atoms = text.Split(';');
-                if (atoms[0] == "b" && !bullet)
+                if (atoms[0] == "b")
                 {
-                    bulletStart = i1;
-                    bulletLength = 1;
-                    bullet = true;
+                    festivalFeeTextsWithBullets.Add(text);
                 }
-                else if (atoms[0] == "b")
+                else
                 {
-                    bulletLength++;
+                    festivalFeeTextsWithoutBullets.Add(text);
                 }
             }
         }

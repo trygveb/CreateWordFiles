@@ -201,33 +201,26 @@ namespace CreateWordFiles
             List<String> lines = new List<String>();
 
             // festivalFeeTexts may have zero or one bullet lists
-            int bulletStart = -1, bulletLength = 0;
-            Utility.findBullets(festivalFeeTexts, out bulletStart, out bulletLength);
+            //int bulletStart = -1, bulletLength = 0;
+            List<string> festivalFeeTextsWithBullets, festivalFeeTextsWithoutBullets;
+            Utility.findBullets(festivalFeeTexts, out festivalFeeTextsWithBullets, out festivalFeeTextsWithoutBullets);
             Utility.generateFestivalFeeLines(danceDateStart, festivalFeeTexts, myFees,  lines);
-            Boolean bullet = false;
-            for (int i1 = 0; i1 < lines.Count; i1++)
+           
+            for (int i1 = 0; i1 < festivalFeeTextsWithoutBullets.Count; i1++)
             {
-                String line = lines[i1];
-                if (i1 == bulletStart)
-                {
-                    htmlStringBuilder.Append(String.Format("<ul  class='m8'>\n"));
-                    bullet = true;
-                }
-                if (bullet)
-                {
-                    htmlStringBuilder.Append(String.Format("<li class='m8'>{0}</li>\n", line));
-                    if (i1 == bulletStart + bulletLength)
-                    {
-                        bullet = false;
-                        htmlStringBuilder.Append(String.Format("</ul>\n", line));
-                    }
-                }
-                else
-                {
-                    htmlStringBuilder.Append(String.Format("<p class='m8'>{0}</p>\n", line));
-                }
+                String line = festivalFeeTextsWithoutBullets[i1];
+                htmlStringBuilder.Append(String.Format("<p class='m8'>{0}</p>\n", line));
             }
-            htmlStringBuilder.Append(String.Format("</ul>\n"));
+            if (festivalFeeTextsWithBullets.Count > 0)
+            {
+                htmlStringBuilder.Append(String.Format("<ul  class='m8'>\n"));
+                for (int i1 = 0; i1 < festivalFeeTextsWithBullets.Count; i1++)
+                {
+                    String line = festivalFeeTextsWithBullets[i1];
+                    htmlStringBuilder.Append(String.Format("<li class='m8'>{0}</li>\n", line));
+                }
+                htmlStringBuilder.Append(String.Format("</ul>\n"));
+            }
         }
         private static void generateWeekendFeesLines(SchemaInfo schemaInfo)
         {
