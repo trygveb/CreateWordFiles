@@ -58,6 +58,7 @@
             this.textBoxExtra = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.buttonFlyer = new System.Windows.Forms.Button();
+            this.buttonTest = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             this.groupBoxLanguage.SuspendLayout();
             this.groupBoxCoffee.SuspendLayout();
@@ -66,7 +67,7 @@
             // buttonHtml
             // 
             this.buttonHtml.Enabled = false;
-            this.buttonHtml.Location = new System.Drawing.Point(358, 391);
+            this.buttonHtml.Location = new System.Drawing.Point(374, 391);
             this.buttonHtml.Name = "buttonHtml";
             this.buttonHtml.Size = new System.Drawing.Size(114, 34);
             this.buttonHtml.TabIndex = 0;
@@ -340,7 +341,7 @@
             // 
             // buttonFlyer
             // 
-            this.buttonFlyer.Location = new System.Drawing.Point(200, 391);
+            this.buttonFlyer.Location = new System.Drawing.Point(256, 391);
             this.buttonFlyer.Name = "buttonFlyer";
             this.buttonFlyer.Size = new System.Drawing.Size(112, 34);
             this.buttonFlyer.TabIndex = 30;
@@ -348,11 +349,22 @@
             this.buttonFlyer.UseVisualStyleBackColor = true;
             this.buttonFlyer.Click += new System.EventHandler(this.buttonFlyer_Click);
             // 
+            // buttonTest
+            // 
+            this.buttonTest.Location = new System.Drawing.Point(162, 391);
+            this.buttonTest.Name = "buttonTest";
+            this.buttonTest.Size = new System.Drawing.Size(73, 27);
+            this.buttonTest.TabIndex = 31;
+            this.buttonTest.Text = "Test";
+            this.buttonTest.UseVisualStyleBackColor = true;
+            this.buttonTest.Click += new System.EventHandler(this.buttonTest_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(510, 437);
+            this.Controls.Add(this.buttonTest);
             this.Controls.Add(this.buttonFlyer);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.textBoxExtra);
@@ -419,6 +431,7 @@
         private System.Windows.Forms.TextBox textBoxExtra;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Button buttonFlyer;
+        private System.Windows.Forms.Button buttonTest;
     }
 }
 

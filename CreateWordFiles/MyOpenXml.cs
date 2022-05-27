@@ -29,7 +29,7 @@ namespace CreateWordFiles
         /// <returns></returns>
 
         public static void AddInlineImageToBody(WordprocessingDocument wordprocessingDocument, String relationshipId,
-            int iWidth, int iHeight, Boolean border, String fileName)
+            int iWidth, int iHeight, Boolean useBorder, String fileName)
         {
             // convert the pixels to EMUs this way:
             iWidth = (int)Math.Round((decimal)iWidth * 9525);
@@ -98,7 +98,7 @@ namespace CreateWordFiles
                          EditId = "50D07946"
                      });
             Wp.ParagraphBorders borders = MyOpenXml.createParagraphBorders(Wp.BorderValues.None, 0);
-            if (border)
+            if (useBorder)
             {
                 borders = MyOpenXml.createParagraphBorders(Wp.BorderValues.Double, 12);
             }
@@ -106,8 +106,18 @@ namespace CreateWordFiles
             // Append the reference to the body. The element should be in 
             // a DocumentFormat.OpenXml.Wordprocessing.Run.
             //wordprocessingDocument.MainDocumentPart.Document.Body.AppendChild(new Wp.Paragraph(new Wp.Run(element)));
+            Wp.Run run = new Wp.Run(element);
+            //Wp.Border border = new Wp.Border() { Val = Wp.BorderValues.Single };
+            Wp.RunProperties runProp= new Wp.RunProperties();
+            //border.Color = "FF0000";
+            //border.Size = 3 * 4;  // Size in pixels/4
+            
+           // runProp.Append(createBorders(Wp.BorderValues.Double, 12));
+
+            run.Append(runProp);
             wordprocessingDocument.MainDocumentPart.Document.Body.AppendChild(
-                new Wp.Paragraph(new Wp.Run(element))
+                //  new Wp.Paragraph(new Wp.Run(element))
+                new Wp.Paragraph(run)
                 {
                     ParagraphProperties = new Wp.ParagraphProperties()
                     {
@@ -117,7 +127,7 @@ namespace CreateWordFiles
                         },
                         ParagraphBorders = borders
                     }
-                });
+                }) ;
         }
 
 
@@ -286,7 +296,7 @@ namespace CreateWordFiles
         /// <returns></returns>
         public static Wp.Paragraph GenerateParagraph(string[] lines, int[] fontSizes, String[] colors,
             Boolean pageBreakBefore, Wp.ParagraphBorders borders, int distanceBefore = 0, int distanceAfter = 0,
-            Boolean underlineFirstRow = false, int bulletStart = -1, int bulletLength = 0)
+            Boolean underlineFirstRow = false)
         {
             //FlyerCreator.htmlStringBuilder.Append("<p class='m8'>\n");
 
@@ -307,17 +317,10 @@ namespace CreateWordFiles
             Wp.Justification justification = new Wp.Justification() { Val = Wp.JustificationValues.Center };
             paragraphProperties.Append(justification);
             paragraph.Append(paragraphProperties);
-            Boolean bullet = false;
-            List<string> fruitList = new List<string>();
             for (int i = 0; i < lines.Length; i++)
             {
                 String line = lines[i];
-                if (bulletStart == i)
-                {
-                    fruitList.Add(line);
-                    bullet = true;
-                }
-                String fontSizeTxt = (fontSizes[i] * 2).ToString();
+                   String fontSizeTxt = (fontSizes[i] * 2).ToString();
                 Wp.FontSize fontSize = new Wp.FontSize { Val = new OXML.StringValue(fontSizeTxt) };  // Size in half points
 
                 Wp.Run run = new Wp.Run();
@@ -329,16 +332,6 @@ namespace CreateWordFiles
                 {
                     runProperties.Underline = new Wp.Underline() { Val = Wp.UnderlineValues.Single };
                 }
-                if (bullet)
-                {
-                    fruitList.Add(line);
-                    if (i == bulletStart + bulletLength || i == lines.Length - 1)
-                    {
-                        //MyOpenXml.AddBulletList(fruitList, mainPart, body, 18);
-                        bullet = false;
-                    }
-                }
-
                 Wp.Text text1 = new Wp.Text();
                 text1.Text = line;
                 if (colors[i] == "Red")

@@ -222,7 +222,7 @@ namespace CreateWordFiles
             int[] fontSizes = Enumerable.Repeat(fontSize, numberOfLines).ToArray();
             String[] colors = Enumerable.Repeat("Black", numberOfLines).ToArray();
 
-            return MyOpenXml.GenerateParagraph(lines, fontSizes, colors, false, null, before, after, false, -1, 0);
+            return MyOpenXml.GenerateParagraph(lines, fontSizes, colors, false, null, before, after, false);
         }
 
         public static Wp.Paragraph GenerateCallerNameParagraph(String callerName, Boolean addCountry = false, int fontSize = 16)
@@ -426,7 +426,10 @@ namespace CreateWordFiles
             AddImage("Inline", wordDocument, myTexts["logo_file_name"], 200, 6.0, 10.0);
             Wp.Paragraph paragraph2 = GenerateWelcomeParagraphFestival2(myTexts["danceName"].ToUpper());
             body.AppendChild(paragraph2);
+
             AddImage("Inline", wordDocument, myTexts["callerPictureFile"], 250, 6.0, 10.0, false);
+            //Wp.Paragraph callerParagraph = AddCallerPicture.GenerateParagraph();
+            //body.AppendChild(callerParagraph);
 
             body.AppendChild(GenerateCallerNameParagraph(myTexts["callerName"], true, 20));
 
@@ -651,21 +654,25 @@ namespace CreateWordFiles
 
         private static void generateFestivalFeesParagraph(SchemaInfo schemaInfo, DateTime danceDateStart, List<string> festivalFeeTexts, MainDocumentPart mainPart, Wp.Body body)
         {
-            List<String> lines = new List<String>();
+            List<String> linesWithoutBullets = new List<String>();
+            List<String> linesWithBullets = new List<String>();
 
             // festivalFeeTexts may have zero or one bullet lists
             List<string> festivalFeeTextsWithoutBullets;
             List<string> festivalFeeTextsWithBullets;
+
             Utility.findBullets(festivalFeeTexts, out festivalFeeTextsWithBullets, out festivalFeeTextsWithoutBullets);
-            Utility.generateFestivalFeeLines(danceDateStart, festivalFeeTextsWithoutBullets, myFees, lines);
-
-            int[] fontSizes = Enumerable.Repeat(18, lines.Count).ToArray();
-
-            String[] colors = Enumerable.Repeat("Black", lines.Count).ToArray();
-            Wp.Paragraph paragraph = MyOpenXml.GenerateParagraph(festivalFeeTextsWithoutBullets.ToArray(), fontSizes, colors, false, null, 0, 0, false);
-            
+            Utility.generateFestivalFeeLines(danceDateStart, festivalFeeTextsWithoutBullets, myFees, linesWithoutBullets);
+            int[] fontSizes = Enumerable.Repeat(18, linesWithoutBullets.Count).ToArray();
+            String[] colors = Enumerable.Repeat("Black", linesWithoutBullets.Count).ToArray();
+            Wp.Paragraph paragraph = MyOpenXml.GenerateParagraph(linesWithoutBullets.ToArray(), fontSizes, colors, false, null, 0, 0, false);
             body.Append(paragraph);
-            MyOpenXml.AddBulletList(festivalFeeTextsWithBullets, mainPart, body, 18);
+
+            if (festivalFeeTextsWithBullets.Count > 0)
+            {
+                Utility.generateFestivalFeeLines(danceDateStart, festivalFeeTextsWithBullets, myFees, linesWithBullets);
+                MyOpenXml.AddBulletList(linesWithBullets, mainPart, body, 18);
+            }
         }
 
         private static Wp.Paragraph generateProgramTitleParagraph()

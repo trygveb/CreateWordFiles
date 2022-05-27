@@ -189,10 +189,15 @@ namespace CreateWordFiles
             comboBoxDanceLocation.ValueMember = "Value";
             getCallers();
             getDanceSchemas();
+            try
+            {
+                this.comboBoxCaller.SelectedIndex = Properties.Settings.Default.Selected_caller;
+                this.comboBoxDanceSchema.SelectedIndex = Properties.Settings.Default.Selected_schema;
+                this.comboBoxDanceName.SelectedIndex = Properties.Settings.Default.Selected_dance;
+            }catch (Exception)
+            {
 
-            this.comboBoxCaller.SelectedIndex = Properties.Settings.Default.Selected_caller;
-            this.comboBoxDanceSchema.SelectedIndex = Properties.Settings.Default.Selected_schema;
-            this.comboBoxDanceName.SelectedIndex = Properties.Settings.Default.Selected_dance; ;
+            }
 
             int days = 2;
             if (isFestival())
@@ -216,7 +221,7 @@ namespace CreateWordFiles
             path = Path.Combine(Utility.map["outputFolder"] + "/test", fileName);
 #else
             String fileName = String.Format("{0}_{1}_{2}.docx", this.dateTimePickerStart.Value.ToShortDateString(), lang, Utility.map["danceName"]);
-            String path = Path.Combine(Utility.map["outputFolder"], fileName);
+            path = Path.Combine(Utility.map["outputFolder"], fileName);
 #endif
             //try
             //{
@@ -328,5 +333,14 @@ namespace CreateWordFiles
 
         }
         #endregion ---------------------------------------------------------------------- Event handlers
+
+        private void buttonTest_Click(object sender, EventArgs e)
+        {
+            String fileName = "test.docx";
+            String path = Path.Combine(@"D:\Tmp", fileName);
+
+            //GeneratedCode.GeneratedClass x = new GeneratedCode.GeneratedClass();
+            //x.CreatePackage(path);
+        }
     }
 }

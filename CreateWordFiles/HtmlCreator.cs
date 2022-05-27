@@ -198,25 +198,27 @@ namespace CreateWordFiles
 
         private static void generateFestivalFeesHtml(SchemaInfo schemaInfo, DateTime danceDateStart, List<string> festivalFeeTexts)
         {
-            List<String> lines = new List<String>();
+            List<String> linesWithoutBullets = new List<String>();
 
             // festivalFeeTexts may have zero or one bullet lists
-            //int bulletStart = -1, bulletLength = 0;
             List<string> festivalFeeTextsWithBullets, festivalFeeTextsWithoutBullets;
             Utility.findBullets(festivalFeeTexts, out festivalFeeTextsWithBullets, out festivalFeeTextsWithoutBullets);
-            Utility.generateFestivalFeeLines(danceDateStart, festivalFeeTexts, myFees,  lines);
+
+            Utility.generateFestivalFeeLines(danceDateStart, festivalFeeTextsWithoutBullets, myFees,  linesWithoutBullets);
            
-            for (int i1 = 0; i1 < festivalFeeTextsWithoutBullets.Count; i1++)
+            for (int i1 = 0; i1 < linesWithoutBullets.Count; i1++)
             {
-                String line = festivalFeeTextsWithoutBullets[i1];
+                String line = linesWithoutBullets[i1];
                 htmlStringBuilder.Append(String.Format("<p class='m8'>{0}</p>\n", line));
             }
             if (festivalFeeTextsWithBullets.Count > 0)
             {
+                List<String> linesWithBullets = new List<String>();
+                Utility.generateFestivalFeeLines(danceDateStart, festivalFeeTextsWithBullets, myFees, linesWithBullets);
                 htmlStringBuilder.Append(String.Format("<ul  class='m8'>\n"));
-                for (int i1 = 0; i1 < festivalFeeTextsWithBullets.Count; i1++)
+                for (int i1 = 0; i1 < linesWithBullets.Count; i1++)
                 {
-                    String line = festivalFeeTextsWithBullets[i1];
+                    String line = linesWithBullets[i1];
                     htmlStringBuilder.Append(String.Format("<li class='m8'>{0}</li>\n", line));
                 }
                 htmlStringBuilder.Append(String.Format("</ul>\n"));
