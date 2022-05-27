@@ -427,7 +427,7 @@ namespace CreateWordFiles
             Wp.Paragraph paragraph2 = GenerateWelcomeParagraphFestival2(myTexts["danceName"].ToUpper());
             body.AppendChild(paragraph2);
 
-            AddImage("Inline", wordDocument, myTexts["callerPictureFile"], 250, 6.0, 10.0, false);
+            AddImage("Inline", wordDocument, myTexts["callerPictureFile"], 259, 6.0, 10.0, false);
             //Wp.Paragraph callerParagraph = AddCallerPicture.GenerateParagraph();
             //body.AppendChild(callerParagraph);
 
