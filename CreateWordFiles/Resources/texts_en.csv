@@ -7,12 +7,15 @@ Monday;Monday
 weekend_member_fees;Members: SEK {0}/pass, all passes SEK {1}
 weekend_non_member_fees;Non members: SEK {0}/pass, all passes SEK {1}
 one_pass_sunday;(sunday counts as 2 passes)
-festival_fees_text_1;Non members: {0}, {0}, {0}, {0}, {0} resp. {0} SEK för 1 till 6 sessioner.
-festival_fees_text_2;Members get a discount if you pay in advance at the latest {0}.
-festival_fees_text_3;The fee will then be: {0}, {0}, {0}, {0}, {0} resp. {0} SEK
-festival_fees_text_4;Cash "at the door" works well, but feel free to pay in advance on PlusGiro 85 56 69-8 (MOTIV8'S) or "Swish" to 070-422 82 27 (Arne G).
-festival_fees_text_5;In case of cancellation before {0}, the entire fee will be refunded. NOTE that door price applies after {0} regardless of membership.
-festival_fees_text_6;Session 7 is paid "at the door" (cash or Swish)
+festival_fees_text;;1;{0}, {1}, {2}, {3}, {4} resp. {5} SEK
+festival_fees_text;;0;for 1 to 6 sessions*.
+festival_fees_text;;0;The price applies when the same person goes to several sessions
+festival_fees_text;;0;*) Session 7 is paid "at the door"
+xfestival_fees_text;;2;---Members get a discount if you pay in advance at the latest {0}.
+xfestival_fees_text;;3;The fee will then be: {0}, {1}, {2}, {3}, {4} resp. {5} SEK
+xfestival_fees_text;;0;Contact Arne (see below) for advance payments
+xfestival_fees_text;b;4;In case of cancellation before {0}, the entire fee will be refunded.
+festival_fees_text;l;0;Young people pay half the price.
 pg_pay;N/A
 weekend_swish_pay;N/A
 rotation;We use Leif Håkanssons single rotationsprogram at all levels!
@@ -28,4 +31,4 @@ more_info_1;More info:
 more_info_2;Arne +46 70-422 82 27
 more_info_3;e-mail: info@motiv8s.se
 more_info_4;or visit our homepage: www.motiv8s.se
-more_info_5;Also book our October Festival October 6-9, 2023
+reduced_C3b;**) Course level according to Jesper's course in Örebro

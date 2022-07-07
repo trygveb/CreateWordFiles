@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Globalization;
 using System.Threading.Tasks;
 
 namespace CreateWordFiles
@@ -35,7 +36,11 @@ namespace CreateWordFiles
         public String schemaName { get; set; }
     }
     public class Utility
+
     {
+        public static DateTimeFormatInfo dateTimeFormatInfo_se = CultureInfo.GetCultureInfo("sv-SE").DateTimeFormat;
+        public static DateTimeFormatInfo dateTimeFormatInfo_en= CultureInfo.GetCultureInfo("en-US").DateTimeFormat;
+
         public static Dictionary<string, string> callerDictionary = new Dictionary<string, string>();
 
         public static Dictionary<String, String> danceLocations = new Dictionary<String, String>();
@@ -147,29 +152,29 @@ namespace CreateWordFiles
                 DateTime dueDate1 = danceDateStart - new TimeSpan(4 * 24, 0, 0);
                 String ddMM1 = dueDate1.Day + "/" + dueDate1.Month;
                 int n = Int32.Parse(atoms[1]);
+                if (atoms[0]=="l")
+                {
+                    lines.Add("");
+                }
                 switch (n)
                 {
-                    case 1:
+                    case 1: // Line with the fees for 1-6 sessions
                         String txt1 = String.Format(atoms[2], myFees.festival[0], myFees.festival[1],
                             myFees.festival[2], myFees.festival[3],
                             myFees.festival[4], myFees.festival[5]);
                         lines.Add(txt1);
                         break;
-                    case 2:
+                    case 2:  // Line with due date for advanced payments
                         String txt2 = String.Format(atoms[2], ddMM1);
                         lines.Add(txt2);
                         break;
-                    case 3:
+                    case 3: // Line with the MEMBER fees for 1-6 sessions
                         String txt3 = String.Format(atoms[2], myFees.festival_member[0], myFees.festival_member[1],
                             myFees.festival_member[2], myFees.festival_member[3],
                             myFees.festival_member[4], myFees.festival_member[5]);
                         lines.Add(txt3);
                         break;
-                    case 4:
-                        String txt4 = String.Format(atoms[2], ddMM1);
-                        lines.Add(txt4);
-                        break;
-                    case 5:
+                    case 4: // Line with date for first dance day
                         String txt5 = String.Format(atoms[2], danceDateStart.Day + "/" + danceDateStart.Month);
                         lines.Add(txt5);
                         break;

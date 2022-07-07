@@ -189,8 +189,9 @@ namespace CreateWordFiles
 
             myTexts = texts;
             myFees = fees;
+ 
 
-            danceDates = createDanceDates(danceDateStart, danceDateEnd, out monthName1, out monthName2);
+            danceDates = createDanceDates(danceDateStart, danceDateEnd, lang, out monthName1, out monthName2);
 
             //htmlStringBuilder.Clear();
 
@@ -388,22 +389,39 @@ namespace CreateWordFiles
             return tableCell;
         }
 
-        private static String createDanceDates(DateTime danceDateStart, DateTime danceDateEnd, out string monthName1, out string monthName2)
+        private static String createDanceDates(DateTime danceDateStart, DateTime danceDateEnd, String lang, out string monthName1, out string monthName2) 
         {
             int month1 = danceDateStart.Month;
             int month2 = danceDateEnd.Month;
-            DayOfWeek dayOfWeek1 = danceDateStart.DayOfWeek;
-            String day1 = DateTimeFormatInfo.CurrentInfo.GetDayName(dayOfWeek1);
-            DayOfWeek dayOfWeek2 = danceDateEnd.DayOfWeek;
-            String day2 = DateTimeFormatInfo.CurrentInfo.GetDayName(dayOfWeek2);
-            monthName1 = DateTimeFormatInfo.CurrentInfo.GetMonthName(month1);
-            monthName2 = DateTimeFormatInfo.CurrentInfo.GetMonthName(month2);
+            DateTimeFormatInfo dateTimeFormatInfo = Utility.dateTimeFormatInfo_se;
+
+            //DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CurrentCulture.DateTimeFormat;
+            if (lang == "en")
+            {
+                dateTimeFormatInfo = Utility.dateTimeFormatInfo_en;
+            }
+
+            //DayOfWeek dayOfWeek1 = danceDateStart.DayOfWeek;
+            //String day1 = DateTimeFormatInfo.CurrentInfo.GetDayName(dayOfWeek1);
+            //DayOfWeek dayOfWeek2 = danceDateEnd.DayOfWeek;
+            //String day2 = DateTimeFormatInfo.CurrentInfo.GetDayName(dayOfWeek2);
+            monthName1 = dateTimeFormatInfo.GetMonthName(month1);
+            monthName2 = dateTimeFormatInfo.GetMonthName(month2);
             String danceDates = String.Format("{0}-{1} {2} {3}", danceDateStart.Day, danceDateEnd.Day, monthName1, danceDateStart.Year);
+            if (lang == "en")
+            {
+                danceDates = String.Format(" {2} {0}-{1} {3}", danceDateStart.Day, danceDateEnd.Day, monthName1, danceDateStart.Year);
+            }
             if (month1 != month2)
             {
-                danceDates = String.Format("{0}{1}-{2} {3} {4}", danceDateStart.Day, danceDateEnd.Day, monthName1, monthName2, danceDateStart.Year);
+                danceDates = String.Format("{0}{1}-{2}{3} {4}", danceDateStart.Day,  monthName1, danceDateEnd.Day,  monthName2, danceDateStart.Year);
+                if (lang == "en")
+                {
+                    danceDates = String.Format("{1} {0}-{3} {2} {4}", danceDateStart.Day, monthName1, danceDateEnd.Day, monthName2, danceDateStart.Year);
+
+                }
             }
-            return danceDates;
+             return danceDates;
         }
 
         private static void createFestivalFlyer(string lang, SchemaInfo schemaInfo, DateTime danceDateStart,
