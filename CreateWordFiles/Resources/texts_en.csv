@@ -16,12 +16,14 @@ one_pass_sunday;(sunday counts as 2 passes)
 #					"2" for a advanced payment due date placeholder,
 #					"3" for reduced festival fees placeholders
 #					"4" for payment return on cancellation due date placeholder,
-# In this English version, we do not inform about advance payments
+# In this English version, we do not inform about advance payments,
+# and the Entré page contains some blank lines to get the page less top heavy.
 #
 festival_fees_text;;0; 
 festival_fees_text;;1;{0}, {1}, {2}, {3}, {4} resp. {5} SEK
 festival_fees_text;;0;for 1 to 6 sessions*.
 festival_fees_text;;0;The price applies when the same person goes to several sessions
+festival_fees_text;;0; 
 festival_fees_text;;0;*) Session 7 is paid "at the door"
 #festival_fees_text;;2;---Members get a discount if you pay in advance at the latest {0}.
 #festival_fees_text;;3;The fee will then be: {0}, {1}, {2}, {3}, {4} resp. {5} SEK
