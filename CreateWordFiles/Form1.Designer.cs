@@ -225,6 +225,7 @@
             this.radioButtonEnglish.Tag = "en";
             this.radioButtonEnglish.Text = "Engelska";
             this.radioButtonEnglish.UseVisualStyleBackColor = true;
+            this.radioButtonEnglish.CheckedChanged += new System.EventHandler(this.radioButtonEnglish_CheckedChanged);
             // 
             // radioButtonSwedish
             // 

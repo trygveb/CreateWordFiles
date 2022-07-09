@@ -125,7 +125,7 @@ namespace CreateWordFiles
             {
                 foreach (DancePass dancePass in dancePasses)
                 {
-                    createFestivalRowForFlyer(dayNumber, passNumber, dancePass, table, schemaInfo.colWidth, fontSize, lineSpace);
+                    createFestivalRowForFlyer(lang, dayNumber, passNumber, dancePass, table, schemaInfo.colWidth, fontSize, lineSpace);
                     //htmlStringBuilder.Append(createFestivalRowHtml(lang, dayNumber, passNumber, dancePass, schemaInfo));
                     passNumber++;
                 }
@@ -189,7 +189,7 @@ namespace CreateWordFiles
 
             myTexts = texts;
             myFees = fees;
- 
+
 
             danceDates = createDanceDates(danceDateStart, danceDateEnd, lang, out monthName1, out monthName2);
 
@@ -389,7 +389,7 @@ namespace CreateWordFiles
             return tableCell;
         }
 
-        private static String createDanceDates(DateTime danceDateStart, DateTime danceDateEnd, String lang, out string monthName1, out string monthName2) 
+        private static String createDanceDates(DateTime danceDateStart, DateTime danceDateEnd, String lang, out string monthName1, out string monthName2)
         {
             int month1 = danceDateStart.Month;
             int month2 = danceDateEnd.Month;
@@ -414,14 +414,14 @@ namespace CreateWordFiles
             }
             if (month1 != month2)
             {
-                danceDates = String.Format("{0}{1}-{2}{3} {4}", danceDateStart.Day,  monthName1, danceDateEnd.Day,  monthName2, danceDateStart.Year);
+                danceDates = String.Format("{0}{1}-{2}{3} {4}", danceDateStart.Day, monthName1, danceDateEnd.Day, monthName2, danceDateStart.Year);
                 if (lang == "en")
                 {
                     danceDates = String.Format("{1} {0}-{3} {2} {4}", danceDateStart.Day, monthName1, danceDateEnd.Day, monthName2, danceDateStart.Year);
 
                 }
             }
-             return danceDates;
+            return danceDates;
         }
 
         private static void createFestivalFlyer(string lang, SchemaInfo schemaInfo, DateTime danceDateStart,
@@ -456,10 +456,10 @@ namespace CreateWordFiles
 
             body.AppendChild(GenerateDanceLocationParagraph(danceLocation, 20, 600, 11000));
 
-            Wp.Paragraph paragraphEntre = generateFeeHeadlineParagraph();
+            Wp.Paragraph paragraphEntre = generateFeeHeadlineParagraph(lang);
             body.AppendChild(paragraphEntre);
 
-           generateFestivalFeesParagraph(schemaInfo, danceDateStart, festivalFeesText, mainPart, body);
+            generateFestivalFeesParagraph(schemaInfo, danceDateStart, festivalFeesText, mainPart, body);
 
             body.AppendChild(GenerateBlankLines(1, 0, 0, 14));
 
@@ -505,11 +505,11 @@ namespace CreateWordFiles
             }
         }
 
-        private static void createFestivalRowForFlyer(int dayNumber, int passNumber, DancePass dancePass, Wp.Table table,
+        private static void createFestivalRowForFlyer(String lang, int dayNumber, int passNumber, DancePass dancePass, Wp.Table table,
             List<int> colWidth, int fontSize, int lineSpace)
         {
             string weekDay, timeString, level;
-            Utility.createFestivalRow(dancePass, dayNumber, passNumber, out weekDay, out timeString, out level);
+            Utility.createFestivalRow(lang, dancePass, dayNumber, passNumber, out weekDay, out timeString, out level);
 
             String[] content = { passNumber.ToString(), weekDay, timeString, level };
 
@@ -662,12 +662,28 @@ namespace CreateWordFiles
                 new string[] { "Black" }, false, null, 0, 160);
         }
 
-        private static Wp.Paragraph generateFeeHeadlineParagraph()
+        private static Wp.Paragraph generateFeeHeadlineParagraph(String lang)
         {
-            //  htmlStringBuilder.Append("<p class='m8'><span class='m8_headline'>Entré</span></p>\n");
+            List<String> content = new List<string>();
+            List<int> sizes = new List<int>();
+            List<String> colors = new List<string>();
 
+            if (lang == "en")
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    content.Add("");
+                    sizes.Add(24);
+                    colors.Add("Black");
+                }
+            }
+            content.Add("Entré");
+            sizes.Add(24);
+            colors.Add("Black");
+            //return MyOpenXml.GenerateParagraph(
+            //    new string[] { "Entré" }, new int[] { 24 }, new string[] { "Black" }, true, null, 0, 120, true);
             return MyOpenXml.GenerateParagraph(
-                new string[] { "Entré" }, new int[] { 24 }, new string[] { "Black" }, true, null, 0, 120, true);
+                content.ToArray(), sizes.ToArray(), colors.ToArray(), true, null, 0, 120, true);
         }
 
         private static void generateFestivalFeesParagraph(SchemaInfo schemaInfo, DateTime danceDateStart, List<string> festivalFeeTexts, MainDocumentPart mainPart, Wp.Body body)

@@ -133,44 +133,46 @@ namespace CreateWordFiles
             return schemaInfo;
         }
 
-        private List<String> getTexts(String lang, Boolean flyer)
+        private void getTexts(String lang, Boolean flyer, out List<String> festivalFeesTexts)
         {
             String[] lines;
-            List<String> festivalFeesTexts = new List<String>();
+            festivalFeesTexts = new List<String>();
             String fileName = String.Format(@"Resources\texts_{0}.csv", lang);
             lines = System.IO.File.ReadAllLines(fileName, Encoding.Default);
             //Dictionary<String, String> map = new Dictionary<String, String>();
 
             foreach (String line in lines)
             {
-                String[] atoms = line.Split(';');
-                if (atoms[0] == "festival_fees_text")
+                if (line[0] != '#')
                 {
-                    if (atoms[3].StartsWith("---"))
+                    String[] atoms = line.Split(';');
+                    if (atoms[0] == "festival_fees_text")
                     {
-                        if (flyer)
+                        if (atoms[3].StartsWith("---"))
                         {
-                            festivalFeesTexts.Add(";0;");
+                            if (flyer)
+                            {
+                                festivalFeesTexts.Add(";0;");
+                            }
+                            else
+                            {
+                                festivalFeesTexts.Add(";0;-");
+                            }
+                            atoms[3] = atoms[3].Substring(3);
                         }
-                        else
-                        {
-                            festivalFeesTexts.Add(";0;-");
-                        }
-                        atoms[3] = atoms[3].Substring(3);
+                        festivalFeesTexts.Add(atoms[1] + ";" + atoms[2] + ";" + atoms[3]);
                     }
-                    festivalFeesTexts.Add(atoms[1] + ";" + atoms[2] + ";" + atoms[3]);
+                    else
+                    {
+                        Utility.map[atoms[0]] = atoms[1];
+                    }
                 }
-                else
-                {
-                    Utility.map[atoms[0]] = atoms[1];
-                }
-
             }
             Utility.map["outputFolder"] = this.textBoxOutputFolder.Text;
             Utility.map["danceName"] = this.comboBoxDanceName.Text;
             Utility.map["callerName"] = this.callerName;
             Utility.map["callerPictureFile"] = this.callerPictureFile;
-            return festivalFeesTexts;
+           // return festivalFeesTexts;
         }
 
         private Boolean isFestival()
@@ -207,12 +209,12 @@ namespace CreateWordFiles
             this.dateTimePickerEnd.Value = this.dateTimePickerStart.Value + new TimeSpan((days - 1) * 24, 0, 0);
             textBoxExtra.Text = Properties.Settings.Default.Extra_se;
         }
-        private void prepareForDocument(out string lang, out List<string> festivalFeesText, out SchemaInfo schemaInfo, out Fees fees, out string schemaName, out string path, Boolean flyer)
+        private void prepareForDocument(out string lang, out List<string> festivalFeesTexts, out SchemaInfo schemaInfo, out Fees fees, out string schemaName, out string path, Boolean flyer)
         {
             var radioButtonLanguage = groupBoxLanguage.Controls.OfType<RadioButton>()
                    .Where(r => r.Checked).FirstOrDefault();
             lang = (String)radioButtonLanguage.Tag;
-            festivalFeesText = this.getTexts(lang, flyer);
+            this.getTexts(lang, flyer,out festivalFeesTexts);
             schemaInfo = this.getSchemaInfo();
             fees = getFees();
             schemaName = this.comboBoxDanceSchema.Text;
@@ -225,7 +227,13 @@ namespace CreateWordFiles
 #endif
             //try
             //{
-            Properties.Settings.Default.Extra_se = textBoxExtra.Text;
+            if (lang == "se")
+            {
+                Properties.Settings.Default.Extra_se = textBoxExtra.Text;
+            } else
+            {
+                Properties.Settings.Default.Extra_en = textBoxExtra.Text;
+            }
             Properties.Settings.Default.Selected_caller = comboBoxCaller.SelectedIndex;
             Properties.Settings.Default.Selected_schema = comboBoxDanceSchema.SelectedIndex;
             Properties.Settings.Default.Selected_dance = this.comboBoxDanceName.SelectedIndex;
@@ -342,5 +350,19 @@ namespace CreateWordFiles
             //GeneratedCode.GeneratedClass x = new GeneratedCode.GeneratedClass();
             //x.CreatePackage(path);
         }
+
+        private void radioButtonEnglish_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButtonEnglish.Checked)
+            {
+                textBoxExtra.Text= Properties.Settings.Default.Extra_en;
+            } else
+            {
+                textBoxExtra.Text = Properties.Settings.Default.Extra_se;
+
+            }
+        }
+
+
     }
 }

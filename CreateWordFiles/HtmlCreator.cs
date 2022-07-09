@@ -44,7 +44,7 @@ namespace CreateWordFiles
             {
                 foreach (DancePass dancePass in dancePasses)
                 {
-                    createFestivalProgramRowForHtml(dayNumber, passNumber, dancePass, schemaInfo.colWidth);
+                    createFestivalProgramRowForHtml(lang, dayNumber, passNumber, dancePass, schemaInfo.colWidth);
                     passNumber++;
                 }
                 dayNumber++;
@@ -117,10 +117,10 @@ namespace CreateWordFiles
             htmlStringBuilder.Append(String.Format("<br><p class='m8_schema m8_border' style='max-width: 450px;'>{0}</p><br>",
                 text1 + " - " + myTexts["lunch"]));
         }
-        private static void createFestivalProgramRowForHtml(int dayNumber, int passNumber, DancePass dancePass, List<int> colWidth)
+        private static void createFestivalProgramRowForHtml(String lang, int dayNumber, int passNumber, DancePass dancePass, List<int> colWidth)
         {
             string weekDay, timeString, level;
-            Utility.createFestivalRow(dancePass, dayNumber, passNumber, out weekDay, out timeString, out level);
+            Utility.createFestivalRow(lang, dancePass, dayNumber, passNumber, out weekDay, out timeString, out level);
 
             String[] content = { passNumber.ToString(), weekDay, timeString, level };
             htmlStringBuilder.Append("<tr class='m8_festival'>\n");

@@ -1,3 +1,5 @@
+# Lines staring with "#" are commennts
+# Format rule: Each line (except comments) must contain at least one semikolon
 welcome;Welcome
 to;to
 Friday;Friday
@@ -7,14 +9,25 @@ Monday;Monday
 weekend_member_fees;Members: SEK {0}/pass, all passes SEK {1}
 weekend_non_member_fees;Non members: SEK {0}/pass, all passes SEK {1}
 one_pass_sunday;(sunday counts as 2 passes)
+#
+# festival_fees formats: festival_fees_text;formatSpecifier1;formatSpecifier2;text
+# formatSpecifier1= "b" for bullet list line
+# formatSpecifier2 ="1" for lines with festival fees placeholders, 
+#					"2" for a advanced payment due date placeholder,
+#					"3" for reduced festival fees placeholders
+#					"4" for payment return on cancellation due date placeholder,
+# In this English version, we do not inform about advance payments
+#
+festival_fees_text;;0; 
 festival_fees_text;;1;{0}, {1}, {2}, {3}, {4} resp. {5} SEK
 festival_fees_text;;0;for 1 to 6 sessions*.
 festival_fees_text;;0;The price applies when the same person goes to several sessions
 festival_fees_text;;0;*) Session 7 is paid "at the door"
-xfestival_fees_text;;2;---Members get a discount if you pay in advance at the latest {0}.
-xfestival_fees_text;;3;The fee will then be: {0}, {1}, {2}, {3}, {4} resp. {5} SEK
-xfestival_fees_text;;0;Contact Arne (see below) for advance payments
-xfestival_fees_text;b;4;In case of cancellation before {0}, the entire fee will be refunded.
+#festival_fees_text;;2;---Members get a discount if you pay in advance at the latest {0}.
+#festival_fees_text;;3;The fee will then be: {0}, {1}, {2}, {3}, {4} resp. {5} SEK
+festival_fees_text;;0; 
+festival_fees_text;;0;Contact Arne (see below) for advance payments
+#festival_fees_text;b;4;In case of cancellation before {0}, the entire fee will be refunded.
 festival_fees_text;l;0;Young people pay half the price.
 pg_pay;N/A
 weekend_swish_pay;N/A

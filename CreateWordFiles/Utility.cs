@@ -39,7 +39,7 @@ namespace CreateWordFiles
 
     {
         public static DateTimeFormatInfo dateTimeFormatInfo_se = CultureInfo.GetCultureInfo("sv-SE").DateTimeFormat;
-        public static DateTimeFormatInfo dateTimeFormatInfo_en= CultureInfo.GetCultureInfo("en-US").DateTimeFormat;
+        public static DateTimeFormatInfo dateTimeFormatInfo_en = CultureInfo.GetCultureInfo("en-US").DateTimeFormat;
 
         public static Dictionary<string, string> callerDictionary = new Dictionary<string, string>();
 
@@ -68,13 +68,24 @@ namespace CreateWordFiles
             return numberOfDistinctDays;
         }
 
-        public static void createFestivalRow(DancePass dancePass, int dayNumber, int passNumber, out string weekDay, out string timeString, out string level)
+        public static void createFestivalRow(String lang, DancePass dancePass, int dayNumber, int passNumber, out string weekDay, out string timeString, out string level)
         {
 
             level = "";
             timeString = "";
-            String[] weekDays = { "Fredag", "Lördag", "Söndag", "Måndag", "Tisdag" };
-            weekDay = weekDays[dayNumber];
+            //String[] weekDays = { "Fredag", "Lördag", "Söndag", "Måndag" };
+            Dictionary<String, String> weekDaysX = new Dictionary<String, String>    {
+                { "en0", "Friday" },
+                { "en1", "Saturday"},
+                { "en2", "Sunday"},
+                { "en3", "Monday"},
+                { "se0", "Fredag"},
+                { "se1", "Lördag"},
+                { "se2", "Söndag"},
+                { "se3", "Måndag"}
+            };
+            String key = String.Format("{0}{1}", lang, dayNumber);
+            weekDay = weekDaysX[key];
             try
             {
                 timeString = formatTimeInterval(dancePass);
@@ -152,7 +163,7 @@ namespace CreateWordFiles
                 DateTime dueDate1 = danceDateStart - new TimeSpan(4 * 24, 0, 0);
                 String ddMM1 = dueDate1.Day + "/" + dueDate1.Month;
                 int n = Int32.Parse(atoms[1]);
-                if (atoms[0]=="l")
+                if (atoms[0] == "l")
                 {
                     lines.Add("");
                 }

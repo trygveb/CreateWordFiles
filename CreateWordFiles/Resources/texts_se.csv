@@ -1,3 +1,6 @@
+# Lines staring with "#" are commennts
+# Format rule: Each line (except comments) must contain at least one semikolon
+#
 welcome;Välkommen
 to;till
 Friday;Fredag
@@ -7,6 +10,9 @@ Monday;Måndag
 weekend_member_fees;Medlem: {0} kr/pass, samtliga pass {1} kr
 weekend_non_member_fees;Ej medlem: {0} kr/pass, samtliga pass {1} kr
 one_pass_sunday;(söndag räknas som 2 pass)
+#
+# See the english texts version for specification of festival_fees_text formats
+#
 festival_fees_text;;1;{0}, {1}, {2}, {3}, {4} resp. {5} SEK
 festival_fees_text;;0;för 1 till 6 sessioner*.
 festival_fees_text;;0;Priset gäller då samma person går på flera sessioner.
