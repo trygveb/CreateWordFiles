@@ -25,6 +25,8 @@ namespace CreateWordFiles
         private static Dictionary<String, String> myTexts;
         private static Wp.Color wpColorBlackx = new Wp.Color() { Val = "000000" };
         private static Wp.Color wpColorRedx = new Wp.Color() { Val = "FF0000" };
+        private static double logo_weekend_distanceFromTop=12.0;
+        private static int top_margin_weekend = 100;
         //public static StringBuilder htmlStringBuilder = new StringBuilder();
 
         public static void AddAnchorImageToBody(WordprocessingDocument wordprocessingDocument, String relationshipId, int iWidth, int iHeight, double x0_mm, double y0_mm)
@@ -254,7 +256,7 @@ namespace CreateWordFiles
         }
 
         public static Wp.Paragraph GenerateCoffeeParagraph(Boolean coffee, int margin, Boolean merge, int columnWidth,
-            int fontSize, int lineSpace, int distanceBefore, int distanceAfter)
+            int fontSize, int lineSpace, int distanceBefore, int distanceAfter, String lunchText)
         {
             Wp.Table table1 = new Wp.Table();
             //htmlStringBuilder.Append("<table class='m8_schema'>\n");
@@ -269,13 +271,13 @@ namespace CreateWordFiles
             MyOpenXml.CreateTableBorders(table1, 20, Wp.BorderValues.Double);
             if (merge)
             {
-                Wp.TableRow tableRow1 = createRow(new string[] { text1 + "  " + myTexts["lunch"] }, new int[] { columnWidth }, false, fontSize, lineSpace);
+                Wp.TableRow tableRow1 = createRow(new string[] { text1 + "  " + myTexts[lunchText] }, new int[] { columnWidth }, false, fontSize, lineSpace);
                 table1.Append(tableRow1);
             }
             else
             {
                 Wp.TableRow tableRow1 = createRow(new string[] { text1 }, new int[] { columnWidth }, false, fontSize, lineSpace);
-                Wp.TableRow tableRow2 = createRow(new string[] { myTexts["lunch"] }, new int[] { columnWidth }, false, fontSize, lineSpace);
+                Wp.TableRow tableRow2 = createRow(new string[] { myTexts[lunchText] }, new int[] { columnWidth }, false, fontSize, lineSpace);
                 table1.Append(tableRow1);
                 table1.Append(tableRow2);
             }
@@ -434,13 +436,13 @@ namespace CreateWordFiles
             Wp.Body body = mainPart.Document.AppendChild(new Wp.Body());
             //MyOpenXml.SetMarginsAndFooter(wordDocument, myTexts["footer"], 10, 1500, 2000, 2000);
 
-            MyOpenXml.SetMarginsAndFooter(wordDocument,
-                String.Format(myTexts["footer"], DateTime.UtcNow.ToString("yyyy-MM-dd")), 11, 1000);
+            MyOpenXml.SetMarginsAndFooter(wordDocument,         //                    Font    Top
+                String.Format(myTexts["footer"], DateTime.UtcNow.ToString("yyyy-MM-dd")), 11, 800);
 
             Wp.Paragraph paragraph1 = GenerateWelcomeParagraphFestival1();
             body.AppendChild(paragraph1);
 
-
+            //                                                          maxH x0    y0
             AddImage("Inline", wordDocument, myTexts["logo_file_name"], 200, 6.0, 10.0);
             Wp.Paragraph paragraph2 = GenerateWelcomeParagraphFestival2(myTexts["danceName"].ToUpper());
             body.AppendChild(paragraph2);
@@ -482,7 +484,7 @@ namespace CreateWordFiles
 
             body.AppendChild(GenerateBlankLines(2, 0, 0, 14));
 
-            body.AppendChild(GenerateCoffeeParagraph(coffee, 300, false, 10000, 20, 400, 0, 0));
+            body.AppendChild(GenerateCoffeeParagraph(coffee, 300, false, 10000, 20, 400, 0, 0, "festival_lunch"));
             //htmlStringBuilder.Append("<p class='m8 m8_border'>\n");
             String text1 = myTexts["no_coffee"];
             if (coffee)
@@ -608,8 +610,8 @@ namespace CreateWordFiles
             Wp.Body body = mainPart.Document.AppendChild(new Wp.Body());
 
             String logoFileName = myTexts["logo_file_name"];
-            AddImage("Anchor", wordDocument, logoFileName, 95, 10.0, 16.0);
-            AddImage("Anchor", wordDocument, logoFileName, 95, 178.0, 16.0);
+            AddImage("Anchor", wordDocument, logoFileName, 95, 10.0, logo_weekend_distanceFromTop);
+            AddImage("Anchor", wordDocument, logoFileName, 95, 178.0, logo_weekend_distanceFromTop);
             Wp.Paragraph paragraph1 = GenerateWelcomeParagraphWeekend(myTexts["danceName"].ToUpper(), danceDates, 0, 480);
             body.AppendChild(paragraph1);
             // double scale = 0.7;
@@ -631,8 +633,12 @@ namespace CreateWordFiles
             body.AppendChild(GenerateDanceLocationParagraph(danceLocation, 14, 390));
             body.AppendChild(generateWeekendFeesLines(schemaInfo));
 
-            body.AppendChild(GenerateCoffeeParagraph(coffee, 50, true, 10000, 14, 320, 0, 0));
-            MyOpenXml.SetMarginsAndFooter(wordDocument, myTexts["footer"], 10);
+            body.AppendChild(GenerateCoffeeParagraph(coffee, 50, true, 10000, 14, 320, 0, 0, "weekend_lunch"));
+
+
+            MyOpenXml.SetMarginsAndFooter(wordDocument,
+                  String.Format(myTexts["footer"], DateTime.UtcNow.ToString("yyyy-MM-dd")), 11, top_margin_weekend);
+//            MyOpenXml.SetMarginsAndFooter(wordDocument, myTexts["footer"], 10);
 
             //String htmlText = htmlStringBuilder.ToString();
             //File.WriteAllText(path.Replace("docx", "htm"), htmlText);

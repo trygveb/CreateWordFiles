@@ -160,7 +160,7 @@ namespace CreateWordFiles
                 String text = festivalFeeTexts[i1];
 
                 String[] atoms = text.Split(';');
-                DateTime dueDate1 = danceDateStart - new TimeSpan(4 * 24, 0, 0);
+                DateTime dueDate1 = danceDateStart - new TimeSpan(7 * 24, 0, 0);
                 String ddMM1 = dueDate1.Day + "/" + dueDate1.Month;
                 int n = Int32.Parse(atoms[1]);
                 if (atoms[0] == "l")

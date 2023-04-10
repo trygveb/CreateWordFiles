@@ -21,7 +21,7 @@ namespace CreateWordFiles
 
             if (numberOfDistinctDays == 2)
             {
-                htmlStringBuilder.Append("<table class='m8_schema'>");
+                htmlStringBuilder.Append("<table class='m8_schema m8_weekend'>");
                 createWeekendDanceSchemaTable(lang, Utility.dancePassesDayList, schemaInfo, fontSize, lineSpace);
                 htmlStringBuilder.Append("</table>");
             }
@@ -115,7 +115,7 @@ namespace CreateWordFiles
                 text1 = myTexts["coffee"];
             }
             htmlStringBuilder.Append(String.Format("<br><p class='m8_schema m8_border' style='max-width: 450px;'>{0}</p><br>",
-                text1 + " - " + myTexts["lunch"]));
+                text1 + " - " + myTexts["festival_lunch"]));
         }
         private static void createFestivalProgramRowForHtml(String lang, int dayNumber, int passNumber, DancePass dancePass, List<int> colWidth)
         {

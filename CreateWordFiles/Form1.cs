@@ -122,6 +122,7 @@ namespace CreateWordFiles
             }
             this.comboBoxDanceSchema.Sorted = true;
         }
+        // Get dance schemas from motiv8's server (https://motiv8s.se/19/motiv8s_scripts/dance_schemas//{schema}.json)
         private SchemaInfo getSchemaInfo()
         {
             List<DancePass> dancpasses = new List<DancePass>();
@@ -182,6 +183,7 @@ namespace CreateWordFiles
 
         private void myInit()
         {
+            dateTimePickerStart.Value = DateTime.Now;
             this.folderBrowserDialog1.Description =
             "Välj katalog för utdata.";
             Utility.readToDictionary(@"Resources\web.csv", Utility.map);
@@ -266,9 +268,9 @@ namespace CreateWordFiles
                textBoxExtra.Text, festivalFeesText);
                 System.Diagnostics.Process.Start(path);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                MessageBox.Show(String.Format("Något gick fel."));
+                MessageBox.Show(String.Format("Något gick fel.{0}", ex.Message));
             }
 
         }
@@ -290,9 +292,9 @@ namespace CreateWordFiles
 
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                MessageBox.Show(String.Format("Något gick fel."));
+                MessageBox.Show(String.Format("Något gick fel.{0}", ex.Message));
             }
 
         }

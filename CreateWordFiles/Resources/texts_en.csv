@@ -24,17 +24,18 @@ festival_fees_text;;1;{0}, {1}, {2}, {3}, {4} resp. {5} SEK
 festival_fees_text;;0;for 1 to 6 sessions*.
 festival_fees_text;;0;The price applies when the same person goes to several sessions
 festival_fees_text;;0; 
-festival_fees_text;;0;*) Session 7 is paid "at the door"
+festival_fees_text;;0;*) Session 7 and 8 is paid "at the door"
 #festival_fees_text;;2;---Members get a discount if you pay in advance at the latest {0}.
 #festival_fees_text;;3;The fee will then be: {0}, {1}, {2}, {3}, {4} resp. {5} SEK
 festival_fees_text;;0; 
 festival_fees_text;;0;Contact Arne (see below) for advance payments
 #festival_fees_text;b;4;In case of cancellation before {0}, the entire fee will be refunded.
 festival_fees_text;l;0;Young people pay half the price.
+festival_lunch;We arrange pick-up of pizza and salad for the break on Sunday and monday!
+weekend_lunch;We arrange pick-up of pizza and salad for the break!
 pg_pay;N/A
 weekend_swish_pay;N/A
 rotation;We use Leif Håkanssons single rotationsprogram at all levels!
-lunch;We arrange pick-up of pizza and salad for the break!
 coffee;Coffee service available!!
 no_coffee;Bring your own coffee!
 footer;Changes beyond our control may occur. Keep an eye on our website www.motiv8s.se!
