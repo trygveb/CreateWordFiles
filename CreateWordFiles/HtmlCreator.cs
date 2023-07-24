@@ -181,6 +181,8 @@ namespace CreateWordFiles
 
         private static void createWeekendHtml(string lang, SchemaInfo schemaInfo, bool coffee, string danceLocation, DateTime danceDateStart)
         {
+            htmlStringBuilder.Append(String.Format("<p class='m8_schema m8_border' style='max-width: 450px;'>{0}</p><br>", danceLocation));
+
             CreateDanceSchemaHtmlTable(lang, schemaInfo, 12, 200);
             generateWeekendFeesLines(schemaInfo);
         }
@@ -237,7 +239,7 @@ namespace CreateWordFiles
                 htmlStringBuilder.Append(line2 + "<br>");
                 if (schemaInfo.schemaName == "weekend_january")
                 {
-                    htmlStringBuilder.Append(myTexts["one_pass_sunday"] + "<br>");
+                    //htmlStringBuilder.Append(myTexts["one_pass_sunday"] + "<br>");
                 }
                 String pgPay = myTexts["weekend_pg_pay"];
                 if (pgPay != "N/A")

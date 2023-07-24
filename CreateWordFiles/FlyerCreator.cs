@@ -610,8 +610,8 @@ namespace CreateWordFiles
             Wp.Body body = mainPart.Document.AppendChild(new Wp.Body());
 
             String logoFileName = myTexts["logo_file_name"];
-            AddImage("Anchor", wordDocument, logoFileName, 95, 10.0, logo_weekend_distanceFromTop);
-            AddImage("Anchor", wordDocument, logoFileName, 95, 178.0, logo_weekend_distanceFromTop);
+            AddImage("Anchor", wordDocument, logoFileName, 95, 15.0, logo_weekend_distanceFromTop);
+            AddImage("Anchor", wordDocument, logoFileName, 95, 170.0, logo_weekend_distanceFromTop);
             Wp.Paragraph paragraph1 = GenerateWelcomeParagraphWeekend(myTexts["danceName"].ToUpper(), danceDates, 0, 480);
             body.AppendChild(paragraph1);
             // double scale = 0.7;
@@ -637,7 +637,7 @@ namespace CreateWordFiles
 
 
             MyOpenXml.SetMarginsAndFooter(wordDocument,
-                  String.Format(myTexts["footer"], DateTime.UtcNow.ToString("yyyy-MM-dd")), 11, top_margin_weekend);
+                  String.Format(myTexts["footer"], DateTime.UtcNow.ToString("yyyy-MM-dd")), 11, top_margin_weekend, 0, 0);
 //            MyOpenXml.SetMarginsAndFooter(wordDocument, myTexts["footer"], 10);
 
             //String htmlText = htmlStringBuilder.ToString();
@@ -777,7 +777,7 @@ namespace CreateWordFiles
                 lines.Add(line2);
                 if (schemaInfo.schemaName == "weekend_january")
                 {
-                    lines.Add(myTexts["one_pass_sunday"]);
+                    //lines.Add(myTexts["one_pass_sunday"]);
                 }
                 String pgPay = myTexts["weekend_pg_pay"];
                 if (pgPay != "N/A")
