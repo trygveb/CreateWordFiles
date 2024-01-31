@@ -1,7 +1,10 @@
-﻿dance_schemas;https://motiv8s.se/19/motiv8s_scripts/dance_schemas/
-caller_pictures_root;https://www.motiv8s.se/19/images/callers/bordered/
-get_caller_list;https://motiv8s.se/19/motiv8s_scripts/get_caller_list.php?123456789
-get_schema_list;https://motiv8s.se/19/motiv8s_scripts/get_schema_list.php
-dancing_fees;https://motiv8s.se/19/motiv8s_scripts/dancing_fees.json
-logo_file_name; https://motiv8s.se/19/images/M8/Logga_Transparent.jpg
-saasdc_logo_file_name; https://motiv8s.se/19/images/M8/saasdc-icon.png
+﻿url_root;https://motiv8s.org/
+script_root;url_root;motiv8s_scripts/
+image_root;url_root;images/
+dance_schemas;script_root;dance_schemas/
+caller_pictures_root;image_root;callers/bordered/
+get_caller_list;script_root;get_caller_list.php?123456789
+get_schema_list;script_root;get_schema_list.php
+dancing_fees;script_root;dancing_fees.json
+logo_file_name;image_root;M8/logga_transparent.jpg
+saasdc_logo_file_name;image_root;M8/saasdc-icon.png

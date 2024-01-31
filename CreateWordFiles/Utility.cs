@@ -198,7 +198,7 @@ namespace CreateWordFiles
             }
         }
 
-        public static DancePass[] getDancePassesForDay(List<DancePass> dancePasses, int day)
+              public static DancePass[] getDancePassesForDay(List<DancePass> dancePasses, int day)
         {
             IEnumerable<DancePass> dayOnePasses = from dancePass in dancePasses
                                                   where dancePass.day == day
@@ -209,9 +209,11 @@ namespace CreateWordFiles
         }
 
         /// <summary>
-        /// Rads a semikolon separated file and adds data to the map Dictionary
+        /// Reads a semikolon separated file and adds data to the map Dictionary
+        /// First CSV field becomes the key, the second becomes the value of the dictionary
         /// </summary>
-        /// <param name="fileName"></param>
+        /// <param name="fileName" ></param>
+        /// <param name="dictionary"></param>
         public static void readToDictionary(String fileName, Dictionary<String, String> dictionary)
         {
             String[] lines = System.IO.File.ReadAllLines(fileName, Encoding.Default);
@@ -222,6 +224,32 @@ namespace CreateWordFiles
             }
 
         }
+        /// <summary>
+        /// Reads a semikolon separated file and adds data to the dictionary
+        /// First CSV field becomes the key, the second becomes the value of the dictionary, BUT
+        /// if the second CSV field contains the word "_root", the value of the dictionary is 
+        /// the dictionary value of that field plus the third field
+        /// </summary>
+        /// <param name="fileName" ></param>
+        /// <param name="dictionary"></param>
+        public static void readToDictionary_1(String fileName, Dictionary<String, String> dictionary)
+        {
+            String[] lines = System.IO.File.ReadAllLines(fileName, Encoding.Default);
+            foreach (String line in lines)
+            {
+                String[] atoms = line.Split(';');
+                if (atoms[1].Contains("_root") )
+                {
+                    dictionary[atoms[0]] = dictionary[atoms[1]]+ atoms[2];
+                } else
+                {
+                    dictionary[atoms[0]] = atoms[1];
+                }
+                
+            }
+
+        }
+
     }
 
 }

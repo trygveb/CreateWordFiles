@@ -89,10 +89,14 @@ namespace CreateWordFiles
             }
             this.dateTimePickerEnd.Value = this.dateTimePickerStart.Value + duration;
         }
+
+        // Run PHP script to get a list of callers with image URLs stored on the server
         private void getCallers()
         {
+            //Run the script
             string callerList = getResponseText(Utility.map["get_caller_list"]);
 
+            // Parse the returned callerList (csv)
             String[] callerPictureFiles = callerList.Split(new char[] { ';' });
             foreach (var callerPictureFile in callerPictureFiles)
             {
@@ -108,10 +112,13 @@ namespace CreateWordFiles
             this.comboBoxCaller.Sorted = true;
         }
 
+        // Run PHP script to get a list of all dance schemas stored on the server
         private void getDanceSchemas()
         {
+            //Run the script
             string schemaList = getResponseText(Utility.map["get_schema_list"]);
 
+            // Parse the returned schemaList
             String[] schemas = schemaList.Split(new char[] { ';' });
             foreach (var schema in schemas)
             {
@@ -184,15 +191,28 @@ namespace CreateWordFiles
         private void myInit()
         {
             dateTimePickerStart.Value = DateTime.Now;
+
+            //Initialize Dialog texts
             this.folderBrowserDialog1.Description =
             "Välj katalog för utdata.";
-            Utility.readToDictionary(@"Resources\web.csv", Utility.map);
+
+            // Read folder and file names from local file
+            //Utility.readToDictionary(@"Resources\web.csv", Utility.map);
+            Utility.readToDictionary_1(@"Resources\web.csv", Utility.map);
+
+            // Read dance location data from local file
             Utility.readToDictionary(@"Resources\dance_locations.csv", Utility.danceLocations);
+
+            // Initialize comboBox DanceLocation
             comboBoxDanceLocation.DataSource = new BindingSource(Utility.danceLocations, null);
             comboBoxDanceLocation.DisplayMember = "Key";
             comboBoxDanceLocation.ValueMember = "Value";
+
+            // Run PHP script to get a list of callers with image URLs stored on the server
             getCallers();
+            // Run PHP script to get a list of all dance schemas stored on the server
             getDanceSchemas();
+
             try
             {
                 this.comboBoxCaller.SelectedIndex = Properties.Settings.Default.Selected_caller;
